@@ -1,0 +1,21 @@
+{% extends "template.html" %}
+
+{% block head_title %}Pendium{% endblock %}
+{% block title      %}Pendium{% endblock %}
+
+{% block content %}
+    {% if not files %}
+        <h3>No files found :(</h3>
+        <p>Start by adding some files to your wiki folder.</p>
+    {% else %}
+        <h3><i class="icon-folder-open"></i> Files</h3>
+        <ul>
+            {% for file in files %}
+                <li style="list-style: none;">
+                    <i class="icon-file"></i>
+                    <a href="{{ url_for('view', filename=file.short_filename() ) }}">{{ file.filename}}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

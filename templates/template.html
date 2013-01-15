@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>{% block head_title %}{% endblock %}</title>
+    <meta name="viewport"    content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author"      content="">
+
+    <!-- Le styles -->
+    <link href="{{ url_for('static', filename='css/bootstrap.css' )            }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/pendium.css' )              }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/font-awesome.css' )         }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/bootstrap-responsive.css' ) }}" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico' ) }}">
+  </head>
+
+  <body>
+
+    <header>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <div class="span2"></div>
+                    <div class="span10">
+                        <ul class="nav pull-left">
+                            <li id="fat-menu" class="dropdown ">
+                                <a id="drop_files" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
+                                    <i class="icon-folder-open"></i>Files <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="drop_files" role="menu">
+                                    {% for file in files %}
+                                        <li class="{% if filename == file.short_filename() %}active{% endif %}">
+                                            <a href="{{ url_for('view', filename=file.short_filename() ) }}">
+                                                {{ file.filename}}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        </ul>
+                        <h5 class="pull-left"><i class="icon-bookmark"></i> {% block title %}{% endblock %}</h5>
+                        <h5 class="pull-right"><a href="#"><i class="icon-chevron-up"></i> Top</a></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="span2"></div>
+        <div class="span10">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <div id="footer">
+        <hr />
+        <p>Pendium is on <i class="icon-github"></i> <a href="https://github.com/LuRsT/pendium">Github</a>, feel free to contribute if you find something that needs hacking.</p>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{ url_for('static', filename='js/jquery.js')    }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/pendium.js')   }}"></script>
+</body>
+</html>

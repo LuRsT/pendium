@@ -1,0 +1,8 @@
+{% extends "template.html" %}
+
+{% block head_title %}{{ filename }}{% endblock %}
+{% block title %}<a href="{{ url_for('index') }}">Pendium</a> > {{ filename }}{% endblock %}
+
+{% block content %}
+    {{ markdown }}
+{% endblock %}
