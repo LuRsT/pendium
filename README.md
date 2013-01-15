@@ -13,6 +13,18 @@ To install them all type this in your command line:
 
     pip install `cat requirements`
 
+Note: Pendium was hacked in python 2.7, so use the appropriate command to install de dependencies e.g. in arch linux it's 'pip2'
+
+### Running it
+
+To use Pendium simply execute the pendium.py file
+
+    python pendium.py
+
+By the default config it should read the files from the wiki dir inside the pendium directory, change the directory in the config file or symlink your own dir.
+
+Note: Pendium was hacked in python 2.7, so use the appropriate command to run it e.g. in arch linux it's 'python2'
+
 ### Roadmap
 
 * ~~Discover a better style~~
