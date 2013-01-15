@@ -15,7 +15,7 @@ To install them all type this in your command line:
 
 ### Roadmap
 
-* -Discover a better style-
+* ~~Discover a better style~~
 * 404 pretty error
 * Edit files
 * Create files
