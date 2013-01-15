@@ -15,14 +15,14 @@ To install them all type this in your command line:
 
 ### Roadmap
 
-Discover a better style
-404 pretty error
-Edit files
-Create files
-sub wikis
-keyboard shortcuts
-grep search
-git integration
+* -Discover a better style-
+* 404 pretty error
+* Edit files
+* Create files
+* Sub wikis
+* Keyboard shortcuts
+* Grep search
+* Git integration
 
 ### Notes
 
