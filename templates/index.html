@@ -12,7 +12,7 @@
         <ul>
             {% for file in files %}
                 <li style="list-style: none;">
-                    <i class="icon-file"></i>
+                    <i class="{% if file.is_node %}icon-folder-close{% else %}icon-file{% endif %}"></i>
                     <a href="{{ url_for('view', path=file.path ) }}">{{ file.name}}</a>
                 </li>
             {% endfor %}

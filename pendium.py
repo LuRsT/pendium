@@ -10,6 +10,7 @@ class Pendium:
     def __init__(self, path):
         self.path     = path
         self.abs_path = os.path.join(config.wiki_dir, path)
+        self.abs_path = os.path.normpath( self.abs_path )
         self.name     = os.path.split(self.abs_path)[1] 
         self.is_node  = False
         self.is_leaf  = False
@@ -18,6 +19,16 @@ class Pendium:
             self.is_node = True
         else:
             self.is_leaf = True
+
+    def ancestor(self):
+        if self.path in ['/','']:
+            return None
+        return Pendium( os.path.split(self.path)[0] )
+
+    def ancestors(self):
+        if self.ancestor():
+            return self.ancestor().ancestors() + [self.ancestor()]
+        return []
 
     def items(self):
         filenames = []
@@ -63,6 +74,7 @@ def index():
 @app.route('/<path:path>')
 def view( path ):
     p = Pendium( path )
+    app.logger.debug( p.ancestors() )
 
     if p.is_leaf:
         md_html = p.get_md_file()
