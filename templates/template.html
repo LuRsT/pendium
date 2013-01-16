@@ -36,9 +36,9 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="drop_files" role="menu">
                                     {% for file in files %}
-                                        <li class="{% if filename == file.short_filename() %}active{% endif %}">
-                                            <a href="{{ url_for('view', filename=file.short_filename() ) }}">
-                                                {{ file.filename}}
+                                        <li class="{% if filename == file.name %}active{% endif %}">
+                                            <a href="{{ url_for('view', path=file.path ) }}">
+                                                {{ file.path }}
                                             </a>
                                         </li>
                                     {% endfor %}
@@ -59,6 +59,14 @@
     <div class="container">
         <div class="span2"></div>
         <div class="span10">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+
             {% block content %}{% endblock %}
         </div>
     </div>
