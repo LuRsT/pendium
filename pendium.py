@@ -8,7 +8,7 @@ from flask  import render_template
 
 class Pendium:
     def __init__(self, filename = None):
-        self.cfg = Config( file( 'pendium.cfg' ) )
+        self.cfg = Config( file( 'config' ) )
 
         if filename != None:
             self.filename = filename
@@ -56,7 +56,7 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     p = Pendium()
-    return render_template( 'index.html', files= p.get_md_files() )
+    return render_template( 'index.html', files = p.get_md_files() )
 
 
 @app.route('/<filename>')
@@ -68,6 +68,22 @@ def view( filename ):
                                          files    = p.get_md_files(),
                                          markdown = md_html
                           )
+
+@app.route('/refresh/')
+def refresh():
+    p = Pendium()
+
+    info = ''
+    try:
+        import git
+        repo = git.Repo( p.cfg.wiki_dir )
+        info = repo.git.pull()
+    except:
+        info = 'Error refreshing'
+        import sys
+        print sys.exc_info()[0]
+
+    return render_template( 'index.html', files = p.get_md_files(), info = info )
 
 
 if __name__ == '__main__':
