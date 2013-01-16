@@ -1,19 +1,19 @@
 {% extends "template.html" %}
 
-{% block head_title %}Pendium{% endblock %}
-{% block title      %}Pendium{% endblock %}
+{% block head_title %}{{ file.path }}{% endblock %}
+{% block title %}<a href="{{ url_for('index') }}">Pendium</a> > {{ file.path }}{% endblock %}
 
 {% block content %}
+    <h3><i class="icon-folder-open"></i> Files / {{ file.path }}</h3>
     {% if not files %}
-        <h3>No files found :(</h3>
+        <h4>No files found :(</h3>
         <p>Start by adding some files to your wiki folder.</p>
     {% else %}
-        <h3><i class="icon-folder-open"></i> Files</h3>
         <ul>
             {% for file in files %}
                 <li style="list-style: none;">
                     <i class="{% if file.is_node %}icon-folder-close{% else %}icon-file{% endif %}"></i>
-                    <a href="{{ url_for('view', path=file.path ) }}">{{ file.name}}</a>
+                    <a href="{{ url_for('view', path=file.path ) }}">{{ file.name }}</a>
                 </li>
             {% endfor %}
         </ul>
