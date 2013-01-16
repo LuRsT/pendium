@@ -2,7 +2,7 @@ import os
 import markdown
 
 from config import Config
-from flask  import Flask, Markup, render_template
+from flask  import Flask, Markup, render_template, flash, redirect, url_for
 
 config = None
 
@@ -49,6 +49,7 @@ class Pendium:
         return Markup( markdown_content )
 
 app = Flask(__name__)
+app.secret_key = 'pendiumissopendular'
 
 @app.context_processor
 def global_context_data():
@@ -75,23 +76,21 @@ def view( path ):
 
 @app.route('/refresh/')
 def refresh():
-
-    info = ''
     if config.git_support:
         try:
             import git
             repo = git.Repo( '.' )
             info = repo.git.pull()
+            flash(info, 'success')
         except:
-            info = 'Error refreshing'
             import sys
             app.logger.error( sys.exc_info()[0] )
+            flash("Error refreshing git repository", 'error')
 
-    flash(info, 'info')
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    config = Config( file( 'pendium.cfg' ) )
+    config = Config( file( 'config' ) )
 
     if config.host_ip: # Run server externally
         app.debug = False
