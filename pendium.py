@@ -56,7 +56,9 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     p = Pendium()
-    return render_template( 'index.html', files = p.get_md_files() )
+    return render_template( 'index.html', files = p.get_md_files(),
+                                          config = p.cfg
+                          )
 
 
 @app.route('/<filename>')
@@ -66,7 +68,8 @@ def view( filename ):
 
     return render_template( 'view.html', filename = filename,
                                          files    = p.get_md_files(),
-                                         markdown = md_html
+                                         markdown = md_html,
+                                         config   = p.cfg
                           )
 
 @app.route('/refresh/')
@@ -74,16 +77,20 @@ def refresh():
     p = Pendium()
 
     info = ''
-    try:
-        import git
-        repo = git.Repo( p.cfg.wiki_dir )
-        info = repo.git.pull()
-    except:
-        info = 'Error refreshing'
-        import sys
-        print sys.exc_info()[0]
+    if p.cfg.git_support:
+        try:
+            import git
+            repo = git.Repo( p.cfg.wiki_dir )
+            info = repo.git.pull()
+        except:
+            info = 'Error refreshing'
+            import sys
+            print sys.exc_info()[0]
 
-    return render_template( 'index.html', files = p.get_md_files(), info = info )
+    return render_template( 'index.html', files = p.get_md_files(),
+                                          info = info,
+                                          config = p.cfg
+                          )
 
 
 if __name__ == '__main__':
