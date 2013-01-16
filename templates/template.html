@@ -38,7 +38,8 @@
                                     {% for file in files %}
                                         <li class="{% if filename == file.name %}active{% endif %}">
                                             <a href="{{ url_for('view', path=file.path ) }}">
-                                                {{ file.path }}
+                                                <i class="{% if file.is_node %}icon-folder-close{% else %}icon-file{% endif %}"></i>
+                                                    {{ file.name}}
                                             </a>
                                         </li>
                                     {% endfor %}

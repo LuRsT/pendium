@@ -7,11 +7,11 @@ from flask  import Flask, Markup, render_template, flash, redirect, url_for
 config = None
 
 class Pendium:
-    def __init__(self, path):
+    def __init__( self, path ):
         self.path     = path
-        self.abs_path = os.path.join(config.wiki_dir, path)
+        self.abs_path = os.path.join( config.wiki_dir, path )
         self.abs_path = os.path.normpath( self.abs_path )
-        self.name     = os.path.split(self.abs_path)[1] 
+        self.name     = os.path.split( self.abs_path )[1]
         self.is_node  = False
         self.is_leaf  = False
 
@@ -20,27 +20,30 @@ class Pendium:
         else:
             self.is_leaf = True
 
-    def ancestor(self):
-        if self.path in ['/','']:
+    def ancestor( self ):
+        if self.path in [ '/', '' ]:
             return None
-        return Pendium( os.path.split(self.path)[0] )
+        return Pendium( os.path.split( self.path )[0] )
 
-    def ancestors(self):
+    def ancestors( self ):
         if self.ancestor():
-            return self.ancestor().ancestors() + [self.ancestor()]
+            return self.ancestor().ancestors() + [ self.ancestor() ]
         return []
 
-    def items(self):
+    def items( self ):
+        if not os.path.isdir( self.abs_path ):
+            self = self.ancestor()
+
         filenames = []
-        if not os.path.isdir(self.abs_path):
-            return filenames
-             
         for f in os.listdir( self.abs_path ):
             complete_abs_path = os.path.join( self.abs_path, f )
             complete_path     = os.path.join( self.path, f )
+
+            if ( f.find('.') == 0 ):
+                continue
+
             if os.path.isdir( complete_abs_path ):
                 filenames.append( Pendium( complete_path ) )
-
             elif f[ f.find('.') + 1: ] in config.extensions:
                 filenames.append( Pendium( complete_path ) )
 
@@ -69,7 +72,7 @@ def global_context_data():
 @app.route('/')
 def index():
     p = Pendium( '.' )
-    return render_template( 'index.html', files=p.items() )
+    return render_template( 'index.html', files = p.items() )
 
 @app.route('/<path:path>')
 def view( path ):
@@ -84,7 +87,7 @@ def view( path ):
                                               markdown = md_html
                               )
     elif p.is_node:
-        return render_template( 'list.html', files=p.items(), file=p )
+        return render_template( 'list.html', files = p.items(), file = p )
 
 @app.route('/refresh/')
 def refresh():
@@ -97,7 +100,7 @@ def refresh():
         except:
             import sys
             app.logger.error( sys.exc_info()[0] )
-            flash("Error refreshing git repository", 'error')
+            flash( "Error refreshing git repository", 'error' )
 
     return redirect(url_for('index'))
 
