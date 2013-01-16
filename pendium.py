@@ -50,11 +50,14 @@ class Pendium:
 
 app = Flask(__name__)
 
+@app.context_processor
+def global_context_data():
+    return { 'config': config }
+
 @app.route('/')
 def index():
     p = Pendium( '.' )
     return render_template( 'index.html', files=p.items() )
-
 
 @app.route('/<path:path>')
 def view( path ):
@@ -69,6 +72,23 @@ def view( path ):
                               )
     elif p.is_node:
         return render_template( 'list.html', files=p.items(), file=p )
+
+@app.route('/refresh/')
+def refresh():
+
+    info = ''
+    if config.git_support:
+        try:
+            import git
+            repo = git.Repo( '.' )
+            info = repo.git.pull()
+        except:
+            info = 'Error refreshing'
+            import sys
+            app.logger.error( sys.exc_info()[0] )
+
+    flash(info, 'info')
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     config = Config( file( 'pendium.cfg' ) )
