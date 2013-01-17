@@ -37,14 +37,17 @@ class Pendium:
             return self.ancestor().ancestors() + [ self.ancestor() ]
         return []
 
+    # Returns the files of the path object, if it's a file,
+    # return it's ancestor's files
     def items( self ):
+        obj = self
         if not os.path.isdir( self.abs_path ):
-            self = self.ancestor()
+            obj = self.ancestor()
 
         filenames = []
-        for f in os.listdir( self.abs_path ):
-            complete_abs_path = os.path.join( self.abs_path, f )
-            complete_path     = os.path.join( self.path, f )
+        for f in os.listdir( obj.abs_path ):
+            complete_abs_path = os.path.join( obj.abs_path, f )
+            complete_path     = os.path.join( obj.path, f )
 
             if ( f.find('.') == 0 ):
                 continue
