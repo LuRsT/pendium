@@ -1,0 +1,11 @@
+{% extends "template.html" %}
+
+{% block head_title %}File Not Found{% endblock %}
+{% block title      %}<a href="{{ url_for('index') }}">Pendium</a>{% endblock %}
+
+{% block content %}
+        <div class="alert alert-error">
+          <h3>Ups! File not found...</h3>
+          <p>We couldn't find the file you are looking for.</p>
+        </div>
+{% endblock %}
