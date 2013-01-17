@@ -71,10 +71,10 @@ Note: Pendium was hacked in python 2.7, so use the appropriate command to run it
 
 * ~~Discover a better style~~
 * ~~Git integration~~
-* 404 pretty error
+* ~~404 pretty error~~
 * Edit files
 * Create files
-* Sub wikis
+* ~~Sub wikis~~
 * Keyboard shortcuts
 * Grep search
 
