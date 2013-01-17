@@ -45,12 +45,16 @@
                                     {% endfor %}
                                 </ul>
                             </li>
+                            <li><h5><i class="icon-bookmark"></i> {% block title %}{% endblock %}</h5></li>
                         </ul>
-                        <h5 class="pull-left"><i class="icon-bookmark"></i> {% block title %}{% endblock %}</h5>
-                        <h5 class="pull-right"><a href="#"><i class="icon-chevron-up"></i> Top</a></h5>
-                        {% if config.git_support %}
-                            <h5 class="pull-right"><a href="{{ url_for('refresh' ) }}" title="Git Refresh"><i class="icon-refresh"></i>&nbsp;</a> </h5>
-                        {% endif %}
+                        <ul class="nav pull-right">
+                            {% if config.git_support %}
+                                <li class="divider-vertical"></li>
+                                <li><a href="{{ url_for('refresh' ) }}" title="Git Refresh"><i class="icon-refresh"></i></a></li>
+                                <li class="divider-vertical"></li>
+                            {% endif %}
+                            <li><a href="#"><i class="icon-chevron-up"></i> Top</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
