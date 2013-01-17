@@ -11,7 +11,7 @@ class Pendium:
         self.path     = path
         self.abs_path = os.path.join( config.wiki_dir, path )
         self.abs_path = os.path.normpath( self.abs_path )
-        self.name     = os.path.split( self.abs_path )[1]
+        self.name     = os.path.split( self.path )[1]
         self.is_node  = False
         self.is_leaf  = False
 
@@ -21,7 +21,7 @@ class Pendium:
             self.is_leaf = True
 
     def ancestor( self ):
-        if self.path in [ '/', '' ]:
+        if self.path == '':
             return None
         return Pendium( os.path.split( self.path )[0] )
 
@@ -67,7 +67,8 @@ app.secret_key = 'pendiumissopendular'
 
 @app.context_processor
 def global_context_data():
-    return { 'config': config }
+    data = { 'config': config }
+    return data
 
 @app.route('/')
 def index():
@@ -77,7 +78,6 @@ def index():
 @app.route('/<path:path>')
 def view( path ):
     p = Pendium( path )
-    app.logger.debug( p.ancestors() )
 
     if p.is_leaf:
         md_html = p.get_md_file()
