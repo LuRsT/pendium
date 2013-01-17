@@ -2,9 +2,13 @@ import os
 import markdown
 
 from config import Config
-from flask  import Flask, Markup, render_template, flash, redirect, url_for
+from flask  import (Flask, Markup, render_template, flash, redirect, url_for,
+                    abort)
 
 config = None
+
+class PendiumPathNotFound(Exception):
+    pass
 
 class Pendium:
     def __init__( self, path ):
@@ -14,6 +18,9 @@ class Pendium:
         self.name     = os.path.split( self.path )[1]
         self.is_node  = False
         self.is_leaf  = False
+
+        if not os.path.exists( self.abs_path ):
+            raise PendiumPathNotFound( self.abs_path )
 
         if os.path.isdir( self.abs_path ):
             self.is_node = True
@@ -77,7 +84,10 @@ def index():
 
 @app.route('/<path:path>')
 def view( path ):
-    p = Pendium( path )
+    try:
+        p = Pendium( path )
+    except PendiumPathNotFound:
+        abort(404) 
 
     if p.is_leaf:
         md_html = p.get_md_file()
@@ -103,6 +113,10 @@ def refresh():
             flash( "Error refreshing git repository", 'error' )
 
     return redirect(url_for('index'))
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('not_found.html'), 404
 
 if __name__ == '__main__':
     config = Config( file( 'config' ) )
