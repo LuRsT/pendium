@@ -48,9 +48,9 @@
                             <li><h5><i class="icon-bookmark"></i> {% block title %}{% endblock %}</h5></li>
                         </ul>
                         <ul class="nav pull-right">
-                            {% if config.git_support %}
+                            {% if config.get('WIKI_GIT_SUPPORT') %}
                                 <li class="divider-vertical"></li>
-                                <li><a href="{{ url_for('refresh' ) }}" title="Git Refresh"><i class="icon-refresh"></i></a></li>
+                                <li><a href="{{ url_for('refresh' ) }}" title="Git Refresh"><i class="icon-refresh"></i>&nbsp;</a> </li>
                                 <li class="divider-vertical"></li>
                             {% endif %}
                             <li><a href="#"><i class="icon-chevron-up"></i> Top</a></li>
