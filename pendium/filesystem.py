@@ -28,6 +28,20 @@ class Wiki(object):
         else:
             return WikiFile( self, path )
 
+    def refresh(self):
+        if not self.git_support:
+            return ''
+
+        try:
+            import git
+            repo = git.Repo( '.' )
+            return repo.git.pull()
+        except ImportError, e:
+            raise Exception( "Could not import git module" )
+        except:
+            import sys
+            raise Exception( sys.exc_info()[0] )
+
 class WikiPath(object):
     def __init__( self, wiki, path ):
         self.path     = path

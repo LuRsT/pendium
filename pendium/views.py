@@ -32,16 +32,12 @@ def view( path ):
 
 @app.route('/refresh/')
 def refresh():
-    if app.config.get('WIKI_GIT_SUPPORT', False):
-        try:
-            import git
-            repo = git.Repo( '.' )
-            info = repo.git.pull()
-            flash(info, 'success')
-        except:
-            import sys
-            app.logger.error( sys.exc_info()[0] )
-            flash( "Error refreshing git repository", 'error' )
+    try:
+        info = g.wiki.refresh()
+        flash("Your wiki has been refreshed. %" % info, 'success')
+    except Exception, e:
+        app.logger.error( e )
+        flash("Error refreshing git repository", 'error' )
 
     return redirect(url_for('index'))
 
