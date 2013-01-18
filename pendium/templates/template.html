@@ -30,9 +30,12 @@
                     <div class="span2"></div>
                     <div class="span10">
                         <ul class="nav pull-left">
+                            <li><h5><i class="icon-bookmark"></i> {% block title %}{% endblock %}</h5></li>
+                        </ul>
+                        <ul class="nav pull-right">
                             <li id="fat-menu" class="dropdown ">
                                 <a id="drop_files" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
-                                    <i class="icon-folder-open"></i>Files <b class="caret"></b>
+                                    <i class="icon-folder-open"></i> <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="drop_files" role="menu">
                                     {% for file in files %}
@@ -45,9 +48,6 @@
                                     {% endfor %}
                                 </ul>
                             </li>
-                            <li><h5><i class="icon-bookmark"></i> {% block title %}{% endblock %}</h5></li>
-                        </ul>
-                        <ul class="nav pull-right">
                             {% if config.get('WIKI_GIT_SUPPORT') %}
                                 <li class="divider-vertical"></li>
                                 <li><a href="{{ url_for('refresh' ) }}" title="Git Refresh"><i class="icon-refresh"></i>&nbsp;</a> </li>

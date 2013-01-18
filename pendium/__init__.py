@@ -6,4 +6,4 @@ from pendium.utils import load_config
 
 load_config()
 
-import pendium.views 
+import pendium.views

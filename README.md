@@ -25,14 +25,9 @@ Note: Pendium was hacked in python 2.7, so use the appropriate command to instal
 
 ##### Git Support
 
-Before you do anything be sure to enable git support in the config:
+Before you do anything be sure to enable git support in the config file ( config.py ):
 
-    $ cat config
-    host_ip          : ''
-    wiki_dir         : 'wiki'
-    extensions       : [ 'md', 'mdw' ]
-    markdown_plugins : [ 'headerid', 'toc', 'tables', 'footnotes', 'codehilite' ]
-    git_support      : True
+    WIKI_GIT_SUPPORT = True
 
 To get the git support, run these commands afterwards ( if you don't have a remote git repo, go to the next step ):
 
@@ -59,9 +54,9 @@ with this you made yourself a git repo, now run these:
 
 ### Running it
 
-To use Pendium simply execute the pendium.py file
+To use Pendium simply execute the run.py file
 
-    python pendium.py
+    python run.py
 
 By the default config it should read the files from the wiki dir inside the pendium directory, change the directory in the config file or symlink your own dir.
 
@@ -72,9 +67,9 @@ Note: Pendium was hacked in python 2.7, so use the appropriate command to run it
 * ~~Discover a better style~~
 * ~~Git integration~~
 * ~~404 pretty error~~
+* ~~Sub wikis~~
 * Edit files
 * Create files
-* ~~Sub wikis~~
 * Keyboard shortcuts
 * Grep search
 

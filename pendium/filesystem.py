@@ -3,20 +3,20 @@ import markdown
 
 from flask import Markup, escape
 
-class PathNotFound(Exception):
+class PathNotFound( Exception ):
     pass
 
-class CannotRender(Exception):
+class CannotRender( Exception ):
     pass
 
 class Wiki(object):
-    def __init__(self, basepath, extensions={}, default_renderer=None,
-                       markdown_plugins=[], git_support=False):
-        self.basepath = basepath
-        self.extensions = extensions
+    def __init__( self, basepath, extensions={}, default_renderer=None,
+                       markdown_plugins=[], git_support=False ):
+        self.basepath         = basepath
+        self.extensions       = extensions
         self.default_renderer = default_renderer
         self.markdown_plugins = markdown_plugins
-        self.git_support = git_support
+        self.git_support      = git_support
 
     def root(self):
         return self.get( '.' )
@@ -80,12 +80,12 @@ class WikiPath(object):
         return filenames
 
 class WikiFile( WikiPath ):
-    def __init__(self, *args, **kwargs ):
+    def __init__( self, *args, **kwargs ):
         super( WikiFile, self ).__init__( *args, **kwargs )
         self.is_leaf   = True
         self.extension = os.path.splitext(self.name)[1][1:]
 
-    def renderer(self):
+    def renderer( self ):
         #try and find renderer from extension
         for rend, exts in self.wiki.extensions.items():
             if self.extension in exts:
@@ -94,7 +94,7 @@ class WikiFile( WikiPath ):
         #if no renderer found and binary, give up
         if self.is_binary():
             return None
-        
+
         #if is not binary and we have a default renderer
         # return it
         if self.wiki.default_renderer:
@@ -102,30 +102,30 @@ class WikiFile( WikiPath ):
 
         return None
 
-    def can_render(self):
+    def can_render( self ):
         return bool( self.renderer )
 
-    def render(self):
+    def render( self ):
         renderer = self.renderer()
 
         if renderer == 'markdown':
-            return self._render_markdown() 
+            return self._render_markdown()
         if renderer == 'text':
-            return self._render_text() 
+            return self._render_text()
         if renderer == 'html':
-            return self._render_html() 
+            return self._render_html()
 
         # No renderer found!
         raise CannotRender(self.abs_path)
 
-    def _render_text(self):
-        content = open( self.abs_path, 'r' ).read().decode('utf-8')        
+    def _render_text( self ):
+        content = open( self.abs_path, 'r' ).read().decode( 'utf-8' )
         return Markup( "<pre>%s</pre>" % escape(content) )
 
-    def _render_html(self):
-        return open( self.abs_path, 'r' ).read().decode('utf-8')        
+    def _render_html( self ):
+        return open( self.abs_path, 'r' ).read().decode( 'utf-8' )
 
-    def _render_markdown(self):
+    def _render_markdown( self ):
         complete_filename = self.abs_path
 
         try:
@@ -133,7 +133,7 @@ class WikiFile( WikiPath ):
         except IOError as e:
             return "File not found."
 
-        markdown_content = f.read().decode('utf-8')
+        markdown_content = f.read().decode( 'utf-8' )
         markdown_content = markdown.markdown( markdown_content, self.wiki.markdown_plugins )
 
         return Markup( markdown_content )
@@ -144,17 +144,17 @@ class WikiFile( WikiPath ):
         try:
             CHUNKSIZE = 1024
             while 1:
-                chunk = fin.read(CHUNKSIZE)
+                chunk = fin.read( CHUNKSIZE )
                 if '\0' in chunk: # found null byte
-                    return  True 
-                if len(chunk) < CHUNKSIZE:
+                    return  True
+                if len( chunk ) < CHUNKSIZE:
                     break # done
         finally:
             fin.close()
 
-        return False 
+        return False
 
 class WikiDir( WikiPath ):
-    def __init__(self, *args, **kwargs ):
+    def __init__( self, *args, **kwargs ):
         super( WikiDir, self ).__init__( *args, **kwargs )
         self.is_node = True
