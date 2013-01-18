@@ -6,7 +6,8 @@ WIKI_DIR = 'wiki'
 
 # Which renderer to use for which file extension
 #WIKI_EXTENSIONS       = { 'markdown' : ['md', 'mdw']
-#                          'text' :     ['txt', 'html']
+#                          'text' : ['txt',]
+#                          'html' : ['html'] 
 #                        }
 
 # Which renderer to use for unknown file extensions
