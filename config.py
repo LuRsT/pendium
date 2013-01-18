@@ -1,8 +1,9 @@
-# Wich ip to bind to
-#HOST_IP  = ''
-
 # Wiki root dir
 WIKI_DIR = 'wiki'
+# This is all you have to define for a simple usage. Bellow, commented, are the default settings. Change at will, but you don't need to
+
+# Wich ip to bind to
+#HOST_IP  = ''
 
 # Which renderer to use for which file extension
 #WIKI_EXTENSIONS       = { 'markdown' : ['md', 'mdw']
