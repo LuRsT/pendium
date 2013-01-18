@@ -1,0 +1,5 @@
+Just a simple text file
+
+With some text lines
+
+And <b>asdasd</b> some unsafe chars!

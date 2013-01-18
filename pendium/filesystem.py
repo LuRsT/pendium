@@ -1,15 +1,22 @@
 import os
 import markdown
 
-from flask import Markup
+from flask import Markup, escape
 
 class PathNotFound(Exception):
     pass
 
+class CannotRender(Exception):
+    pass
+
 class Wiki(object):
-    def __init__(self, basepath, config=None):
+    def __init__(self, basepath, extensions={}, default_renderer=None,
+                       markdown_plugins=[], git_support=False):
         self.basepath = basepath
-        self.config   = config
+        self.extensions = extensions
+        self.default_renderer = default_renderer
+        self.markdown_plugins = markdown_plugins
+        self.git_support = git_support
 
     def root(self):
         return self.get( '.' )
@@ -34,11 +41,6 @@ class WikiPath(object):
         if not os.path.exists( self.abs_path ):
             raise PathNotFound( self.abs_path )
 
-        if os.path.isdir( self.abs_path ):
-            self.is_node = True
-        else:
-            self.is_leaf = True
-
     def ancestor( self ):
         if self.path == '':
             return None
@@ -55,25 +57,61 @@ class WikiPath(object):
 
         filenames = []
         for f in os.listdir( self.abs_path ):
-            complete_abs_path = os.path.join( self.abs_path, f )
-            complete_path     = os.path.join( self.path, f )
-
             if ( f.find('.') == 0 ):
                 continue
 
-            if os.path.isdir( complete_abs_path ):
-                filenames.append( self.wiki.get( complete_path ) )
-            elif f[ f.find('.') + 1: ] in self.wiki.config.extensions:
-                filenames.append( self.wiki.get( complete_path ) )
+            complete_path = os.path.join( self.path, f )
+            filenames.append( self.wiki.get( complete_path ) )
 
         return filenames
 
 class WikiFile( WikiPath ):
     def __init__(self, *args, **kwargs ):
         super( WikiFile, self ).__init__( *args, **kwargs )
-        self.is_leaf = True
+        self.is_leaf   = True
+        self.extension = os.path.splitext(self.name)[1][1:]
 
-    def get_md_file( self ):
+    def renderer(self):
+        #try and find renderer from extension
+        for rend, exts in self.wiki.extensions.items():
+            if self.extension in exts:
+                return rend
+
+        #if no renderer found and binary, give up
+        if self.is_binary():
+            return None
+        
+        #if is not binary and we have a default renderer
+        # return it
+        if self.wiki.default_renderer:
+            return self.wiki.default_renderer
+
+        return None
+
+    def can_render(self):
+        return bool( self.renderer )
+
+    def render(self):
+        renderer = self.renderer()
+
+        if renderer == 'markdown':
+            return self._render_markdown() 
+        if renderer == 'text':
+            return self._render_text() 
+        if renderer == 'html':
+            return self._render_html() 
+
+        # No renderer found!
+        raise CannotRender(self.abs_path)
+
+    def _render_text(self):
+        content = open( self.abs_path, 'r' ).read().decode('utf-8')        
+        return Markup( "<pre>%s</pre>" % escape(content) )
+
+    def _render_html(self):
+        return open( self.abs_path, 'r' ).read().decode('utf-8')        
+
+    def _render_markdown(self):
         complete_filename = self.abs_path
 
         try:
@@ -82,9 +120,25 @@ class WikiFile( WikiPath ):
             return "File not found."
 
         markdown_content = f.read().decode('utf-8')
-        markdown_content = markdown.markdown( markdown_content, self.wiki.config.markdown_plugins )
+        markdown_content = markdown.markdown( markdown_content, self.wiki.markdown_plugins )
 
         return Markup( markdown_content )
+
+    def is_binary(self):
+        """Return true if the file is binary."""
+        fin = open(self.abs_path, 'rb')
+        try:
+            CHUNKSIZE = 1024
+            while 1:
+                chunk = fin.read(CHUNKSIZE)
+                if '\0' in chunk: # found null byte
+                    return  True 
+                if len(chunk) < CHUNKSIZE:
+                    break # done
+        finally:
+            fin.close()
+
+        return False 
 
 class WikiDir( WikiPath ):
     def __init__(self, *args, **kwargs ):
