@@ -10,7 +10,6 @@ This is a web app for all your markdown files, you can use it for reading them i
 
 * Flask
 * Markdown
-* config
 * GitPython # Optional
 
 ### Setup
