@@ -1,7 +1,6 @@
 import os
-import markdown
 
-from flask import Markup, escape
+from yapsy.PluginManager import PluginManager
 
 class PathNotFound( Exception ):
     pass
@@ -9,19 +8,18 @@ class PathNotFound( Exception ):
 class CannotRender( Exception ):
     pass
 
-class Wiki(object):
-    def __init__( self, basepath, extensions={}, default_renderer=None,
+class Wiki( object ):
+    def __init__( self, basepath, default_renderer=None,
                        markdown_plugins=[], git_support=False ):
         self.basepath         = basepath
-        self.extensions       = extensions
         self.default_renderer = default_renderer
         self.markdown_plugins = markdown_plugins
         self.git_support      = git_support
 
-    def root(self):
+    def root( self ):
         return self.get( '.' )
 
-    def get(self, path):
+    def get( self, path ):
         completepath = os.path.join( self.basepath, path )
         if os.path.isdir( completepath ):
             return WikiDir( self, path )
@@ -86,10 +84,14 @@ class WikiFile( WikiPath ):
         self.extension = os.path.splitext(self.name)[1][1:]
 
     def renderer( self ):
-        #try and find renderer from extension
-        for rend, exts in self.wiki.extensions.items():
-            if self.extension in exts:
-                return rend
+        # Create plugin manager
+        self.manager = PluginManager()
+        self.manager.setPluginPlaces( ["pendium/plugins"] )
+        self.manager.collectPlugins()
+
+        for plugin in self.manager.getAllPlugins():
+            if self.extension in plugin.plugin_object.extensions:
+                return plugin.plugin_object
 
         #if no renderer found and binary, give up
         if self.is_binary():
@@ -106,37 +108,13 @@ class WikiFile( WikiPath ):
         return bool( self.renderer )
 
     def render( self ):
-        renderer = self.renderer()
-
-        if renderer == 'markdown':
-            return self._render_markdown()
-        if renderer == 'text':
-            return self._render_text()
-        if renderer == 'html':
-            return self._render_html()
+        if self.can_render:
+            renderer = self.renderer()
+            content = open( self.abs_path, 'r' ).read().decode( 'utf-8' )
+            return renderer.render( content )
 
         # No renderer found!
         raise CannotRender(self.abs_path)
-
-    def _render_text( self ):
-        content = open( self.abs_path, 'r' ).read().decode( 'utf-8' )
-        return Markup( "<pre>%s</pre>" % escape(content) )
-
-    def _render_html( self ):
-        return open( self.abs_path, 'r' ).read().decode( 'utf-8' )
-
-    def _render_markdown( self ):
-        complete_filename = self.abs_path
-
-        try:
-            f = open( complete_filename, 'r' )
-        except IOError as e:
-            return "File not found."
-
-        markdown_content = f.read().decode( 'utf-8' )
-        markdown_content = markdown.markdown( markdown_content, self.wiki.markdown_plugins )
-
-        return Markup( markdown_content )
 
     def is_binary(self):
         """Return true if the file is binary."""
