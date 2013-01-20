@@ -34,7 +34,7 @@ class Wiki(object):
 
         try:
             import git
-            repo = git.Repo( '.' )
+            repo = git.Repo( self.basepath )
             return repo.git.pull()
         except ImportError, e:
             raise Exception( "Could not import git module" )
