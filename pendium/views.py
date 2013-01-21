@@ -1,11 +1,11 @@
 import os
 import markdown
 
-from flask import (Flask, Markup, render_template, flash, redirect, url_for,
-                    abort, g, request)
+from flask import ( Flask, Markup, render_template, flash, redirect, url_for,
+                    abort, g, request )
 
-from pendium.filesystem import ( Wiki, PathNotFound )
 from pendium import app
+from pendium.filesystem import ( Wiki, PathNotFound )
 
 @app.route('/')
 def index():
@@ -20,9 +20,9 @@ def view( path ):
         abort(404)
 
     if p.is_leaf and p.can_render():
-        return render_template( 'view.html',  file     = p,
-                                              files    = p.items(),
-                                              rendered = p.render()
+        return render_template( 'view.html', file     = p,
+                                             files    = p.items(),
+                                             rendered = p.render()
                               )
     elif p.is_node:
         return render_template( 'list.html', files = p.items(), file = p )
@@ -30,7 +30,7 @@ def view( path ):
         #TODO: Download the file!
         pass
 
-@app.route('/search/', methods=['GET', 'POST'])
+@app.route( '/search/', methods=[ 'GET', 'POST' ] )
 def search():
     context = { 'searched' : False }
 
@@ -39,9 +39,9 @@ def search():
         app.logger.debug("Searching for '%s'" % term )
         hits = g.wiki.search(term)
         context['searched'] = True
-        context['term'] = term
-        context['hits'] = len(hits)
-        context['results'] = hits
+        context['term']     = term
+        context['hits']     = len(hits)
+        context['results']  = hits
 
     return render_template('search.html', **context)
 
@@ -52,7 +52,7 @@ def refresh():
         flash("Your wiki has been refreshed. %" % info, 'success')
     except Exception, e:
         app.logger.error( e )
-        flash("Error refreshing git repository", 'error' )
+        flash( "Error refreshing git repository", 'error' )
 
     return redirect( url_for('index') )
 

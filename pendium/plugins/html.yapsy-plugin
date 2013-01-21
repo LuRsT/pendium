@@ -1,9 +1,8 @@
 [Core]
-Name = HTML
+Name   = HTML
 Module = html
 
 [Documentation]
-Author = Gil
-Version = 0.1
-Website = http://google.com
-Description = Stuff
+Author      = Gilberto Gonçalves
+Version     = 0.1
+Description = Render html

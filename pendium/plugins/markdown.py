@@ -2,7 +2,7 @@ import markdown
 
 from flask import Markup
 from pendium.utils import load_config
-from pendium.plugins import IRenderPlugin 
+from pendium.plugins import IRenderPlugin
 
 class Markdown( IRenderPlugin ):
     name       = "Markdown"

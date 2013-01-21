@@ -9,11 +9,11 @@ class Grep(ISearchPlugin):
         hit['score'] += 1
         hits[wikipath.path] = hit
         return hits
-        
+
     def _search_path(self,wikipath, regex, hits):
         if regex.search( wikipath.name ):
             hits = self._add_hit(hits, wikipath, 1)
-        
+
         if wikipath.is_node:
             for item in wikipath.items():
                 hits = self._search_path( item, regex, hits )
@@ -36,5 +36,4 @@ class Grep(ISearchPlugin):
         hits = self._search_path(wiki.root(), regex, {})
         hitssorted = sorted(hits.values(), key=lambda x: x['score'])
 
-        return [ x['obj'] for x in hitssorted ] 
-        
+        return [ x['obj'] for x in hitssorted ]

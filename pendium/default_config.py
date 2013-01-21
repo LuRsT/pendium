@@ -5,14 +5,15 @@ SECRET_KEY = 'pendiumissopendular'
 
 # Pendium config
 HOST_IP               = None
-WIKI_EXTENSIONS       = { 'Markdown' : ['md', 'mdw'],
-                          'Text' : ['txt'],
-                          'HTML' : ['html']
+WIKI_EXTENSIONS       = { 'Markdown' : [ 'md', 'mdw' ],
+                          'Text'     : [ 'txt' ],
+                          'HTML'     : [ 'html', 'htm' ],
+                          'Python'   : [ 'py' ]
                         }
-WIKI_DEFAULT_RENDERER = None 
-WIKI_PLUGINS_CONFIG   = { "Markdown" : { 'extensions' : [ 'headerid', 'toc', 
-                                                          'tables', 'footnotes', 
-                                                          'codehilite' 
+WIKI_DEFAULT_RENDERER = None
+WIKI_PLUGINS_CONFIG   = { "Markdown" : { 'extensions' : [ 'headerid', 'toc',
+                                                          'tables', 'footnotes',
+                                                          'codehilite'
                                                         ]
                                        },
                         }

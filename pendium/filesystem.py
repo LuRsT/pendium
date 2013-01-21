@@ -1,8 +1,8 @@
 import os
 
 from yapsy.PluginManager import PluginManager
-from flask import current_app
-from pendium.plugins import IRenderPlugin, ISearchPlugin
+from flask               import current_app
+from pendium.plugins     import IRenderPlugin, ISearchPlugin
 
 import logging
 logger = logging.getLogger(__name__)
@@ -45,11 +45,11 @@ class Wiki( object ):
 
     def search( self, term ):
         best_plugin_score = 0
-        best_plugin = None
+        best_plugin       = None
         for plugin in manager.getPluginsOfCategory('Search'):
             if plugin.plugin_object.search_speed > best_plugin_score:
                 best_plugin_score = plugin.plugin_object.search_speed
-                best_plugin = plugin
+                best_plugin       = plugin
 
         if best_plugin is None:
             raise NoSearchPluginAvailable
@@ -57,7 +57,7 @@ class Wiki( object ):
         logger.debug( "Searching with %s" % best_plugin.name ) 
 
         return best_plugin.plugin_object.search( self, term )
-        
+
     def root( self ):
         return self.get( '.' )
 
@@ -123,12 +123,12 @@ class WikiFile( WikiPath ):
     def __init__( self, *args, **kwargs ):
         super( WikiFile, self ).__init__( *args, **kwargs )
         self.is_leaf   = True
-        self.extension = os.path.splitext(self.name)[1][1:]
+        self.extension = os.path.splitext( self.name )[1][1:]
 
 
     def renderer( self ):
         for plugin in manager.getPluginsOfCategory('Render'):
-            logger.debug("Testing for plugin %s", plugin.plugin_object.name)
+            logger.debug( "Testing for plugin %s", plugin.plugin_object.name )
             extensions = self.wiki.extensions.get(plugin.plugin_object.name, None)
             if extensions is None:
                 continue #try the next plugin
@@ -136,7 +136,7 @@ class WikiFile( WikiPath ):
             if self.extension in extensions:
                 logger.debug(self.extension)
                 logger.debug(plugin.plugin_object.name)
-                return plugin.plugin_object 
+                return plugin.plugin_object
 
 
         #if no renderer found and binary, give up

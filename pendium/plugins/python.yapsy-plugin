@@ -1,8 +1,8 @@
 [Core]
-Name   = Markdown
-Module = markdown
+Name   = Python
+Module = python
 
 [Documentation]
 Author      = Gilberto Gonçalves
 Version     = 0.1
-Description = Render Markdown
+Description = Render html

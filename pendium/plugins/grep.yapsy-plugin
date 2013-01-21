@@ -1,8 +1,8 @@
 [Core]
-Name = Grep
+Name   = Grep
 Module = grep
 
 [Documentation]
-Author = Bruno Tavares
-Version = 0.1
-Description = Grep style search 
+Author      = Bruno Tavares
+Version     = 0.1
+Description = Grep style search
