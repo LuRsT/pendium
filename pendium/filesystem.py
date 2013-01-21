@@ -2,6 +2,16 @@ import os
 
 from yapsy.PluginManager import PluginManager
 from flask import current_app
+from pendium.plugins import IRenderPlugin, ISearchPlugin
+
+# Populate plugins
+manager = PluginManager()
+manager.setPluginPlaces( ["pendium/plugins"] )
+manager.setCategoriesFilter({
+                        "Search" : ISearchPlugin,
+                        "Render" : IRenderPlugin,
+                        })
+manager.collectPlugins()
 
 class PathNotFound( Exception ):
     pass
@@ -85,25 +95,19 @@ class WikiFile( WikiPath ):
         self.is_leaf   = True
         self.extension = os.path.splitext(self.name)[1][1:]
 
-        # Populate plugins
-        manager = PluginManager()
-        manager.setPluginPlaces( ["pendium/plugins"] )
-        manager.collectPlugins()
-
-        self.plugins = {}
-        for plugin in manager.getAllPlugins():
-            self.plugins[plugin.plugin_object.name] = plugin.plugin_object
-
 
     def renderer( self ):
-        for plugin in self.wiki.extensions.keys():
-            current_app.logger.warning(plugin)
-            current_app.logger.warning(self.plugins.keys())
-            if plugin in self.plugins.keys():
-                if self.extension in self.wiki.extensions[plugin]:
-                    current_app.logger.debug(self.extension)
-                    current_app.logger.debug(plugin)
-                    return self.plugins[plugin]
+        for plugin in manager.getPluginsOfCategory('Render'):
+            current_app.logger.debug("Testing for plugin %s", plugin.plugin_object.name)
+            extensions = self.wiki.extensions.get(plugin.plugin_object.name, None)
+            if extensions is None:
+                continue #try the next plugin
+
+            if self.extension in extensions:
+                current_app.logger.debug(self.extension)
+                current_app.logger.debug(plugin.plugin_object.name)
+                return plugin.plugin_object 
+
 
         #if no renderer found and binary, give up
         if self.is_binary():
