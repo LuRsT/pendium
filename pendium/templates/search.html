@@ -1,0 +1,26 @@
+{% extends "template.html" %}
+
+{% block head_title %}Search{% endblock %}
+{% block title %}
+  <a href="{{ url_for('index') }}">Pendium</a>&nbsp;&gt;&nbsp;
+  Search for: {{ term }}
+{% endblock %}
+
+{% block content %}
+    <form class="form-search" method="POST">
+        <input type="text" class="input-medium search-query" name="q" value="{{ term }}">
+        <button type="submit" class="btn">Search</button>
+    </form>
+    {% if searched %}
+      {% if hits == 0 %}
+         <div class="alert alert-info">No results found for "{{ term }}"</div>          
+      {% else %}
+         <h3>{{ hits }} results for "{{ term }}"</h3>
+         <ul>
+         {% for hit in results %}
+            <li><a href="{{ url_for('view', path=hit.path) }}">{{ hit.name }}</a> {% if hit.ancestor() %}<small>in {{ hit.ancestor().name }}</small>{% endif %}</li>
+         {% endfor %}
+         </ul>
+      {% endif %}
+    {% endif %}
+{% endblock %}

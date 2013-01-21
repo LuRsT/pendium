@@ -2,7 +2,7 @@ import os
 import markdown
 
 from flask import (Flask, Markup, render_template, flash, redirect, url_for,
-                    abort, g)
+                    abort, g, request)
 
 from pendium.filesystem import ( Wiki, PathNotFound )
 from pendium import app
@@ -29,6 +29,21 @@ def view( path ):
     else:
         #TODO: Download the file!
         pass
+
+@app.route('/search/', methods=['GET', 'POST'])
+def search():
+    context = { 'searched' : False }
+
+    if request.form.get('q', None):
+        term = request.form.get('q')
+        app.logger.debug("Searching for '%s'" % term )
+        hits = g.wiki.search(term)
+        context['searched'] = True
+        context['term'] = term
+        context['hits'] = len(hits)
+        context['results'] = hits
+
+    return render_template('search.html', **context)
 
 @app.route('/refresh/')
 def refresh():

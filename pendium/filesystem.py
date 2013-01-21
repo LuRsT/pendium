@@ -3,6 +3,7 @@ import os
 from yapsy.PluginManager import PluginManager
 from flask import current_app
 from pendium.plugins import IRenderPlugin, ISearchPlugin
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -19,6 +20,9 @@ class PathNotFound( Exception ):
     pass
 
 class CannotRender( Exception ):
+    pass
+
+class NoSearchPluginAvailable( Exception ):
     pass
 
 class Wiki( object ):
@@ -38,6 +42,21 @@ class Wiki( object ):
 
                 logger.debug( "Configuring plugin: %s with :%s" % (name, configuration) ) 
                 plugin.plugin_object.configure( configuration )
+
+    def search( self, term ):
+        best_plugin_score = 0
+        best_plugin = None
+        for plugin in manager.getPluginsOfCategory('Search'):
+            if plugin.plugin_object.search_speed > best_plugin_score:
+                best_plugin_score = plugin.plugin_object.search_speed
+                best_plugin = plugin
+
+        if best_plugin is None:
+            raise NoSearchPluginAvailable
+
+        logger.debug( "Searching with %s" % best_plugin.name ) 
+
+        return best_plugin.plugin_object.search( self, term )
         
     def root( self ):
         return self.get( '.' )
