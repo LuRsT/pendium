@@ -1,0 +1,9 @@
+[Core]
+Name = Markdown
+Module = markdown
+
+[Documentation]
+Author = Gil
+Version = 0.1
+Website = http://google.com
+Description = Stuff
