@@ -14,10 +14,13 @@ WIKI_DIR = 'wiki'
 # Which renderer to use for unknown file extensions
 #WIKI_DEFAULT_RENDERER = None
 
-# Which mardown plugins to load
-#WIKI_MARKDOWN_PLUGINS = [ 'headerid', 'toc',
-#                          'tables', 'footnotes', 'codehilite'
-#                        ]
+# Extra plugin for each renderer/searcher 
+#WIKI_PLUGINS_CONFIG   = { "Markdown" : { 'extensions' : [ 'headerid', 'toc',
+#                                                          'tables', 'footnotes',
+#                                                          'codehilite'
+#                                                        ]
+#                                       },
+#                        }
 
 # Manage your wiki with git, you must have the git repository initialized
 #WIKI_GIT_SUPPORT      = False

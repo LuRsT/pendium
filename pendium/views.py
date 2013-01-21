@@ -56,6 +56,6 @@ def before_request():
     g.wiki = Wiki( config['WIKI_DIR'],
                    extensions       = config.get( 'WIKI_EXTENSIONS',       {}    ),
                    default_renderer = config.get( 'WIKI_DEFAULT_RENDERER', None  ),
-                   markdown_plugins = config.get( 'WIKI_MARKDOWN_PLUGINS', []    ),
+                   plugins_config   = config.get( 'WIKI_PLUGINS_CONFIG',   {}    ),
                    git_support      = config.get( 'WIKI_GIT_SUPPORT',      False )
                  )

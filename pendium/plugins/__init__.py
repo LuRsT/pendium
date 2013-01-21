@@ -1,7 +1,11 @@
 from yapsy.IPlugin import IPlugin
 
-class ISearchPlugin( IPlugin ):
+class IPendiumPlugin( IPlugin ):
+    def configure( self, configuration ):
+        pass
+
+class ISearchPlugin( IPendiumPlugin ):
     pass
 
-class IRenderPlugin( IPlugin ):
+class IRenderPlugin( IPendiumPlugin ):
     pass
