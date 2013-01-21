@@ -3,6 +3,8 @@ import os
 from yapsy.PluginManager import PluginManager
 from flask import current_app
 from pendium.plugins import IRenderPlugin, ISearchPlugin
+import logging
+logger = logging.getLogger(__name__)
 
 # Populate plugins
 manager = PluginManager()
@@ -21,13 +23,22 @@ class CannotRender( Exception ):
 
 class Wiki( object ):
     def __init__( self, basepath, extensions={}, default_renderer=None,
-                       markdown_plugins=[], git_support=False ):
+                        plugins_config={}, git_support=False ):
         self.basepath         = basepath
         self.extensions       = extensions
         self.default_renderer = default_renderer
-        self.markdown_plugins = markdown_plugins
         self.git_support      = git_support
 
+        for name, configuration in plugins_config.items():
+
+            for cat in ["Search", "Render"]:
+                plugin = manager.getPluginByName( "%s" % name, category=cat )
+                if not plugin:
+                    continue
+
+                logger.debug( "Configuring plugin: %s with :%s" % (name, configuration) ) 
+                plugin.plugin_object.configure( configuration )
+        
     def root( self ):
         return self.get( '.' )
 
@@ -98,14 +109,14 @@ class WikiFile( WikiPath ):
 
     def renderer( self ):
         for plugin in manager.getPluginsOfCategory('Render'):
-            current_app.logger.debug("Testing for plugin %s", plugin.plugin_object.name)
+            logger.debug("Testing for plugin %s", plugin.plugin_object.name)
             extensions = self.wiki.extensions.get(plugin.plugin_object.name, None)
             if extensions is None:
                 continue #try the next plugin
 
             if self.extension in extensions:
-                current_app.logger.debug(self.extension)
-                current_app.logger.debug(plugin.plugin_object.name)
+                logger.debug(self.extension)
+                logger.debug(plugin.plugin_object.name)
                 return plugin.plugin_object 
 
 
