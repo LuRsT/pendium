@@ -10,7 +10,10 @@ WIKI_EXTENSIONS       = { 'Markdown' : ['md', 'mdw'],
                           'HTML' : ['html']
                         }
 WIKI_DEFAULT_RENDERER = None 
-WIKI_MARKDOWN_PLUGINS = [ 'headerid', 'toc', 
-                          'tables', 'footnotes', 'codehilite' 
-                        ]
+WIKI_PLUGINS_CONFIG   = { "Markdown" : { 'extensions' : [ 'headerid', 'toc', 
+                                                          'tables', 'footnotes', 
+                                                          'codehilite' 
+                                                        ]
+                                       },
+                        }
 WIKI_GIT_SUPPORT      = False
