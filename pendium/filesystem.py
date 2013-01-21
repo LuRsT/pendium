@@ -1,6 +1,7 @@
 import os
 
 from yapsy.PluginManager import PluginManager
+from flask import current_app
 
 class PathNotFound( Exception ):
     pass
@@ -9,9 +10,10 @@ class CannotRender( Exception ):
     pass
 
 class Wiki( object ):
-    def __init__( self, basepath, default_renderer=None,
+    def __init__( self, basepath, extensions={}, default_renderer=None,
                        markdown_plugins=[], git_support=False ):
         self.basepath         = basepath
+        self.extensions       = extensions
         self.default_renderer = default_renderer
         self.markdown_plugins = markdown_plugins
         self.git_support      = git_support
@@ -83,15 +85,25 @@ class WikiFile( WikiPath ):
         self.is_leaf   = True
         self.extension = os.path.splitext(self.name)[1][1:]
 
-    def renderer( self ):
-        # Create plugin manager
-        self.manager = PluginManager()
-        self.manager.setPluginPlaces( ["pendium/plugins"] )
-        self.manager.collectPlugins()
+        # Populate plugins
+        manager = PluginManager()
+        manager.setPluginPlaces( ["pendium/plugins"] )
+        manager.collectPlugins()
 
-        for plugin in self.manager.getAllPlugins():
-            if self.extension in plugin.plugin_object.extensions:
-                return plugin.plugin_object
+        self.plugins = {}
+        for plugin in manager.getAllPlugins():
+            self.plugins[plugin.plugin_object.name] = plugin.plugin_object
+
+
+    def renderer( self ):
+        for plugin in self.wiki.extensions.keys():
+            current_app.logger.warning(plugin)
+            current_app.logger.warning(self.plugins.keys())
+            if plugin in self.plugins.keys():
+                if self.extension in self.wiki.extensions[plugin]:
+                    current_app.logger.debug(self.extension)
+                    current_app.logger.debug(plugin)
+                    return self.plugins[plugin]
 
         #if no renderer found and binary, give up
         if self.is_binary():
@@ -114,7 +126,7 @@ class WikiFile( WikiPath ):
             return renderer.render( content )
 
         # No renderer found!
-        raise CannotRender(self.abs_path)
+        raise CannotRender( self.abs_path )
 
     def is_binary(self):
         """Return true if the file is binary."""
