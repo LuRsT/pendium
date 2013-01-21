@@ -10,6 +10,7 @@ This is a web app for all your markdown files, you can use it for reading them i
 
 * Flask
 * Markdown
+* yapsy
 * GitPython # Optional
 
 ### Setup
@@ -46,10 +47,11 @@ I'm assuming you already have a remote git repo up and running on the previous s
 with this you made yourself a git repo, now run these:
 
     cd wiki_dir # by default: <pendium_dir>/wiki
-    git init
-    git remote add origin <your_remote_git_repo_dir>
-    git branch --set-upstream master origin/master
-    git pull #Optional, just to check if everything is okay and to get your files immediately
+    git clone <path_to_previous_repo> <path_to_wiki_folder>
+    touch home.md
+    git add home.md
+    git commit -m "Initial commit"
+    git push -u origin master
 
 ### Running it
 
@@ -67,10 +69,10 @@ Note: Pendium was hacked in python 2.7, so use the appropriate command to run it
 * ~~Git integration~~
 * ~~404 pretty error~~
 * ~~Sub wikis~~
+* ~~Grep-like search~~
 * Edit files
 * Create files
 * Keyboard shortcuts
-* Grep search
 
 ### Notes
 
