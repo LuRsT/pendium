@@ -1,7 +1,7 @@
 import os
-import markdown
 
-from flask import Markup, escape
+from yapsy.PluginManager import PluginManager
+from flask import current_app
 
 class PathNotFound( Exception ):
     pass
@@ -9,7 +9,7 @@ class PathNotFound( Exception ):
 class CannotRender( Exception ):
     pass
 
-class Wiki(object):
+class Wiki( object ):
     def __init__( self, basepath, extensions={}, default_renderer=None,
                        markdown_plugins=[], git_support=False ):
         self.basepath         = basepath
@@ -18,10 +18,10 @@ class Wiki(object):
         self.markdown_plugins = markdown_plugins
         self.git_support      = git_support
 
-    def root(self):
+    def root( self ):
         return self.get( '.' )
 
-    def get(self, path):
+    def get( self, path ):
         completepath = os.path.join( self.basepath, path )
         if os.path.isdir( completepath ):
             return WikiDir( self, path )
@@ -85,11 +85,25 @@ class WikiFile( WikiPath ):
         self.is_leaf   = True
         self.extension = os.path.splitext(self.name)[1][1:]
 
+        # Populate plugins
+        manager = PluginManager()
+        manager.setPluginPlaces( ["pendium/plugins"] )
+        manager.collectPlugins()
+
+        self.plugins = {}
+        for plugin in manager.getAllPlugins():
+            self.plugins[plugin.plugin_object.name] = plugin.plugin_object
+
+
     def renderer( self ):
-        #try and find renderer from extension
-        for rend, exts in self.wiki.extensions.items():
-            if self.extension in exts:
-                return rend
+        for plugin in self.wiki.extensions.keys():
+            current_app.logger.warning(plugin)
+            current_app.logger.warning(self.plugins.keys())
+            if plugin in self.plugins.keys():
+                if self.extension in self.wiki.extensions[plugin]:
+                    current_app.logger.debug(self.extension)
+                    current_app.logger.debug(plugin)
+                    return self.plugins[plugin]
 
         #if no renderer found and binary, give up
         if self.is_binary():
@@ -106,37 +120,13 @@ class WikiFile( WikiPath ):
         return bool( self.renderer )
 
     def render( self ):
-        renderer = self.renderer()
-
-        if renderer == 'markdown':
-            return self._render_markdown()
-        if renderer == 'text':
-            return self._render_text()
-        if renderer == 'html':
-            return self._render_html()
+        if self.can_render:
+            renderer = self.renderer()
+            content = open( self.abs_path, 'r' ).read().decode( 'utf-8' )
+            return renderer.render( content )
 
         # No renderer found!
-        raise CannotRender(self.abs_path)
-
-    def _render_text( self ):
-        content = open( self.abs_path, 'r' ).read().decode( 'utf-8' )
-        return Markup( "<pre>%s</pre>" % escape(content) )
-
-    def _render_html( self ):
-        return open( self.abs_path, 'r' ).read().decode( 'utf-8' )
-
-    def _render_markdown( self ):
-        complete_filename = self.abs_path
-
-        try:
-            f = open( complete_filename, 'r' )
-        except IOError as e:
-            return "File not found."
-
-        markdown_content = f.read().decode( 'utf-8' )
-        markdown_content = markdown.markdown( markdown_content, self.wiki.markdown_plugins )
-
-        return Markup( markdown_content )
+        raise CannotRender( self.abs_path )
 
     def is_binary(self):
         """Return true if the file is binary."""
