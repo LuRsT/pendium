@@ -1,8 +1,7 @@
-from yapsy.IPlugin import IPlugin
+from pendium.plugins import IRenderPlugin
 
-class HTML( IPlugin ):
+class HTML( IRenderPlugin ):
     name       = "HTML"
-    extensions = [ 'html' ]
 
     def render( self, content ):
         return content
