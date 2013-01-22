@@ -10,5 +10,11 @@
 {% endblock %}
 
 {% block content %}
+    <div class="btn-group pull-right">
+    {% if file.editable %}
+      <a class="btn" href="{{ url_for('edit', path=file.path) }}"><i class="icon-edit"></i> Edit</a>
+    {% endif %}
+    </div>
+
     {{ rendered }}
 {% endblock %}

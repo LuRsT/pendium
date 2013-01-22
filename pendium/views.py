@@ -2,7 +2,7 @@ import os
 import markdown
 
 from flask import ( Flask, Markup, render_template, flash, redirect, url_for,
-                    abort, g, request )
+                    abort, g, request, escape )
 
 from pendium import app
 from pendium.filesystem import ( Wiki, PathNotFound )
@@ -11,6 +11,34 @@ from pendium.filesystem import ( Wiki, PathNotFound )
 def index():
     p = g.wiki.root()
     return render_template( 'index.html', files = p.items() )
+
+@app.route('/_edit_/<path:path>', methods=[ 'GET', 'POST' ] )
+def edit( path ):
+    try:
+        p = g.wiki.get( path )
+    except PathNotFound:
+        abort(404)
+
+    if not p.is_leaf:
+        abort(500)
+
+    if p.is_binary():
+        abort(500)
+
+    content = p.content() 
+    if request.form.get('save', None):
+        content = request.form.get('content')
+        try:
+            p.content( content )
+            flash("File saved you the new provided content", 'success')
+            return redirect( url_for('view', path=path) )
+        except Exception, e:
+            flash("There was a problem saving your file : %s" % e, 'error')
+
+    return render_template( 'edit.html', file         = p,
+                                         files        = p.items(),
+                                         file_content = escape(content),
+                          )
 
 @app.route('/<path:path>')
 def view( path ):
