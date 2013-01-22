@@ -1,0 +1,27 @@
+{% extends "template.html" %}
+
+{% block head_title %}Create File{% endblock %}
+{% block title %}
+    <a href="{{ url_for('index') }}">Pendium</a>&nbsp;&gt;&nbsp;
+    {% for a in file.ancestors()[1:] %}
+        <a href="{{ url_for('view', path=a.path) }}">{{ a.name }}</a>&nbsp;&gt;&nbsp;
+    {% endfor %}
+    {{ file.name }}
+{% endblock %}
+
+{% block content %}
+    <h3>Create File</h3>
+
+    <div class="well">
+        <form method="POST">
+            <input name="filename" type="text" class="" placeholder="Filename" />
+            <textarea name="content" placeholder="Content goes here..." style="width:99%" rows="20">{{ file_content }}</textarea>
+            <div class="pull-right">
+                <a class="btn btn-danger" href="{{ url_for('view', path=file.path) }}"><i class="icon-remove"></i> Cancel</a>
+                <button class="btn btn-primary" name="save" value="1"><i class="icon-save"></i> Save</button>&nbsp;
+            </div>
+        </form>
+    </div>
+
+    {{ rendered }}
+{% endblock %}

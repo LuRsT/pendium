@@ -29,4 +29,7 @@
             {% endfor %}
         </ul>
     {% endif %}
+
+      <a class="btn" href="{{ url_for('create', path=file.name) }}"><i class="icon-plus-sign"></i> Create</a>
+
 {% endblock %}

@@ -13,6 +13,39 @@ def index():
     p = g.wiki.root()
     return render_template( 'index.html', files = p.items() )
 
+
+@app.route('/_create_/',            methods=[ 'GET', 'POST' ] )
+@app.route('/_create_/<path:path>', methods=[ 'GET', 'POST' ] )
+def create( path=None ):
+    try:
+        if path == None:
+            p = g.wiki.root()
+            path = ''
+        else:
+            p = g.wiki.get( path )
+            path = path + '/'
+    except PathNotFound:
+        abort(404)
+
+    if not p.is_node:
+        abort(500)
+
+    if request.form.get('save', None):
+        filename = request.form.get('filename')
+        new_file = g.wiki.create( path + filename )
+        content  = request.form.get('content')
+        try:
+            new_file.content( content )
+            flash("File created with the provided content", 'success')
+            return redirect( url_for('view', path=path) )
+        except Exception, e:
+            app.logger.error( traceback.format_exc() )
+            flash("There was a problem saving your file : %s" % e, 'error')
+
+    p = g.wiki.root()
+    return render_template( 'create.html', file = p )
+
+
 @app.route('/_edit_/<path:path>', methods=[ 'GET', 'POST' ] )
 def edit( path ):
     try:
@@ -26,7 +59,7 @@ def edit( path ):
     if p.is_binary:
         abort(500)
 
-    content = p.content() 
+    content = p.content()
     if request.form.get('save', None):
         content = request.form.get('content')
         try:
@@ -41,6 +74,7 @@ def edit( path ):
                                          files        = p.items(),
                                          file_content = escape(content),
                           )
+
 
 @app.route('/<path:path>')
 def view( path ):
@@ -60,6 +94,7 @@ def view( path ):
         #TODO: Download the file!
         pass
 
+
 @app.route( '/search/', methods=[ 'GET', 'POST' ] )
 def search():
     context = { 'searched' : False }
@@ -75,6 +110,7 @@ def search():
 
     return render_template('search.html', **context)
 
+
 @app.route('/refresh/')
 def refresh():
     try:
@@ -87,14 +123,17 @@ def refresh():
 
     return redirect( url_for('index') )
 
+
 @app.context_processor
 def global_context_data():
     data = { 'config': app.config }
     return data
 
+
 @app.errorhandler(404)
 def not_found( error ):
     return render_template('not_found.html'), 404
+
 
 @app.before_request
 def before_request():

@@ -44,6 +44,7 @@ class Wiki( object ):
                 logger.debug( "Configuring plugin: %s with :%s" % (name, configuration) ) 
                 plugin.plugin_object.configure( configuration )
 
+
     def search( self, term ):
         best_plugin_score = 0
         best_plugin       = None
@@ -59,8 +60,10 @@ class Wiki( object ):
 
         return best_plugin.plugin_object.search( self, term )
 
+
     def root( self ):
         return self.get( '.' )
+
 
     def get( self, path ):
         completepath = os.path.join( self.basepath, path )
@@ -68,6 +71,14 @@ class Wiki( object ):
             return WikiDir( self, path )
         else:
             return WikiFile( self, path )
+
+
+    def create( self, path ):
+        new_abs_path = os.path.join( self.basepath, path )
+        fp = file( new_abs_path, 'w' )
+        fp.close()
+        return WikiFile( self, path )
+
 
     def refresh(self):
         if not self.git_support:
@@ -77,6 +88,7 @@ class Wiki( object ):
             return self.git_repo().git.pull()
 
         return ''
+
 
     def git_repo_branch_has_remote(self):
         repo = self.git_repo()
@@ -89,7 +101,8 @@ class Wiki( object ):
             else:
                 return False
         except:
-            return False 
+            return False
+
 
     def git_repo(self):
         try:
@@ -98,6 +111,7 @@ class Wiki( object ):
             return repo
         except ImportError, e:
             raise Exception( "Could not import git module" )
+
 
 class WikiPath(object):
     def __init__( self, wiki, path ):
@@ -112,15 +126,18 @@ class WikiPath(object):
         if not os.path.exists( self.abs_path ):
             raise PathNotFound( self.abs_path )
 
+
     def ancestor( self ):
         if self.path == '':
             return None
         return self.wiki.get( os.path.split( self.path )[0] )
 
+
     def ancestors( self ):
         if self.ancestor():
             return self.ancestor().ancestors() + [ self.ancestor() ]
         return []
+
 
     def items( self ):
         if not os.path.isdir( self.abs_path ):
@@ -136,7 +153,7 @@ class WikiPath(object):
 
         return filenames
 
-    @property 
+    @property
     def editable(self):
         return os.access(self.abs_path , os.W_OK)
 
@@ -159,7 +176,6 @@ class WikiFile( WikiPath ):
                 logger.debug(plugin.plugin_object.name)
                 return plugin.plugin_object
 
-
         #if no renderer found and binary, give up
         if self.is_binary:
             return None
@@ -171,9 +187,11 @@ class WikiFile( WikiPath ):
 
         return None
 
+
     @property
     def can_render( self ):
         return bool( self.renderer )
+
 
     def render( self ):
         if self.can_render:
@@ -182,6 +200,7 @@ class WikiFile( WikiPath ):
 
         # No renderer found!
         raise CannotRender( self.abs_path )
+
 
     @property
     def is_binary(self):
@@ -199,6 +218,7 @@ class WikiFile( WikiPath ):
             fin.close()
 
         return False
+
 
     def content(self, content=None):
         fp = open(self.abs_path, 'r')
@@ -225,8 +245,6 @@ class WikiFile( WikiPath ):
                 repo.git.push()
 
         return content
-
-        return ct
 
 class WikiDir( WikiPath ):
     def __init__( self, *args, **kwargs ):
