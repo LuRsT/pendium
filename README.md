@@ -70,7 +70,7 @@ Note: Pendium was hacked in python 2.7, so use the appropriate command to run it
 * ~~404 pretty error~~
 * ~~Sub wikis~~
 * ~~Grep-like search~~
-* Edit files
+* ~~Edit files~~
 * Create files
 * Keyboard shortcuts
 

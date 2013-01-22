@@ -18,7 +18,7 @@ class Grep(ISearchPlugin):
             for item in wikipath.items():
                 hits = self._search_path( item, regex, hits )
 
-        if wikipath.is_leaf and (not wikipath.is_binary()):
+        if wikipath.is_leaf and (not wikipath.is_binary):
             #match content
             try:
                 file = open(wikipath.abs_path)

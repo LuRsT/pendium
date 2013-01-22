@@ -1,4 +1,5 @@
 import os
+import codecs
 
 from yapsy.PluginManager import PluginManager
 from flask               import current_app
@@ -72,15 +73,31 @@ class Wiki( object ):
         if not self.git_support:
             return ''
 
+        if self.git_repo_branch_has_remote():
+            return self.git_repo().git.pull()
+
+        return ''
+
+    def git_repo_branch_has_remote(self):
+        repo = self.git_repo()
+        #check if this is a remote name
+        try:
+            branch = repo.active_branch
+            remote = branch.remote_name
+            if remote:
+                return True
+            else:
+                return False
+        except:
+            return False 
+
+    def git_repo(self):
         try:
             import git
             repo = git.Repo( self.basepath )
-            return repo.git.pull()
+            return repo
         except ImportError, e:
             raise Exception( "Could not import git module" )
-        except:
-            import sys
-            raise Exception( sys.exc_info()[0] )
 
 class WikiPath(object):
     def __init__( self, wiki, path ):
@@ -119,6 +136,10 @@ class WikiPath(object):
 
         return filenames
 
+    @property 
+    def editable(self):
+        return os.access(self.abs_path , os.W_OK)
+
 class WikiFile( WikiPath ):
     def __init__( self, *args, **kwargs ):
         super( WikiFile, self ).__init__( *args, **kwargs )
@@ -140,7 +161,7 @@ class WikiFile( WikiPath ):
 
 
         #if no renderer found and binary, give up
-        if self.is_binary():
+        if self.is_binary:
             return None
 
         #if is not binary and we have a default renderer
@@ -150,18 +171,19 @@ class WikiFile( WikiPath ):
 
         return None
 
+    @property
     def can_render( self ):
         return bool( self.renderer )
 
     def render( self ):
         if self.can_render:
             renderer = self.renderer()
-            content = open( self.abs_path, 'r' ).read().decode( 'utf-8' )
-            return renderer.render( content )
+            return renderer.render( self.content() )
 
         # No renderer found!
         raise CannotRender( self.abs_path )
 
+    @property
     def is_binary(self):
         """Return true if the file is binary."""
         fin = open(self.abs_path, 'rb')
@@ -177,6 +199,34 @@ class WikiFile( WikiPath ):
             fin.close()
 
         return False
+
+    def content(self, content=None):
+        fp = open(self.abs_path, 'r')
+        ct = fp.read().decode( 'utf-8' )
+        fp.close()
+
+        if not content:
+            return ct
+
+        if content == ct:
+            return ct
+
+        # Save the file
+        fp = open(self.abs_path, 'w')
+        fp.write( content )
+        fp.close()
+
+        if self.wiki.git_support:
+            repo = self.wiki.git_repo()
+            repo.git.add( self.path )
+            repo.git.commit( m='New content version' )
+
+            if self.wiki.git_repo_branch_has_remote():
+                repo.git.push()
+
+        return content
+
+        return ct
 
 class WikiDir( WikiPath ):
     def __init__( self, *args, **kwargs ):
