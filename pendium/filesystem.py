@@ -145,7 +145,7 @@ class WikiFile( WikiPath ):
 
 
         #if no renderer found and binary, give up
-        if self.is_binary():
+        if self.is_binary:
             return None
 
         #if is not binary and we have a default renderer
@@ -155,6 +155,7 @@ class WikiFile( WikiPath ):
 
         return None
 
+    @property
     def can_render( self ):
         return bool( self.renderer )
 
@@ -166,6 +167,7 @@ class WikiFile( WikiPath ):
         # No renderer found!
         raise CannotRender( self.abs_path )
 
+    @property
     def is_binary(self):
         """Return true if the file is binary."""
         fin = open(self.abs_path, 'rb')

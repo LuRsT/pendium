@@ -22,7 +22,7 @@ def edit( path ):
     if not p.is_leaf:
         abort(500)
 
-    if p.is_binary():
+    if p.is_binary:
         abort(500)
 
     content = p.content() 
@@ -47,7 +47,7 @@ def view( path ):
     except PathNotFound:
         abort(404)
 
-    if p.is_leaf and p.can_render():
+    if p.is_leaf and p.can_render:
         return render_template( 'view.html', file     = p,
                                              files    = p.items(),
                                              rendered = p.render()
