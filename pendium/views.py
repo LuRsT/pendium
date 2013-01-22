@@ -1,5 +1,6 @@
 import os
 import markdown
+import traceback
 
 from flask import ( Flask, Markup, render_template, flash, redirect, url_for,
                     abort, g, request, escape )
@@ -30,9 +31,10 @@ def edit( path ):
         content = request.form.get('content')
         try:
             p.content( content )
-            flash("File saved you the new provided content", 'success')
+            flash("File saved with the new provided content", 'success')
             return redirect( url_for('view', path=path) )
         except Exception, e:
+            app.logger.error( traceback.format_exc() )
             flash("There was a problem saving your file : %s" % e, 'error')
 
     return render_template( 'edit.html', file         = p,
@@ -77,9 +79,10 @@ def search():
 def refresh():
     try:
         info = g.wiki.refresh()
-        flash("Your wiki has been refreshed. %" % info, 'success')
+        flash("Your wiki has been refreshed. %s" % info, 'success')
     except Exception, e:
         app.logger.error( e )
+        app.logger.error( traceback.format_exc() )
         flash( "Error refreshing git repository", 'error' )
 
     return redirect( url_for('index') )

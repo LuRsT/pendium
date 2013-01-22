@@ -73,15 +73,31 @@ class Wiki( object ):
         if not self.git_support:
             return ''
 
+        if self.git_repo_branch_has_remote():
+            return self.git_repo().git.pull()
+
+        return ''
+
+    def git_repo_branch_has_remote(self):
+        repo = self.git_repo()
+        #check if this is a remote name
+        try:
+            branch = repo.active_branch
+            remote = branch.remote_name
+            if remote:
+                return True
+            else:
+                return False
+        except:
+            return False 
+
+    def git_repo(self):
         try:
             import git
             repo = git.Repo( self.basepath )
-            return repo.git.pull()
+            return repo
         except ImportError, e:
             raise Exception( "Could not import git module" )
-        except:
-            import sys
-            raise Exception( sys.exc_info()[0] )
 
 class WikiPath(object):
     def __init__( self, wiki, path ):
@@ -185,14 +201,31 @@ class WikiFile( WikiPath ):
         return False
 
     def content(self, content=None):
-        if content: #new content
-            fp = open(self.abs_path, 'w')
-            fp.write( content )
-            fp.close()
-
         fp = open(self.abs_path, 'r')
         ct = fp.read().decode( 'utf-8' )
         fp.close()
+
+        if not content:
+            return ct
+
+        if content == ct:
+            return ct
+
+        # Save the file
+        fp = open(self.abs_path, 'w')
+        fp.write( content )
+        fp.close()
+
+        if self.wiki.git_support:
+            repo = self.wiki.git_repo()
+            repo.git.add( self.path )
+            repo.git.commit( m='New content version' )
+
+            if self.wiki.git_repo_branch_has_remote():
+                repo.git.push()
+
+        return content
+
         return ct
 
 class WikiDir( WikiPath ):
