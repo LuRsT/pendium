@@ -1,4 +1,5 @@
 import os
+import codecs
 
 from yapsy.PluginManager import PluginManager
 from flask               import current_app
@@ -119,6 +120,10 @@ class WikiPath(object):
 
         return filenames
 
+    @property 
+    def editable(self):
+        return os.access(self.abs_path , os.W_OK)
+
 class WikiFile( WikiPath ):
     def __init__( self, *args, **kwargs ):
         super( WikiFile, self ).__init__( *args, **kwargs )
@@ -156,8 +161,7 @@ class WikiFile( WikiPath ):
     def render( self ):
         if self.can_render:
             renderer = self.renderer()
-            content = open( self.abs_path, 'r' ).read().decode( 'utf-8' )
-            return renderer.render( content )
+            return renderer.render( self.content() )
 
         # No renderer found!
         raise CannotRender( self.abs_path )
@@ -177,6 +181,17 @@ class WikiFile( WikiPath ):
             fin.close()
 
         return False
+
+    def content(self, content=None):
+        if content: #new content
+            fp = open(self.abs_path, 'w')
+            fp.write( content )
+            fp.close()
+
+        fp = open(self.abs_path, 'r')
+        ct = fp.read().decode( 'utf-8' )
+        fp.close()
+        return ct
 
 class WikiDir( WikiPath ):
     def __init__( self, *args, **kwargs ):
