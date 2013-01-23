@@ -6,7 +6,7 @@ from flask import ( Flask, Markup, render_template, flash, redirect, url_for,
                     abort, g, request, escape )
 
 from pendium import app
-from pendium.filesystem import ( Wiki, PathNotFound )
+from pendium.filesystem import ( Wiki, PathNotFound, PathExists )
 
 @app.route('/')
 def index():
@@ -27,20 +27,26 @@ def create( path=None ):
     if not p.is_node:
         abort(500)
 
+    filename   =None
+    filecontent=None
+
     if request.form.get('save', None):
-        filename = request.form.get('filename')
-        new_file = p.create( filename )
-        content  = request.form.get('content')
+        filename    = request.form.get('filename')
+        filecontent = request.form.get('content')
         try:
-            new_file.content( content )
+            new_file = p.create( filename )
+            new_file.content( filecontent )
             flash("File created with the provided content", 'success')
             return redirect( url_for('view', path=path) )
+        except PathExists, pe:
+            app.logger.error( traceback.format_exc() )
+            flash("There is already a file by that name", 'error')
+            
         except Exception, e:
             app.logger.error( traceback.format_exc() )
             flash("There was a problem saving your file : %s" % e, 'error')
 
-    p = g.wiki.root()
-    return render_template( 'create.html', file = p )
+    return render_template( 'create.html', file = p, filename=filename, filecontent=filecontent )
 
 
 @app.route('/_edit_/<path:path>', methods=[ 'GET', 'POST' ] )

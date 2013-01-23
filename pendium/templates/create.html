@@ -14,8 +14,8 @@
 
     <div class="well">
         <form method="POST">
-            <input name="filename" type="text" class="" placeholder="Filename" />
-            <textarea name="content" placeholder="Content goes here..." style="width:99%" rows="20">{{ file_content }}</textarea>
+            <input name="filename" type="text" class="" placeholder="Filename" {% if filename %}value="{{ filename }}"{% endif %} />
+            <textarea name="content" placeholder="Content goes here..." style="width:99%" rows="20">{% if filecontent %}{{ filecontent }}{% endif %}</textarea>
             <div class="pull-right">
                 <a class="btn btn-danger" href="{{ url_for('view', path=file.path) }}"><i class="icon-remove"></i> Cancel</a>
                 <button class="btn btn-primary" name="save" value="1"><i class="icon-save"></i> Save</button>&nbsp;
