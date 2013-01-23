@@ -13,12 +13,14 @@
             {% for file in files %}
                 <li style="list-style: none;">
                     <i class="{% if file.is_node %}icon-folder-close{% else %}icon-file{% endif %}"></i>
-                    <a href="{{ url_for('view', path=file.path ) }}">{{ file.name}}</a>
+                    <a href="{{ url_for( 'view', path=file.path ) }}">{{ file.name}}</a>
                 </li>
             {% endfor %}
         </ul>
     {% endif %}
 
-    <a class="btn" href="{{ url_for( 'create', path='' ) }}"><i class="icon-plus-sign"></i> Create</a>
+{% endblock %}
 
+{% block plugin_menu %}
+    <li><a href="{{ url_for( 'create', path='' ) }}"><i class="icon-plus-sign"></i> Create File</a></li>
 {% endblock %}
