@@ -17,22 +17,19 @@ def index():
 @app.route('/_create_/',            methods=[ 'GET', 'POST' ] )
 @app.route('/_create_/<path:path>', methods=[ 'GET', 'POST' ] )
 def create( path=None ):
-    try:
-        if path == None:
-            p = g.wiki.root()
-            path = ''
-        else:
+    p = g.wiki.root()
+    if path != None:
+        try:
             p = g.wiki.get( path )
-            path = path + '/'
-    except PathNotFound:
-        abort(404)
+        except PathNotFound:
+            abort(404)
 
     if not p.is_node:
         abort(500)
 
     if request.form.get('save', None):
         filename = request.form.get('filename')
-        new_file = g.wiki.create( path + filename )
+        new_file = p.create( filename )
         content  = request.form.get('content')
         try:
             new_file.content( content )
