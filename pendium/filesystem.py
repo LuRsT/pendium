@@ -245,10 +245,20 @@ class WikiDir( WikiPath ):
         super( WikiDir, self ).__init__( *args, **kwargs )
         self.is_node = True
 
-    def create( self, filename ):
+    def create_file( self, filename ):
         new_abs_path = os.path.join( self.abs_path, filename )
         if os.path.exists( new_abs_path ):
             raise PathExists( new_abs_path )
         fp = file( new_abs_path, 'w' )
         fp.close()
         return self.wiki.get( os.path.join( self.path, filename ) )
+
+    def create_directory( self, name ):
+        new_abs_path = os.path.join( self.abs_path, name )
+        if os.path.exists( new_abs_path ):
+            raise PathExists( new_abs_path )
+
+        os.makedirs( new_abs_path )
+        np = self.wiki.get( os.path.join( self.path, name ) )
+
+        return np 
