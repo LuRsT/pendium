@@ -13,10 +13,40 @@ def index():
     p = g.wiki.root()
     return render_template( 'index.html', files = p.items() )
 
+@app.route('/_create_folder_/',            methods=[ 'GET', 'POST' ] )
+@app.route('/_create_folder_/<path:path>', methods=[ 'GET', 'POST' ] )
+def create_folder( path=None ):
+    p = g.wiki.root()
+    if path != None:
+        try:
+            p = g.wiki.get( path )
+        except PathNotFound:
+            abort(404)
 
-@app.route('/_create_/',            methods=[ 'GET', 'POST' ] )
-@app.route('/_create_/<path:path>', methods=[ 'GET', 'POST' ] )
-def create( path=None ):
+    if not p.is_node:
+        abort(500)
+
+    foldername = None
+
+    if request.form.get('save', None):
+        foldername    = request.form.get('foldername')
+        try:
+            new_folder = p.create_directory( foldername )
+            flash("New folder created", 'success')
+            return redirect( url_for('view', path=p.path) )
+        except PathExists, pe:
+            app.logger.error( traceback.format_exc() )
+            flash("There is already a folder by that name", 'error')
+            
+        except Exception, e:
+            app.logger.error( traceback.format_exc() )
+            flash("There was a problem creating your folder: %s" % e, 'error')
+
+    return render_template( 'create_folder.html', file = p, foldername=foldername )
+
+@app.route('/_create_file_/',            methods=[ 'GET', 'POST' ] )
+@app.route('/_create_file_/<path:path>', methods=[ 'GET', 'POST' ] )
+def create_file( path=None ):
     p = g.wiki.root()
     if path != None:
         try:
@@ -34,10 +64,10 @@ def create( path=None ):
         filename    = request.form.get('filename')
         filecontent = request.form.get('content')
         try:
-            new_file = p.create( filename )
+            new_file = p.create_file( filename )
             new_file.content( filecontent )
             flash("File created with the provided content", 'success')
-            return redirect( url_for('view', path=path) )
+            return redirect( url_for('view', path=p.path) )
         except PathExists, pe:
             app.logger.error( traceback.format_exc() )
             flash("There is already a file by that name", 'error')
