@@ -12,6 +12,7 @@ This is a web app for all your markdown files, you can use it for reading them i
 * Markdown
 * yapsy
 * GitPython # Optional
+* docutils  # Optional
 
 ### Setup
 
@@ -71,7 +72,8 @@ Note: Pendium was hacked in python 2.7, so use the appropriate command to run it
 * ~~Sub wikis~~
 * ~~Grep-like search~~
 * ~~Edit files~~
-* Create files
+* ~~Create files~~
+* ~~Create dirs~~
 * Keyboard shortcuts
 
 ### Notes

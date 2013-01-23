@@ -10,8 +10,19 @@ from pendium.filesystem import ( Wiki, PathNotFound, PathExists )
 
 @app.route('/')
 def index():
-    p = g.wiki.root()
-    return render_template( 'index.html', files = p.items() )
+    p         = g.wiki.root()
+    home_file = None
+    try:
+        home_file = g.wiki.get( app.config['DEFAULT_HOME_FILE'] )
+    except:
+        return render_template( 'index.html', files = p.items(), )
+
+    if home_file != None and ( home_file.is_leaf and home_file.can_render ):
+        return render_template( 'index.html', home_file = home_file.render(),
+                                              files     = p.items(),
+                              )
+
+
 
 @app.route('/_create_folder_/',            methods=[ 'GET', 'POST' ] )
 @app.route('/_create_folder_/<path:path>', methods=[ 'GET', 'POST' ] )
@@ -37,12 +48,13 @@ def create_folder( path=None ):
         except PathExists, pe:
             app.logger.error( traceback.format_exc() )
             flash("There is already a folder by that name", 'error')
-            
+
         except Exception, e:
             app.logger.error( traceback.format_exc() )
             flash("There was a problem creating your folder: %s" % e, 'error')
 
     return render_template( 'create_folder.html', file = p, foldername=foldername )
+
 
 @app.route('/_create_file_/',            methods=[ 'GET', 'POST' ] )
 @app.route('/_create_file_/<path:path>', methods=[ 'GET', 'POST' ] )
@@ -71,7 +83,7 @@ def create_file( path=None ):
         except PathExists, pe:
             app.logger.error( traceback.format_exc() )
             flash("There is already a file by that name", 'error')
-            
+
         except Exception, e:
             app.logger.error( traceback.format_exc() )
             flash("There was a problem saving your file : %s" % e, 'error')

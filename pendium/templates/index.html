@@ -17,6 +17,11 @@
                 </li>
             {% endfor %}
         </ul>
+
+        {% if home_file %}
+            <hr />
+            {{ home_file }}
+        {% endif %}
     {% endif %}
 
 {% endblock %}
