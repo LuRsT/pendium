@@ -17,6 +17,9 @@ manager.setCategoriesFilter({
                         })
 manager.collectPlugins()
 
+class PathExists( Exception ):
+    pass
+
 class PathNotFound( Exception ):
     pass
 
@@ -72,14 +75,6 @@ class Wiki( object ):
         else:
             return WikiFile( self, path )
 
-
-    def create( self, path ):
-        new_abs_path = os.path.join( self.basepath, path )
-        fp = file( new_abs_path, 'w' )
-        fp.close()
-        return WikiFile( self, path )
-
-
     def refresh(self):
         if not self.git_support:
             return ''
@@ -88,7 +83,6 @@ class Wiki( object ):
             return self.git_repo().git.pull()
 
         return ''
-
 
     def git_repo_branch_has_remote(self):
         repo = self.git_repo()
@@ -232,7 +226,7 @@ class WikiFile( WikiPath ):
             return ct
 
         # Save the file
-        fp = open(self.abs_path, 'w')
+        fp = codecs.open(self.abs_path, 'w', 'utf-8')
         fp.write( content )
         fp.close()
 
@@ -250,3 +244,21 @@ class WikiDir( WikiPath ):
     def __init__( self, *args, **kwargs ):
         super( WikiDir, self ).__init__( *args, **kwargs )
         self.is_node = True
+
+    def create_file( self, filename ):
+        new_abs_path = os.path.join( self.abs_path, filename )
+        if os.path.exists( new_abs_path ):
+            raise PathExists( new_abs_path )
+        fp = file( new_abs_path, 'w' )
+        fp.close()
+        return self.wiki.get( os.path.join( self.path, filename ) )
+
+    def create_directory( self, name ):
+        new_abs_path = os.path.join( self.abs_path, name )
+        if os.path.exists( new_abs_path ):
+            raise PathExists( new_abs_path )
+
+        os.makedirs( new_abs_path )
+        np = self.wiki.get( os.path.join( self.path, name ) )
+
+        return np 

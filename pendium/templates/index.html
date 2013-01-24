@@ -17,10 +17,16 @@
                 </li>
             {% endfor %}
         </ul>
+
+        {% if home_file %}
+            <hr />
+            {{ home_file }}
+        {% endif %}
     {% endif %}
 
 {% endblock %}
 
 {% block plugin_menu %}
-    <li><a href="{{ url_for( 'create', path='' ) }}"><i class="icon-plus-sign"></i> Create File</a></li>
+    <li><a href="{{ url_for( 'create_file',   path='' ) }}"><i class="icon-plus-sign"></i> Create File</a></li>
+    <li><a href="{{ url_for( 'create_folder', path='' ) }}"><i class="icon-plus-sign"></i> Create Folder</a></li>
 {% endblock %}

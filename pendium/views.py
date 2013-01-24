@@ -6,44 +6,89 @@ from flask import ( Flask, Markup, render_template, flash, redirect, url_for,
                     abort, g, request, escape )
 
 from pendium import app
-from pendium.filesystem import ( Wiki, PathNotFound )
+from pendium.filesystem import ( Wiki, PathNotFound, PathExists )
 
 @app.route('/')
 def index():
-    p = g.wiki.root()
-    return render_template( 'index.html', files = p.items() )
-
-
-@app.route('/_create_/',            methods=[ 'GET', 'POST' ] )
-@app.route('/_create_/<path:path>', methods=[ 'GET', 'POST' ] )
-def create( path=None ):
+    p         = g.wiki.root()
+    home_file = None
     try:
-        if path == None:
-            p = g.wiki.root()
-            path = ''
-        else:
+        home_file = g.wiki.get( app.config['DEFAULT_HOME_FILE'] )
+    except:
+        return render_template( 'index.html', files = p.items(), )
+
+    if home_file != None and ( home_file.is_leaf and home_file.can_render ):
+        return render_template( 'index.html', home_file = home_file.render(),
+                                              files     = p.items(),
+                              )
+
+
+
+@app.route('/_create_folder_/',            methods=[ 'GET', 'POST' ] )
+@app.route('/_create_folder_/<path:path>', methods=[ 'GET', 'POST' ] )
+def create_folder( path=None ):
+    p = g.wiki.root()
+    if path != None:
+        try:
             p = g.wiki.get( path )
-            path = path + '/'
-    except PathNotFound:
-        abort(404)
+        except PathNotFound:
+            abort(404)
 
     if not p.is_node:
         abort(500)
 
+    foldername = None
+
     if request.form.get('save', None):
-        filename = request.form.get('filename')
-        new_file = g.wiki.create( path + filename )
-        content  = request.form.get('content')
+        foldername    = request.form.get('foldername')
         try:
-            new_file.content( content )
+            new_folder = p.create_directory( foldername )
+            flash("New folder created", 'success')
+            return redirect( url_for('view', path=p.path) )
+        except PathExists, pe:
+            app.logger.error( traceback.format_exc() )
+            flash("There is already a folder by that name", 'error')
+
+        except Exception, e:
+            app.logger.error( traceback.format_exc() )
+            flash("There was a problem creating your folder: %s" % e, 'error')
+
+    return render_template( 'create_folder.html', file = p, foldername=foldername )
+
+
+@app.route('/_create_file_/',            methods=[ 'GET', 'POST' ] )
+@app.route('/_create_file_/<path:path>', methods=[ 'GET', 'POST' ] )
+def create_file( path=None ):
+    p = g.wiki.root()
+    if path != None:
+        try:
+            p = g.wiki.get( path )
+        except PathNotFound:
+            abort(404)
+
+    if not p.is_node:
+        abort(500)
+
+    filename   =None
+    filecontent=None
+
+    if request.form.get('save', None):
+        filename    = request.form.get('filename')
+        filecontent = request.form.get('content')
+        try:
+            new_file = p.create_file( filename )
+            new_file.content( filecontent )
             flash("File created with the provided content", 'success')
-            return redirect( url_for('view', path=path) )
+            return redirect( url_for('view', path=p.path) )
+        except PathExists, pe:
+            app.logger.error( traceback.format_exc() )
+            flash("There is already a file by that name", 'error')
+
         except Exception, e:
             app.logger.error( traceback.format_exc() )
             flash("There was a problem saving your file : %s" % e, 'error')
 
-    p = g.wiki.root()
-    return render_template( 'create.html', file = p )
+    return render_template( 'create.html', file = p, filename=filename, filecontent=filecontent )
 
 
 @app.route('/_edit_/<path:path>', methods=[ 'GET', 'POST' ] )

@@ -1,0 +1,8 @@
+[Core]
+Name   = Rest
+Module = rest
+
+[Documentation]
+Author      = Gilberto Gonçalves
+Version     = 0.1
+Description = Render Rest

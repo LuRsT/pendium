@@ -24,3 +24,5 @@ WIKI_DIR = 'wiki'
 
 # Manage your wiki with git, you must have the git repository initialized
 #WIKI_GIT_SUPPORT      = False
+
+#DEFAULT_HOME_FILE     = 'home.md'
