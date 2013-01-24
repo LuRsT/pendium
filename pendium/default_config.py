@@ -21,3 +21,5 @@ WIKI_PLUGINS_CONFIG   = { "Markdown" : { 'extensions' : [ 'headerid', 'toc',
 WIKI_GIT_SUPPORT      = False
 
 DEFAULT_HOME_FILE     = 'home.md'
+
+CODEHILITE_STYLESHEET = 'codehilite.css'

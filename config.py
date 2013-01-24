@@ -26,3 +26,5 @@ WIKI_DIR = 'wiki'
 #WIKI_GIT_SUPPORT      = False
 
 #DEFAULT_HOME_FILE     = 'home.md'
+
+#CODEHILITE_STYLESHEET = 'codehilite.css'

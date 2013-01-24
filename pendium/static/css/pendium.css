@@ -33,14 +33,3 @@ a:hover {
     background-color: grey;
     background-image: none;
 }
-
-
-/* CodeHilite */
-
-pre  { background-color: #EFEFEF; color: #111; }
-.hll, .c, .err, .k, .l, .n, .o, .p, .cm, .cp, .c1, .cs, .ge, .gs, .kc, .kd, .kn,
-.kp, .kr, .kt, .ld, .m, .s, .na, .nb, .nc, .no, .nd, .ni, .ne, .nf, .nl, .nn, .nx,
-.py, .nt, .nv, .ow, .w, .mf, .mh, .mi, .mo, .sb, .sc, .sd, .s2, .se, .sh, .si, .sx,
-.sr, .s1, .ss, .bp, .vc, .vg, .vi, .il {
-    color: #111;
-}
