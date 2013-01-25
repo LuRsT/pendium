@@ -4,7 +4,7 @@ A (com)Pendium for all your markdown files
 
 This is a web app for all your markdown files, you can use it for reading them in web way, share them through the interwebs or you can even create a personal ( or not so personal ) wiki with just a bunch of files ( you can link them together nicely ).
 
-[![Screenshot](http://s7.postimage.org/f09s4pezf/pendium_screen.png)](http://postimage.org/image/s2w7whqfr/full/)
+[![Screenshot](http://i.imgur.com/gxCYN8Rl.png)](http://i.imgur.com/gxCYN8R.png)
 
 ### Requirements
 
