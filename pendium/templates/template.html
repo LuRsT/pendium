@@ -8,10 +8,11 @@
     <meta name="author"      content="">
 
     <!-- Le styles -->
-    <link href="{{ url_for('static', filename='css/bootstrap.css' )                          }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/pendium.css' )                            }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/font-awesome.css' )                       }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/' + config.get('CODEHILITE_STYLESHEET') ) }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/bootstrap.css' )    }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/pendium.css' )      }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/font-awesome.css' ) }}" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='css/codehilite/' + config.get('CODEHILITE_STYLESHEET') ) }}" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>

@@ -27,4 +27,4 @@ WIKI_DIR = 'wiki'
 
 #DEFAULT_HOME_FILE     = 'home.md'
 
-#CODEHILITE_STYLESHEET = 'codehilite.css'
+#CODEHILITE_STYLESHEET = 'plain.css'
