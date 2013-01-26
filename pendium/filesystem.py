@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 # Populate plugins
 manager = PluginManager()
-manager.setPluginPlaces( ["pendium/plugins"] )
+manager.setPluginPlaces( [ "pendium/plugins" ] )
 manager.setCategoriesFilter({
                         "Search" : ISearchPlugin,
                         "Render" : IRenderPlugin,
@@ -174,6 +174,7 @@ class WikiFile( WikiPath ):
         if self.is_binary:
             return None
 
+
         #if is not binary and we have a default renderer
         # return it
         if self.wiki.default_renderer:
@@ -184,7 +185,7 @@ class WikiFile( WikiPath ):
 
     @property
     def can_render( self ):
-        return bool( self.renderer )
+        return bool( self.renderer() )
 
 
     def render( self ):
@@ -192,8 +193,8 @@ class WikiFile( WikiPath ):
             renderer = self.renderer()
             return renderer.render( self.content() )
 
-        # No renderer found!
-        raise CannotRender( self.abs_path )
+        # No renderer found
+        return self.content()
 
 
     @property

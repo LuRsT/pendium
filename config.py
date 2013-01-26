@@ -6,9 +6,11 @@ WIKI_DIR = 'wiki'
 #HOST_IP  = ''
 
 # Which renderer to use for which file extension
-#WIKI_EXTENSIONS       = { 'markdown' : ['md', 'mdw']
-#                          'text' : ['txt',]
-#                          'html' : ['html'] 
+#WIKI_EXTENSIONS       = { 'Markdown' : [ 'md', 'mdw' ],
+#                          'Text'     : [ 'txt' ],
+#                          'HTML'     : [ 'html', 'htm' ],
+#                          'Python'   : [ 'py'  ],
+#                          'Rest'     : [ 'rst' ]
 #                        }
 
 # Which renderer to use for unknown file extensions
