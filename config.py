@@ -19,7 +19,7 @@ WIKI_DIR = 'wiki'
 # Extra plugin for each renderer/searcher 
 #WIKI_PLUGINS_CONFIG   = { "Markdown" : { 'extensions' : [ 'headerid', 'toc',
 #                                                          'tables', 'footnotes',
-#                                                          'codehilite'
+#                                                          'fenced_code', 'codehilite'
 #                                                        ]
 #                                       },
 #                        }

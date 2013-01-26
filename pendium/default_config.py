@@ -14,7 +14,7 @@ WIKI_EXTENSIONS       = { 'Markdown' : [ 'md', 'mdw' ],
 WIKI_DEFAULT_RENDERER = None
 WIKI_PLUGINS_CONFIG   = { "Markdown" : { 'extensions' : [ 'headerid', 'toc',
                                                           'tables', 'footnotes',
-                                                          'codehilite'
+                                                          'fenced_code', 'codehilite'
                                                         ]
                                        },
                         }

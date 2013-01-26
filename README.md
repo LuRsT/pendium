@@ -13,6 +13,7 @@ This is a web app for all your markdown files, you can use it for reading them i
 * yapsy
 * GitPython # Optional
 * docutils  # Optional
+* pygments  # Optional
 
 ### Setup
 
