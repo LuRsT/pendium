@@ -3,7 +3,7 @@ import markdown
 import traceback
 
 from flask import ( Flask, Markup, render_template, flash, redirect, url_for,
-                    abort, g, request, escape )
+                    abort, g, request, escape, Response )
 
 from pendium import app
 from pendium.filesystem import ( Wiki, PathNotFound, PathExists )
@@ -167,6 +167,20 @@ def refresh():
         flash( "Error refreshing git repository", 'error' )
 
     return redirect( url_for('index') )
+
+
+@app.route('/_raw_/<path:path>')
+def raw( path ):
+    try:
+        p = g.wiki.get( path )
+    except PathNotFound:
+        abort(404)
+
+    if p.is_leaf:
+        #return p.content()
+        return Response(p.content(), mimetype='text/plain')
+
+    abort(404)
 
 
 @app.context_processor
