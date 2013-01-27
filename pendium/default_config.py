@@ -23,3 +23,5 @@ WIKI_GIT_SUPPORT      = False
 DEFAULT_HOME_FILE     = 'home.md'
 
 CODEHILITE_STYLESHEET = 'plain.css'
+
+BLACKLIST_EXTENSIONS  = [ ]

@@ -4,6 +4,7 @@ import codecs
 from yapsy.PluginManager import PluginManager
 from flask               import current_app
 from pendium.plugins     import IRenderPlugin, ISearchPlugin
+from pendium             import app
 
 import logging
 logger = logging.getLogger(__name__)
@@ -140,6 +141,10 @@ class WikiPath(object):
         filenames = []
         for f in os.listdir( self.abs_path ):
             if ( f.find('.') == 0 ):
+                continue
+
+            if ( os.path.splitext( f )[1][1:] in
+                app.config['BLACKLIST_EXTENSIONS'] ):
                 continue
 
             complete_path = os.path.join( self.path, f )
