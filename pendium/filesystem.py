@@ -68,9 +68,8 @@ class Wiki( object ):
     def root( self ):
         return self.get( '.' )
 
-
     def get( self, path ):
-        completepath = os.path.join( self.basepath, path )
+        completepath = os.path.normpath(os.path.join( self.basepath, path ))
         if os.path.isdir( completepath ):
             return WikiDir( self, path )
         else:
@@ -139,7 +138,7 @@ class WikiPath(object):
             self = self.ancestor()
 
         filenames = []
-        for f in os.listdir( self.abs_path ):
+        for f in os.listdir( unicode(self.abs_path) ):
             if ( f.find('.') == 0 ):
                 continue
 
