@@ -31,4 +31,4 @@ WIKI_DIR = 'wiki'
 
 #CODEHILITE_STYLESHEET = 'plain.css'
 
-#BLACKLIST_EXTENSIONS  = []
+#BLACKLIST_EXTENSIONS  = [ 'png', 'jpg', 'gif' ]

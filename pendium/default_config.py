@@ -24,4 +24,4 @@ DEFAULT_HOME_FILE     = 'home.md'
 
 CODEHILITE_STYLESHEET = 'plain.css'
 
-BLACKLIST_EXTENSIONS  = [ ]
+BLACKLIST_EXTENSIONS  = [ 'png', 'jpg', 'gif' ]
