@@ -223,6 +223,9 @@ class WikiFile( WikiPath ):
             return renderer.render( self.content() )
 
         # No renderer found
+        if self.is_binary:
+            return self.content( decode = False )
+
         return self.content()
 
 
@@ -244,9 +247,11 @@ class WikiFile( WikiPath ):
         return False
 
 
-    def content(self, content=None):
+    def content( self, content = None, decode = True ):
         fp = open(self.abs_path, 'r')
-        ct = fp.read().decode( 'utf-8' )
+        ct = fp.read()
+        if decode:
+            ct.decode( 'utf-8' )
         fp.close()
 
         if not content:

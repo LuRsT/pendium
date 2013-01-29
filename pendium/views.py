@@ -1,6 +1,7 @@
 import os
 import markdown
 import traceback
+import mimetypes
 
 from flask import ( Flask, Markup, render_template, flash, redirect, url_for,
                     abort, g, request, escape, Response )
@@ -155,8 +156,7 @@ def view( path ):
     except PathNotFound:
         abort(404)
 
-
-    if p.is_leaf:
+    if p.is_leaf and not p.is_binary:
         return render_template( 'view.html', file     = p,
                                              files    = p.items(),
                                              rendered = p.render()
@@ -168,8 +168,8 @@ def view( path ):
                                              home_file = home_file
                               )
     else:
-        #TODO: Download the file!
-        pass
+        ( mimetype, enc ) = mimetypes.guess_type( p.path )
+        return Response( p.render(), mimetype = mimetype)
 
 
 @app.route( '/search/', methods=[ 'GET', 'POST' ] )
@@ -209,7 +209,6 @@ def raw( path ):
         abort(404)
 
     if p.is_leaf:
-        #return p.content()
         return Response(p.content(), mimetype='text/plain')
 
     abort(404)
