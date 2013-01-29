@@ -155,30 +155,31 @@ class WikiPath(object):
     def editable(self):
         return os.access(self.abs_path , os.W_OK)
 
-    def delete(self):
+    def delete( self ):
         top = self.abs_path
-        for root, dirs, files in os.walk(top, topdown=False):
+        for root, dirs, files in os.walk( top, topdown = False ):
             for name in files:
-                logger.debug("Will remove FILE: %s", os.path.join(root, name) )
-                os.remove(os.path.join(root, name))
+                logger.debug("Will remove FILE: %s", os.path.join( root, name ) )
+                os.remove( os.path.join( root, name ) )
             for name in dirs:
-                logger.debug("Will remove DIR: %s", os.path.join(root, name) )
-                os.rmdir(os.path.join(root, name))
+                logger.debug("Will remove DIR: %s", os.path.join( root, name ) )
+                os.rmdir( os.path.join( root, name ) )
 
         if self.is_node:
-            logger.debug("Will remove DIR: %s", self.abs_path )
+            logger.debug( "Will remove DIR: %s", self.abs_path )
             os.rmdir( self.abs_path )
         else:
-            logger.debug("Will remove FILE: %s", self.abs_path )
+            logger.debug( "Will remove FILE: %s", self.abs_path )
             os.remove( self.abs_path )
 
         if self.wiki.git_support:
             repo = self.wiki.git_repo()
             repo.git.rm( self.path, r=True )
-            repo.git.commit( m='Path deleted' )
+            repo.git.commit( m = 'Path deleted' )
 
             if self.wiki.git_repo_branch_has_remote():
                 repo.git.push()
+
 
 class WikiFile( WikiPath ):
     def __init__( self, *args, **kwargs ):
@@ -202,7 +203,6 @@ class WikiFile( WikiPath ):
         #if no renderer found and binary, give up
         if self.is_binary:
             return None
-
 
         #if is not binary and we have a default renderer
         # return it
@@ -291,4 +291,4 @@ class WikiDir( WikiPath ):
         os.makedirs( new_abs_path )
         np = self.wiki.get( os.path.join( self.path, name ) )
 
-        return np 
+        return np
