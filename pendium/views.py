@@ -55,6 +55,28 @@ def create_folder( path=None ):
 
     return render_template( 'create_folder.html', file = p, foldername=foldername )
 
+@app.route('/_delete_/<path:path>', methods=[ 'GET', 'POST' ] )
+def delete( path ):
+    try:
+        p = g.wiki.get( path )
+    except PathNotFound:
+        abort(404)
+
+    if not p.editable:
+        abort(500)
+
+    if request.form.get('delete', None):
+        try:
+            parent = p.ancestor()
+            p.delete()
+            flash("'%s' successfull deleted" % p.name, 'success')
+            return redirect( url_for('view', path=parent.path) )
+
+        except Exception, e:
+            app.logger.error( traceback.format_exc() )
+            flash("There was a problem deleting '%s': %s" % (p.name,e), 'error')
+
+    return render_template( 'delete.html', file = p )
 
 @app.route('/_create_file_/',            methods=[ 'GET', 'POST' ] )
 @app.route('/_create_file_/<path:path>', methods=[ 'GET', 'POST' ] )
