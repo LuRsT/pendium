@@ -11,17 +11,22 @@ from pendium.filesystem import ( Wiki, PathNotFound, PathExists )
 @app.route('/')
 def index():
     p         = g.wiki.root()
+    home_file = get_home()
+    return render_template( 'index.html', files     = p.items(),
+                                          home_file = home_file
+                          )
+
+
+def get_home( path = '' ):
     home_file = None
     try:
-        home_file = g.wiki.get( app.config['DEFAULT_HOME_FILE'] )
+        home_file = g.wiki.get(
+                        os.path.join( path, app.config['DEFAULT_HOME_FILE'] ) )
+        home_file = home_file.render()
     except:
-        return render_template( 'index.html', files = p.items(), )
+        pass
 
-    if home_file != None and ( home_file.is_leaf and home_file.can_render ):
-        return render_template( 'index.html', home_file = home_file.render(),
-                                              files     = p.items(),
-                              )
-
+    return home_file
 
 
 @app.route('/_create_folder_/',            methods=[ 'GET', 'POST' ] )
@@ -150,13 +155,18 @@ def view( path ):
     except PathNotFound:
         abort(404)
 
+
     if p.is_leaf:
         return render_template( 'view.html', file     = p,
                                              files    = p.items(),
                                              rendered = p.render()
                               )
     elif p.is_node:
-        return render_template( 'list.html', files = p.items(), file = p )
+        home_file = get_home( p.path )
+        return render_template( 'list.html', file      = p,
+                                             files     = p.items(),
+                                             home_file = home_file
+                              )
     else:
         #TODO: Download the file!
         pass

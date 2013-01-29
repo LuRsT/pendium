@@ -2,38 +2,45 @@
 
 {% block head_title %}{{ file.path }}{% endblock %}
 {% block title %}
-  <a href="{{ url_for('index') }}">Pendium</a>&nbsp;&gt;&nbsp;
-  {% for a in file.ancestors()[1:] %}
-  <a href="{{ url_for('view', path=a.path) }}">{{ a.name }}</a>&nbsp;&gt;&nbsp;
-  {% endfor %}
-  {{ file.name }}
+    <a href="{{ url_for('index') }}">Pendium</a>&nbsp;&gt;&nbsp;
+    {% for a in file.ancestors()[1:] %}
+        <a href="{{ url_for('view', path=a.path) }}">{{ a.name }}</a>&nbsp;&gt;&nbsp;
+    {% endfor %}
+    {{ file.name }}
 {% endblock %}
 
 {% block content %}
-    <h3><i class="icon-folder-open"></i> <a href="{{ url_for('index') }}">Files</a> / 
-    {% for a in file.ancestors()[1:] %}
-      <a href="{{ url_for('view', path=a.path) }}">{{ a.name }}</a> /
-    {% endfor %}
-    {{ file.name }}
-    </h3>
-    {% if not files %}
-        <h4>No files found :(</h3>
-        <p>Start by adding some files to your wiki folder.</p>
-    {% else %}
-        <ul>
-            {% for file in files %}
-                <li style="list-style: none;">
-                    <i class="{% if file.is_node %}icon-folder-close{% else %}icon-file{% endif %}"></i>
-                    <a href="{{ url_for( 'view', path=file.path ) }}">{{ file.name }}</a>
-                </li>
+    <div class="span3">
+        <h3><i class="icon-folder-open"></i> <a href="{{ url_for('index') }}">Files</a> /
+            {% for a in file.ancestors()[1:] %}
+                <a href="{{ url_for('view', path=a.path) }}">{{ a.name }}</a> /
             {% endfor %}
-        </ul>
-    {% endif %}
+            {{ file.name }}
+        </h3>
+        {% if not files %}
+            <h4>No files found :(</h3>
+            <p>Start by adding some files to your wiki folder.</p>
+        {% else %}
+            <ul>
+                {% for file in files %}
+                    <li style="list-style: none;">
+                        <i class="{% if file.is_node %}icon-folder-close{% else %}icon-file{% endif %}"></i>
+                        <a href="{{ url_for( 'view', path=file.path ) }}">{{ file.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
 
+    {% if home_file %}
+        <div class="span6">
+            {{ home_file }}
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block plugin_menu %}
     <li><a href="{{ url_for( 'create_file',   path=file.path ) }}"><i class="icon-plus-sign"></i> Create File</a></li>
     <li><a href="{{ url_for( 'create_folder', path=file.path ) }}"><i class="icon-plus-sign"></i> Create Folder</a></li>
-    <li><a href="{{ url_for( 'delete',        path=file.path ) }}"><i class="icon-trash"></i> Delete</a></li>
+    <li><a href="{{ url_for( 'delete',        path=file.path ) }}"><i class="icon-trash"></i>     Delete</a></li>
 {% endblock %}
