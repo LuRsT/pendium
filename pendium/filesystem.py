@@ -251,7 +251,7 @@ class WikiFile( WikiPath ):
         fp = open(self.abs_path, 'r')
         ct = fp.read()
         if decode:
-            ct.decode( 'utf-8' )
+            ct = ct.decode( 'utf-8' )
         fp.close()
 
         if not content:
