@@ -1,4 +1,5 @@
 import os
+import json
 import markdown
 import traceback
 import mimetypes
@@ -176,16 +177,25 @@ def view( path ):
 def search():
     context = { 'searched' : False }
 
-    if request.form.get('q', None):
-        term = request.form.get('q')
+    js = json.dumps( {} )
+    if request.args.get('q', None):
+        term = request.args.get('q')
         app.logger.debug("Searching for '%s'" % term )
         hits = g.wiki.search(term)
-        context['searched'] = True
-        context['term']     = term
-        context['hits']     = len(hits)
-        context['results']  = hits
 
-    return render_template('search.html', **context)
+        hits_dicts = []
+        for hit in hits:
+            hits_dicts.append({ 'hit': term + ": " + hit.name, 'path': hit.path } )
+
+        data = {
+            'searched' : True,
+            'term'     : term,
+            'hits'     : len( hits ),
+            'results'  : hits_dicts,
+        }
+        js = json.dumps( data )
+
+    return Response( js, mimetype = 'application/json' )
 
 
 @app.route('/refresh/')
