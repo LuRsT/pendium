@@ -54,7 +54,9 @@
                                     <i class="icon-cog"></i> <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu" style="" aria-labelledby="drop_plugins" role="menu">
-                                    <li><input style="margin-left: 10px; margin-right: 10px;" type="text" id="searchbox_type" data-provider="typeahead"/></li>
+                                    <li><form>
+                                        <input style="margin-left: 10px; margin-right: 10px;" type="text" id="searchbox_type" data-provider="typeahead"/>
+                                    </form></li>
                                     {% if config.get('WIKI_GIT_SUPPORT') %}
                                         <li class="divider"></li>
                                         <li>
