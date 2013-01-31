@@ -75,6 +75,9 @@ Note: Pendium was hacked in python 2.7, so use the appropriate command to run it
 * ~~Edit files~~
 * ~~Create files~~
 * ~~Create dirs~~
+* ~~Delete files/dirs~~
+* Better editor
+* Version Control with plugins
 * Keyboard shortcuts
 
 ### Notes
