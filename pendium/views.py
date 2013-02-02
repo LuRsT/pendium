@@ -158,6 +158,9 @@ def view( path ):
         abort(404)
 
     if p.is_leaf and not p.is_binary:
+        if not p.can_render:
+            flash("No renderer found, fallback to plain text", 'warning')
+
         return render_template( 'view.html', file     = p,
                                              files    = p.items(),
                                              rendered = p.render()

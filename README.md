@@ -6,24 +6,27 @@ This is a web app for all your markdown files, you can use it for reading them i
 
 [![Screenshot](http://i.imgur.com/gxCYN8Rl.png)](http://i.imgur.com/gxCYN8R.png)
 
+Powered by Python 2.7
+
 ### Requirements
 
 * Flask
 * Markdown
 * yapsy
-* GitPython # Optional
-* docutils  # Optional
-* pygments  # Optional
+* GitPython # Optional for git support
+* docutils  # Optional for rest documents
+* pygments  # Optional for python documents
 
 ### Setup
 
-To get yourself up and running you only need to run these commands
+To get yourself up and running you only need to run these commands:
 
     git clone git://github.com/LuRsT/Pendium.git
     cd Pendium
     pip install `cat requirements.txt`
 
-Note: Pendium was hacked in python 2.7, so use the appropriate command to install de dependencies e.g. in arch linux it's 'pip2'
+Note: Pendium was hacked in python 2.7, so use the appropriate command to install de dependencies e.g. in arch linux it's 'pip2'.
+Note2: Remember to install the optional requirements in order to unleash the full power of Pendium.
 
 ##### Git Support
 
@@ -57,11 +60,11 @@ with this you made yourself a git repo, now run these:
 
 ### Running it
 
-To use Pendium simply execute the run.py file
+To use Pendium simply execute the run.py file:
 
     python run.py
 
-By the default config it should read the files from the wiki dir inside the pendium directory, change the directory in the config file or symlink your own dir.
+By default it should read the files from the wiki dir inside the pendium directory, change the directory in the config file or symlink your own dir.
 
 Note: Pendium was hacked in python 2.7, so use the appropriate command to run it e.g. in arch linux it's 'python2'
 
