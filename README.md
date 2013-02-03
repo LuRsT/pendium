@@ -28,7 +28,13 @@ To get yourself up and running you only need to run these commands:
 Note: Pendium was hacked in python 2.7, so use the appropriate command to install de dependencies e.g. in arch linux it's 'pip2'.
 Note2: Remember to install the optional requirements in order to unleash the full power of Pendium.
 
-##### Git Support
+##### Config
+
+If you want to change the config, move the config.py\_example file to config.py
+
+    mv config.py_example config.py
+
+#### Git Support
 
 Before you do anything be sure to enable git support in the config file ( config.py ):
 

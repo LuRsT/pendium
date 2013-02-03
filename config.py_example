@@ -1,8 +1,9 @@
 # Wiki root dir
-WIKI_DIR = 'wiki'
+#WIKI_DIR = 'wiki'
+#
 # This is all you have to define for a simple usage. Bellow, commented, are the default settings. Change at will, but you don't need to
 
-# Wich ip to bind to
+# Which ip to bind to
 #HOST_IP  = ''
 
 # Which renderer to use for which file extension
@@ -27,8 +28,14 @@ WIKI_DIR = 'wiki'
 # Manage your wiki with git, you must have the git repository initialized
 #WIKI_GIT_SUPPORT      = False
 
+# File that is displayed once we're viewing each directory ( including root )
+# Use this to create a quick description of what that folder is and provide 
+# some quick links to files
 #DEFAULT_HOME_FILE     = 'home.md'
 
+# Pendium comes with a ton of stylesheets ready to print your code beautifully,
+# choose your stylesheet wisely ( or not )
 #CODEHILITE_STYLESHEET = 'plain.css'
 
+# Files with these extensions won't show up in the files list
 #BLACKLIST_EXTENSIONS  = [ 'png', 'jpg', 'gif' ]

@@ -4,6 +4,7 @@ TESTING    = True
 SECRET_KEY = 'pendiumissopendular'
 
 # Pendium config
+WIKI_DIR              = 'wiki'
 HOST_IP               = None
 
 WIKI_EXTENSIONS       = { 'Markdown' : [ 'md', 'mdw' ],
