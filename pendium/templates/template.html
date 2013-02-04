@@ -9,8 +9,8 @@
 
     <!-- Le styles -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/pendium.css' )       }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/font-awesome.css' )  }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/pendium.css' )       }}" rel="stylesheet">
 
     <link href="{{ url_for('static', filename='css/codehilite/' + config.get('CODEHILITE_STYLESHEET') ) }}" rel="stylesheet">
 
@@ -38,7 +38,7 @@
                                 <a id="drop_files" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
                                     <i class="icon-folder-open"></i> <b class="caret"></b>
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="drop_files" role="menu">
+                                <ul class="dropdown-menu drop_files" aria-labelledby="drop_files" role="menu">
                                     {% for file in files %}
                                         <li class="{% if filename == file.name %}active{% endif %}">
                                             <a href="{{ url_for('view', path=file.path ) }}">
@@ -53,7 +53,7 @@
                                 <a id="drop_plugins" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
                                     <i class="icon-cog"></i> <b class="caret"></b>
                                 </a>
-                                <ul class="dropdown-menu" style="" aria-labelledby="drop_plugins" role="menu">
+                                <ul class="dropdown-menu drop_plugins" style="" aria-labelledby="drop_plugins" role="menu">
                                     <li><form>
                                         <input placeholder="Search" type="text" id="searchbox_type" data-provider="typeahead"/>
                                     </form></li>
@@ -99,8 +99,9 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{{ url_for('static', filename='js/jquery.js')    }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/pendium.js')   }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.js')         }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.hotkeys.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.js')      }}"></script>
+    <script src="{{ url_for('static', filename='js/pendium.js')        }}"></script>
 </body>
 </html>

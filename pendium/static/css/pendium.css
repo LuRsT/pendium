@@ -1,4 +1,4 @@
-/* Default theme is a monochrom theme */
+/* Default theme is a monochrome theme */
 body {
     padding-top: 60px;
 }
@@ -18,7 +18,7 @@ a:hover {
     text-decoration: none;
 }
 
-.navbar h5{
+.navbar h5 {
     color: #999;
 }
 
@@ -26,21 +26,26 @@ a:hover {
     color: white;
 }
 
-
 .dropdown-menu li > a:hover, .dropdown-menu li > a:focus, .dropdown-submenu:hover > a {
     background-color: grey;
     background-image: none;
 }
 
-.navbar-inverse .nav .active > a, .navbar-inverse .nav .active > a:hover, .navbar-inverse .nav .active > a:focus {
+.navbar-inverse .nav .active > a,
+.navbar-inverse .nav .active > a:hover,
+.navbar-inverse .nav .active > a:focus {
     background-color: grey;
     background-image: none;
 }
 
 input#searchbox_type {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left:   10px;
+    margin-right:  10px;
     margin-bottom: 10px;
+}
+
+ul.typeahead  {
+    width: 300px;
 }
 
 /* Reset bootstrap for codehilite */

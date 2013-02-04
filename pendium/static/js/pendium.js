@@ -23,4 +23,20 @@ $(document).ready(function() {
             });
         }
     });
+
+    /* Keyboard shortcuts */
+
+    $(document).bind('keydown', 'j', function() {
+        $(document).scrollTop( $(document).scrollTop() + 100);
+    });
+
+    $(document).bind('keydown', 'k', function() {
+        $(document).scrollTop( $(document).scrollTop() - 100);
+    });
+
+    $(document).bind('keyup', 's', function() {
+        $('.drop_plugins').parent().addClass('open');
+        $('#searchbox_type').focus();
+        this.value = this.value.replace('s', '');
+    });
 });
