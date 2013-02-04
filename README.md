@@ -34,6 +34,22 @@ If you want to change the config, move the config.py\_example file to config.py
 
     mv config.py_example config.py
 
+##### Where is my typographic punctuation ( aka smartypants )?
+
+Fear not, for python's markdown module has that extension, in order to activate it, you'll need first to install the extension since it does not come with markdown:
+
+pip install mdx\_smartypants
+
+Once installed, add 'smartypants' to the markdown extension dict in your config file:
+
+    WIKI_PLUGINS_CONFIG   = { "Markdown" : { 'extensions' : [ 'headerid', 'toc',
+                                                              'tables', 'footnotes',
+                                                              'fenced_code', 'codehilite',
+                                                              'smartypants'  # <- here, don't forget the comma
+                                                            ]
+                                           },
+                            }
+
 #### Git Support
 
 Before you do anything be sure to enable git support in the config file ( config.py ):
