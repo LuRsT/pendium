@@ -38,7 +38,7 @@ If you want to change the config, move the config.py\_example file to config.py
 
 Fear not, for python's markdown module has that extension, in order to activate it, you'll need first to install the extension since it does not come with markdown:
 
-pip install mdx\_smartypants
+    pip install mdx_smartypants
 
 Once installed, add 'smartypants' to the markdown extension dict in your config file:
 
