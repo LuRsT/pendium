@@ -16,6 +16,7 @@ Powered by Python 2.7
 * GitPython # Optional for git support
 * docutils  # Optional for rest documents
 * pygments  # Optional for python documents
+* mdx_smartypants # Optional for smartypants, don't forget to read the doc bellow
 
 ### Setup
 
