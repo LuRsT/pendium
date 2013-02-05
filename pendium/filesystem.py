@@ -37,6 +37,7 @@ class Wiki( object ):
         self.extensions       = extensions
         self.default_renderer = default_renderer
         self.git_support      = git_support
+        self.has_vcs          = git_support
 
         for name, configuration in plugins_config.items():
 
@@ -247,7 +248,7 @@ class WikiFile( WikiPath ):
         return False
 
 
-    def content( self, content = None, decode = True ):
+    def content( self, content = None, decode = True, comment = None ):
         fp = open(self.abs_path, 'r')
         ct = fp.read()
         if decode:
@@ -266,9 +267,11 @@ class WikiFile( WikiPath ):
         fp.close()
 
         if self.wiki.git_support:
+            if not comment:
+                comment="New content version"
             repo = self.wiki.git_repo()
             repo.git.add( self.path )
-            repo.git.commit( m='New content version' )
+            repo.git.commit( m=comment )
 
             if self.wiki.git_repo_branch_has_remote():
                 repo.git.push()

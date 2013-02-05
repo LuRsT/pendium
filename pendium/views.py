@@ -106,7 +106,9 @@ def create_file( path=None ):
         filecontent = request.form.get('content')
         try:
             new_file = p.create_file( filename )
-            new_file.content( filecontent )
+            new_file.content( filecontent, 
+                              comment=request.form.get('message',None) 
+                            )
             flash("File created with the provided content", 'success')
             return redirect( url_for('view', path=p.path) )
         except PathExists, pe:
@@ -137,7 +139,7 @@ def edit( path ):
     if request.form.get('save', None):
         content = request.form.get('content')
         try:
-            p.content( content )
+            p.content( content, comment=request.form.get('message', None) )
             flash("File saved with the new provided content", 'success')
             return redirect( url_for('view', path=path) )
         except Exception, e:
