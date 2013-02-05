@@ -150,7 +150,7 @@ class WikiPath(object):
             complete_path = os.path.join( self.path, f )
             filenames.append( self.wiki.get( complete_path ) )
 
-        return filenames
+        return sorted(filenames, key=lambda Wiki: Wiki.is_leaf)
 
     @property
     def editable(self):
