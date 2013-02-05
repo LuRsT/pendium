@@ -57,7 +57,7 @@
                                     <li><form>
                                         <input placeholder="Search" type="text" id="searchbox_type" data-provider="typeahead"/>
                                     </form></li>
-                                    {% if config.get('WIKI_GIT_SUPPORT') %}
+                                    {% if g.wiki.has_vcs %}
                                         <li class="divider"></li>
                                         <li>
                                             <a href="{{ url_for('refresh' ) }}" title="Git Refresh">
