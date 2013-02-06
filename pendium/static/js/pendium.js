@@ -35,8 +35,17 @@ $(document).ready(function() {
     });
 
     $(document).bind('keyup', 's', function() {
-        $('.drop_plugins').parent().addClass('open');
+        $('#drop_plugins').dropdown('toggle');
         $('#searchbox_type').focus();
         this.value = this.value.replace('s', '');
     });
+
+    $(document).bind('keyup', 'f', function() {
+        $('#drop_files').dropdown('toggle');
+    });
+
+    $(document).bind('keyup', 'h', function() {
+        $('#shortcuts_help').modal();
+    });
+
 });
