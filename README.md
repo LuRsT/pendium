@@ -51,6 +51,12 @@ Once installed, add 'smartypants' to the markdown extension dict in your config 
                                            },
                             }
 
+##### Where is [whatever markdown extension you want]?
+
+Python's markdown modules comes with other extensions which you can activate the same way, you did ( or did not ) with smartypants, by adding it to the WIKI_PLUGINS_CONFIG, markdown extensions array.
+
+[Good link about markdown extensions](http://packages.python.org/Markdown/extensions/extra.html)
+
 #### Git Support
 
 Before you do anything be sure to enable git support in the config file ( config.py ):
