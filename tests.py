@@ -31,7 +31,7 @@ class PendiumTestCase(unittest.TestCase):
     def test_is_dir( self ):
         w = Wiki('wiki')
         try:
-            p = w.get('one_folder')
+            p = w.get('')
             assert False == p.is_leaf
             assert True  == p.is_node
         except Exception, e:
@@ -40,7 +40,7 @@ class PendiumTestCase(unittest.TestCase):
     def test_create_file( self ):
         w = Wiki('wiki')
         try:
-            p = w.get('one_folder')
+            p = w.get('')
             new_file = p.create_file( 'test_create.md' )
             assert True  == new_file.is_leaf
             assert False == new_file.is_node
@@ -53,9 +53,9 @@ class PendiumTestCase(unittest.TestCase):
     def test_delete_file( self ):
         w = Wiki('wiki')
         try:
-            p = w.get('one_folder/test_create.md')
+            p = w.get('test_create.md')
             p.delete()
-            w.get('one_folder/test_create.md')
+            w.get('test_create.md')
         except PathNotFound:
             pass
         except Exception, e:
