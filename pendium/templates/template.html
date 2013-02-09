@@ -76,7 +76,7 @@
         </div>
     </header>
 
-    <div class="container">
+    <div class="container content">
         <div class="span2"></div>
         <div class="span10">
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -120,7 +120,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="{{ url_for('static', filename='js/jquery.js')         }}"></script>
     <script src="{{ url_for('static', filename='js/jquery.hotkeys.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.js')      }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js')  }}"></script>
     <script src="{{ url_for('static', filename='js/pendium.js')        }}"></script>
 </body>
 </html>
