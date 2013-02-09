@@ -1,29 +1,29 @@
 import os
 import json
-import markdown
 import traceback
 import mimetypes
 
-from flask import ( Flask, Markup, render_template, flash, redirect, url_for,
+from flask import ( Flask, render_template, flash, redirect, url_for,
                     abort, g, request, escape, Response )
 
 from pendium import app
 from pendium.filesystem import ( Wiki, PathNotFound, PathExists )
 
+
 @app.route('/')
 def index():
     p         = g.wiki.root()
     home_file = get_home()
-    return render_template( 'index.html', files     = p.items(),
-                                          home_file = home_file
-                          )
+    return render_template( 'index.html',
+                            files=p.items(),
+                            home_file=home_file )
 
 
-def get_home( path = '' ):
+def get_home( path='' ):
     home_file = None
     try:
-        home_file = g.wiki.get(
-                        os.path.join( path, app.config['DEFAULT_HOME_FILE'] ) )
+        home_path =  os.path.join(path, app.config['DEFAULT_HOME_FILE'])
+        home_file = g.wiki.get(home_path)
         home_file = home_file.render()
     except:
         pass
@@ -35,7 +35,7 @@ def get_home( path = '' ):
 @app.route('/_create_folder_/<path:path>', methods=[ 'GET', 'POST' ] )
 def create_folder( path=None ):
     p = g.wiki.root()
-    if path != None:
+    if path is not None:
         try:
             p = g.wiki.get( path )
         except PathNotFound:
@@ -47,9 +47,8 @@ def create_folder( path=None ):
     foldername = None
 
     if request.form.get('save', None):
-        foldername    = request.form.get('foldername')
+        foldername = request.form.get('foldername')
         try:
-            new_folder = p.create_directory( foldername )
             flash("New folder created", 'success')
             return redirect( url_for('view', path=p.path) )
         except PathExists, pe:
@@ -60,7 +59,10 @@ def create_folder( path=None ):
             app.logger.error( traceback.format_exc() )
             flash("There was a problem creating your folder: %s" % e, 'error')
 
-    return render_template( 'create_folder.html', file = p, foldername=foldername )
+    return render_template('create_folder.html',
+                           file=p,
+                           foldername=foldername)
+
 
 @app.route('/_delete_/<path:path>', methods=[ 'GET', 'POST' ] )
 def delete( path ):
@@ -81,15 +83,17 @@ def delete( path ):
 
         except Exception, e:
             app.logger.error( traceback.format_exc() )
-            flash("There was a problem deleting '%s': %s" % (p.name,e), 'error')
+            msg = "There was a problem deleting '%s': %s" % (p.name, e)
+            flash(msg, 'error')
 
-    return render_template( 'delete.html', file = p )
+    return render_template('delete.html', file=p)
+
 
 @app.route('/_create_file_/',            methods=[ 'GET', 'POST' ] )
 @app.route('/_create_file_/<path:path>', methods=[ 'GET', 'POST' ] )
 def create_file( path=None ):
     p = g.wiki.root()
-    if path != None:
+    if path is not None:
         try:
             p = g.wiki.get( path )
         except PathNotFound:
@@ -98,17 +102,16 @@ def create_file( path=None ):
     if not p.is_node:
         abort(500)
 
-    filename   =None
-    filecontent=None
+    filename    = None
+    filecontent = None
 
     if request.form.get('save', None):
         filename    = request.form.get('filename')
         filecontent = request.form.get('content')
         try:
             new_file = p.create_file( filename )
-            new_file.content( filecontent, 
-                              comment=request.form.get('message',None) 
-                            )
+            new_file.content( filecontent,
+                              comment=request.form.get('message', None) )
             flash("File created with the provided content", 'success')
             return redirect( url_for('view', path=p.path) )
         except PathExists, pe:
@@ -119,7 +122,10 @@ def create_file( path=None ):
             app.logger.error( traceback.format_exc() )
             flash("There was a problem saving your file : %s" % e, 'error')
 
-    return render_template( 'create.html', file = p, filename=filename, filecontent=filecontent )
+    return render_template( 'create.html',
+                            file=p,
+                            filename=filename,
+                            filecontent=filecontent )
 
 
 @app.route('/_edit_/<path:path>', methods=[ 'GET', 'POST' ] )
@@ -146,10 +152,10 @@ def edit( path ):
             app.logger.error( traceback.format_exc() )
             flash("There was a problem saving your file : %s" % e, 'error')
 
-    return render_template( 'edit.html', file         = p,
-                                         files        = p.items(),
-                                         file_content = escape(content),
-                          )
+    return render_template( 'edit.html',
+                            file=p,
+                            files=p.items(),
+                            file_content=escape(content) )
 
 
 @app.route('/<path:path>')
@@ -163,25 +169,23 @@ def view( path ):
         if not p.can_render:
             flash("No renderer found, fallback to plain text", 'warning')
 
-        return render_template( 'view.html', file     = p,
-                                             files    = p.items(),
-                                             rendered = p.render()
-                              )
+        return render_template( 'view.html',
+                                file=p,
+                                files=p.items(),
+                                rendered=p.render() )
     elif p.is_node:
         home_file = get_home( p.path )
-        return render_template( 'list.html', file      = p,
-                                             files     = p.items(),
-                                             home_file = home_file
-                              )
+        return render_template( 'list.html',
+                                file=p,
+                                files=p.items(),
+                                home_file=home_file )
     else:
         ( mimetype, enc ) = mimetypes.guess_type( p.path )
-        return Response( p.render(), mimetype = mimetype)
+        return Response( p.render(), mimetype=mimetype)
 
 
 @app.route( '/search/', methods=[ 'GET', 'POST' ] )
 def search():
-    context = { 'searched' : False }
-
     js = json.dumps( {} )
     if request.args.get('q', None):
         term = request.args.get('q')
@@ -190,7 +194,8 @@ def search():
 
         hits_dicts = []
         for hit in hits:
-            hits_dicts.append({ 'hit': term + ": " + hit.name, 'path': hit.path } )
+            hits_dicts.append({ 'hit'  : term + ": " + hit.name,
+                                'path' : hit.path })
 
         data = {
             'searched' : True,
@@ -200,7 +205,7 @@ def search():
         }
         js = json.dumps( data )
 
-    return Response( js, mimetype = 'application/json' )
+    return Response( js, mimetype='application/json' )
 
 
 @app.route('/refresh/')
@@ -244,8 +249,8 @@ def not_found( error ):
 def before_request():
     config = app.config
     g.wiki = Wiki( config['WIKI_DIR'],
-                   extensions       = config.get( 'WIKI_EXTENSIONS',       {}    ),
-                   default_renderer = config.get( 'WIKI_DEFAULT_RENDERER', None  ),
-                   plugins_config   = config.get( 'WIKI_PLUGINS_CONFIG',   {}    ),
-                   git_support      = config.get( 'WIKI_GIT_SUPPORT',      False )
+                   extensions       = config.get( 'WIKI_EXTENSIONS', {} ),
+                   default_renderer = config.get( 'WIKI_DEFAULT_RENDERER', None ),
+                   plugins_config   = config.get( 'WIKI_PLUGINS_CONFIG', {} ),
+                   git_support      = config.get( 'WIKI_GIT_SUPPORT', False )
                  )

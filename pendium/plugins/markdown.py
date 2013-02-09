@@ -4,8 +4,9 @@ from flask import Markup
 from pendium.utils import load_config
 from pendium.plugins import IRenderPlugin
 
+
 class Markdown( IRenderPlugin ):
-    name       = "Markdown"
+    name = "Markdown"
 
     def __init__(self):
         super( Markdown, self ).__init__()
@@ -15,6 +16,6 @@ class Markdown( IRenderPlugin ):
         self.extensions = configuration.get( 'extensions', [] )
 
     def render( self, content ):
-        markdown_content = markdown.markdown( content, self.extensions ) 
+        markdown_content = markdown.markdown( content, self.extensions )
 
         return Markup( markdown_content )

@@ -5,6 +5,7 @@ from pygments.formatters import HtmlFormatter
 from flask               import Markup
 from pendium.plugins     import IRenderPlugin
 
+
 class Python( IRenderPlugin ):
     name = "Python"
 

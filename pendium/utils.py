@@ -1,5 +1,6 @@
 from pendium import app
 
+
 def load_config():
     #Load default config
     app.config.from_object('pendium.default_config')

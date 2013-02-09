@@ -1,8 +1,9 @@
 import os
 from pendium.plugins import ISearchPlugin
 
+
 class Grep(ISearchPlugin):
-    search_speed = 2 #Quicker plugins get chosen first
+    search_speed = 2  # Quicker plugins get chosen first
 
     def _add_hit(self, hits, wikipath, score):
         hit = hits.get(wikipath.path, { 'score': 0, 'obj': wikipath })
@@ -10,7 +11,7 @@ class Grep(ISearchPlugin):
         hits[wikipath.path] = hit
         return hits
 
-    def _search_path(self,wikipath, regex, hits):
+    def _search_path(self, wikipath, regex, hits):
         if regex.search( wikipath.name ):
             hits = self._add_hit(hits, wikipath, 1)
 

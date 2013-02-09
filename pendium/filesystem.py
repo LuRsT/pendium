@@ -2,7 +2,6 @@ import os
 import codecs
 
 from yapsy.PluginManager import PluginManager
-from flask               import current_app
 from pendium.plugins     import IRenderPlugin, ISearchPlugin
 from pendium             import app
 
@@ -12,27 +11,30 @@ logger = logging.getLogger(__name__)
 # Populate plugins
 manager = PluginManager()
 manager.setPluginPlaces( [ "pendium/plugins" ] )
-manager.setCategoriesFilter({
-                        "Search" : ISearchPlugin,
-                        "Render" : IRenderPlugin,
-                        })
+manager.setCategoriesFilter({ "Search" : ISearchPlugin,
+                              "Render" : IRenderPlugin, })
 manager.collectPlugins()
+
 
 class PathExists( Exception ):
     pass
 
+
 class PathNotFound( Exception ):
     pass
+
 
 class CannotRender( Exception ):
     pass
 
+
 class NoSearchPluginAvailable( Exception ):
     pass
 
+
 class Wiki( object ):
     def __init__( self, basepath, extensions={}, default_renderer=None,
-                        plugins_config={}, git_support=False ):
+                  plugins_config={}, git_support=False ):
         self.basepath         = basepath
         self.extensions       = extensions
         self.default_renderer = default_renderer
@@ -46,9 +48,9 @@ class Wiki( object ):
                 if not plugin:
                     continue
 
-                logger.debug( "Configuring plugin: %s with :%s" % (name, configuration) ) 
+                logger.debug("Configuring plugin: %s with :%s" % (name,
+                                                                  configuration))
                 plugin.plugin_object.configure( configuration )
-
 
     def search( self, term ):
         best_plugin_score = 0
@@ -64,7 +66,6 @@ class Wiki( object ):
         logger.debug( "Searching with %s" % best_plugin.name ) 
 
         return best_plugin.plugin_object.search( self, term )
-
 
     def root( self ):
         return self.get( '.' )
@@ -98,7 +99,6 @@ class Wiki( object ):
         except:
             return False
 
-
     def git_repo(self):
         try:
             import git
@@ -121,18 +121,15 @@ class WikiPath(object):
         if not os.path.exists( self.abs_path ):
             raise PathNotFound( self.abs_path )
 
-
     def ancestor( self ):
         if self.path == '':
             return None
         return self.wiki.get( os.path.split( self.path )[0] )
 
-
     def ancestors( self ):
         if self.ancestor():
             return self.ancestor().ancestors() + [ self.ancestor() ]
         return []
-
 
     def items( self ):
         if not os.path.isdir( self.abs_path ):
@@ -144,7 +141,7 @@ class WikiPath(object):
                 continue
 
             if ( os.path.splitext( f )[1][1:] in
-                app.config['BLACKLIST_EXTENSIONS'] ):
+                 app.config['BLACKLIST_EXTENSIONS'] ):
                 continue
 
             complete_path = os.path.join( self.path, f )
@@ -158,12 +155,12 @@ class WikiPath(object):
 
     def delete( self ):
         top = self.abs_path
-        for root, dirs, files in os.walk( top, topdown = False ):
+        for root, dirs, files in os.walk( top, topdown=False ):
             for name in files:
-                logger.debug("Will remove FILE: %s", os.path.join( root, name ) )
+                logger.debug("Will remove FILE: %s", os.path.join(root, name))
                 os.remove( os.path.join( root, name ) )
             for name in dirs:
-                logger.debug("Will remove DIR: %s", os.path.join( root, name ) )
+                logger.debug("Will remove DIR: %s", os.path.join(root, name))
                 os.rmdir( os.path.join( root, name ) )
 
         if self.is_node:
@@ -176,7 +173,7 @@ class WikiPath(object):
         if self.wiki.git_support:
             repo = self.wiki.git_repo()
             repo.git.rm( self.path, r=True )
-            repo.git.commit( m = 'Path deleted' )
+            repo.git.commit( m='Path deleted' )
 
             if self.wiki.git_repo_branch_has_remote():
                 repo.git.push()
@@ -188,13 +185,13 @@ class WikiFile( WikiPath ):
         self.is_leaf   = True
         self.extension = os.path.splitext( self.name )[1][1:]
 
-
     def renderer( self ):
         for plugin in manager.getPluginsOfCategory('Render'):
             logger.debug( "Testing for plugin %s", plugin.plugin_object.name )
-            extensions = self.wiki.extensions.get(plugin.plugin_object.name, None)
+            extensions = self.wiki.extensions.get(plugin.plugin_object.name,
+                                                  None)
             if extensions is None:
-                continue #try the next plugin
+                continue  # Try the next plugin
 
             if self.extension in extensions:
                 logger.debug(self.extension)
@@ -212,11 +209,9 @@ class WikiFile( WikiPath ):
 
         return None
 
-
     @property
     def can_render( self ):
         return bool( self.renderer() )
-
 
     def render( self ):
         if self.can_render:
@@ -225,10 +220,9 @@ class WikiFile( WikiPath ):
 
         # No renderer found
         if self.is_binary:
-            return self.content( decode = False )
+            return self.content(decode=False)
 
         return self.content()
-
 
     @property
     def is_binary(self):
@@ -238,17 +232,16 @@ class WikiFile( WikiPath ):
             CHUNKSIZE = 1024
             while 1:
                 chunk = fin.read( CHUNKSIZE )
-                if '\0' in chunk: # found null byte
+                if '\0' in chunk:  # Found null byte
                     return  True
                 if len( chunk ) < CHUNKSIZE:
-                    break # done
+                    break  # Done
         finally:
             fin.close()
 
         return False
 
-
-    def content( self, content = None, decode = True, comment = None ):
+    def content( self, content=None, decode=True, comment=None ):
         fp = open(self.abs_path, 'r')
         ct = fp.read()
         if decode:
@@ -268,7 +261,7 @@ class WikiFile( WikiPath ):
 
         if self.wiki.git_support:
             if not comment:
-                comment="New content version"
+                comment = "New content version"
             repo = self.wiki.git_repo()
             repo.git.add( self.path )
             repo.git.commit( m=comment )
@@ -277,6 +270,7 @@ class WikiFile( WikiPath ):
                 repo.git.push()
 
         return content
+
 
 class WikiDir( WikiPath ):
     def __init__( self, *args, **kwargs ):

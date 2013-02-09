@@ -1,5 +1,6 @@
 from pendium.plugins import IRenderPlugin
 
+
 class HTML( IRenderPlugin ):
     name = "HTML"
 
