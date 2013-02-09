@@ -1,56 +1,56 @@
-import pendium
-from pendium.filesystem import ( Wiki, PathNotFound, PathExists )
+from pendium.filesystem import (Wiki, PathNotFound, PathExists)
 import unittest
+
 
 class PendiumTestCase(unittest.TestCase):
 
-    def setUp( self ):
+    def setUp(self):
         return
 
-    def test_path_not_found( self ):
+    def test_path_not_found(self):
         w = Wiki('wiki')
         try:
-            p = w.get('notafile.md')
-        except PathNotFound, e:
+            w.get('notafile.md')
+        except PathNotFound:
             pass
-        except Exception, e:
-            self.fail( 'Unexpected exception thrown' )
+        except Exception:
+            self.fail('Unexpected exception thrown')
         else:
             self.fail('ExpectedException not thrown')
 
-    def test_is_file( self ):
+    def test_is_file(self):
         w = Wiki('wiki')
         try:
             p = w.get('test.md')
-            assert True  == p.is_leaf
-            assert False == p.is_node
-            assert False == p.is_binary
-        except Exception, e:
-            self.fail( 'Unexpected exception thrown' )
+            assert p.is_leaf is True
+            assert p.is_node is False
+            assert p.is_binary is False
+        except Exception:
+            self.fail('Unexpected exception thrown')
 
-    def test_is_dir( self ):
+    def test_is_dir(self):
         w = Wiki('wiki')
         try:
             p = w.get('')
-            assert False == p.is_leaf
-            assert True  == p.is_node
-        except Exception, e:
-            self.fail( 'Unexpected exception thrown' )
+            assert p.is_leaf is False
+            assert p.is_node is True
+        except Exception:
+            self.fail('Unexpected exception thrown')
 
-    def test_create_file( self ):
+    def test_create_file(self):
         w = Wiki('wiki')
         try:
             p = w.get('')
-            new_file = p.create_file( 'test_create.md' )
-            assert True  == new_file.is_leaf
-            assert False == new_file.is_node
-            assert False == new_file.is_binary
+            new_file = p.create_file('test_create.md')
+            assert new_file.is_leaf is True
+            assert new_file.is_node is False
+            assert new_file.is_binary is False
         except PathExists:
-            self.fail( 'File already exists' )
-        except Exception, e:
-            self.fail( 'Unexpected exception thrown' )
+            self.fail('File already exists')
+        except Exception:
+            self.fail('Unexpected exception thrown')
 
-    def test_delete_file( self ):
+    def test_delete_file(self):
         w = Wiki('wiki')
         try:
             p = w.get('test_create.md')
@@ -58,11 +58,10 @@ class PendiumTestCase(unittest.TestCase):
             w.get('test_create.md')
         except PathNotFound:
             pass
-        except Exception, e:
-            self.fail( 'Unexpected exception thrown' )
+        except Exception:
+            self.fail('Unexpected exception thrown')
 
-
-    def tearDown( self ):
+    def tearDown(self):
         return
 
 if __name__ == '__main__':
