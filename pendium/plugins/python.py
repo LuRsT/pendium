@@ -1,13 +1,13 @@
-from pygments            import highlight
-from pygments.lexers     import PythonLexer
+from flask import Markup
+from pendium.plugins import IRenderPlugin
+
+from pygments import highlight
+from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
 
-from flask               import Markup
-from pendium.plugins     import IRenderPlugin
 
-
-class Python( IRenderPlugin ):
+class Python(IRenderPlugin):
     name = "Python"
 
-    def render( self, text ):
-        return Markup ( highlight(text, PythonLexer(), HtmlFormatter() ) )
+    def render(self, text):
+        return Markup(highlight(text, PythonLexer(), HtmlFormatter()))

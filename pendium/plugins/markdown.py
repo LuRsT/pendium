@@ -1,21 +1,20 @@
 import markdown
 
 from flask import Markup
-from pendium.utils import load_config
 from pendium.plugins import IRenderPlugin
 
 
-class Markdown( IRenderPlugin ):
+class Markdown(IRenderPlugin):
     name = "Markdown"
 
     def __init__(self):
-        super( Markdown, self ).__init__()
+        super(Markdown, self).__init__()
         self.extensions = []
 
-    def configure( self, configuration):
-        self.extensions = configuration.get( 'extensions', [] )
+    def configure(self, configuration):
+        self.extensions = configuration.get('extensions', [])
 
-    def render( self, content ):
-        markdown_content = markdown.markdown( content, self.extensions )
+    def render(self, content):
+        markdown_content = markdown.markdown(content, self.extensions)
 
-        return Markup( markdown_content )
+        return Markup(markdown_content)
