@@ -25,7 +25,6 @@ $(document).ready(function() {
     });
 
     /* Keyboard shortcuts */
-
     $(document).bind('keydown', 'j', function() {
         $(document).scrollTop( $(document).scrollTop() + 100);
     });
@@ -45,6 +44,13 @@ $(document).ready(function() {
 
     $(document).bind('keyup', 'h', function() {
         $('#shortcuts_help').modal();
+    });
+
+    $(document).bind('keyup', 'e', function() {
+        $("#edit_button").click(function(event) {
+            location = $("#edit_button").attr('href');
+        });
+        $("#edit_button").click();
     });
 
 });
