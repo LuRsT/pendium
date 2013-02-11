@@ -15,6 +15,7 @@ def index():
     p         = g.wiki.root()
     home_file = get_home()
     return render_template('index.html',
+                           file=p,
                            files=p.items(),
                            home_file=home_file)
 
@@ -42,6 +43,9 @@ def create_folder(path=None):
             abort(404)
 
     if not p.is_node:
+        abort(500)
+
+    if not p.editable:
         abort(500)
 
     foldername = None
@@ -102,6 +106,9 @@ def create_file(path=None):
     if not p.is_node:
         abort(500)
 
+    if not p.editable:
+        abort(500)
+
     filename    = None
     filecontent = None
 
@@ -140,6 +147,9 @@ def edit(path):
         abort(500)
 
     if p.is_binary:
+        abort(500)
+
+    if not p.editable:
         abort(500)
 
     content = p.content()

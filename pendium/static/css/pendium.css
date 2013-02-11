@@ -22,6 +22,7 @@ a:hover {
     color: #999;
 }
 
+/* Monochrome colors in dropdown links */
 .navbar a:hover {
     color: white;
 }
@@ -36,6 +37,11 @@ a:hover {
 .navbar-inverse .nav .active > a:focus {
     background-color: grey;
     background-image: none;
+}
+
+/* Fix margin-bottom on forms inside dropdowns */
+.dropdown-menu form {
+    margin: 0 0 0 0;
 }
 
 input#searchbox_type {

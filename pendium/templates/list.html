@@ -40,7 +40,9 @@
 {% endblock %}
 
 {% block plugin_menu %}
-    <li><a href="{{ url_for( 'create_file',   path=file.path ) }}"><i class="icon-plus-sign"></i> Create File</a></li>
-    <li><a href="{{ url_for( 'create_folder', path=file.path ) }}"><i class="icon-plus-sign"></i> Create Folder</a></li>
-    <li><a href="{{ url_for( 'delete',        path=file.path ) }}"><i class="icon-trash"></i>     Delete</a></li>
+    {% if file.editable %}
+        <li><a href="{{ url_for( 'create_file',   path=file.path ) }}"><i class="icon-plus-sign"></i> Create File</a></li>
+        <li><a href="{{ url_for( 'create_folder', path=file.path ) }}"><i class="icon-plus-sign"></i> Create Folder</a></li>
+        <li><a href="{{ url_for( 'delete',        path=file.path ) }}"><i class="icon-trash"></i>     Delete</a></li>
+    {% endif %}
 {% endblock %}

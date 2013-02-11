@@ -39,3 +39,6 @@
 
 # Files with these extensions won't show up in the files list
 #BLACKLIST_EXTENSIONS  = [ 'png', 'jpg', 'gif' ]
+
+# Put False if you want Pendium to be read-only
+# EDITABLE = True

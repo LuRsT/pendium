@@ -152,7 +152,9 @@ class WikiPath(object):
 
     @property
     def editable(self):
-        return os.access(self.abs_path, os.W_OK)
+        if app.config['EDITABLE']:
+            return os.access(self.abs_path, os.W_OK)
+        return False
 
     def delete(self):
         top = self.abs_path
