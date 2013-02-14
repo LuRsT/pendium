@@ -114,8 +114,11 @@ def create_file(path=None):
 
     if request.form.get('save', None):
         filename    = request.form.get('filename')
+        extension   = request.form.get('extension')
         filecontent = request.form.get('content')
         try:
+            if extension != '':
+                filename += '.' + extension
             new_file = p.create_file(filename)
             new_file.content(filecontent,
                              comment=request.form.get('message', None))
@@ -133,8 +136,8 @@ def create_file(path=None):
     return render_template('create.html',
                            file=p,
                            filename=filename,
+                           extensions=get_extensions(),
                            filecontent=filecontent)
-
 
 @app.route('/_edit_/<path:path>', methods=['GET', 'POST'])
 def edit(path):
@@ -264,3 +267,10 @@ def before_request():
                   default_renderer = config.get('WIKI_DEFAULT_RENDERER', None),
                   plugins_config   = config.get('WIKI_PLUGINS_CONFIG', {}),
                   git_support      = config.get('WIKI_GIT_SUPPORT', False))
+
+
+def get_extensions():
+    extensions = []
+    for wiki_ext in app.config['WIKI_EXTENSIONS'].values():
+        extensions += wiki_ext
+    return extensions

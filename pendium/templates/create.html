@@ -15,8 +15,14 @@
     <div class="well">
         <form method="POST">
             <input name="filename" type="text" class="" placeholder="Filename" {% if filename %}value="{{ filename }}"{% endif %} />
+            <select name="extension" style="width: 150px;">
+                <option value="">No extension</option>
+                {% for ext in extensions %}
+                    <option value="{{ ext }}">.{{ ext }}</option>
+                {% endfor %}
+            </select>
             <textarea name="content" placeholder="Content goes here..." style="width:99%" rows="20">{% if filecontent %}{{ filecontent }}{% endif %}</textarea>
-           {% if g.wiki.has_vcs %} 
+           {% if g.wiki.has_vcs %}
              <label for="message">Comment your changes</label>
              <input type="text" class="input-block-level" name="message" placeholder="Your file change comment" value="{{ message }}" />
            {% endif %}
