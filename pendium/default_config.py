@@ -32,3 +32,5 @@ CODEHILITE_STYLESHEET = 'plain.css'
 BLACKLIST_EXTENSIONS  = [ 'png', 'jpg', 'gif' ]
 
 EDITABLE = True
+
+CSS_THEME = 'monochrom'

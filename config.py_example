@@ -41,4 +41,7 @@
 #BLACKLIST_EXTENSIONS  = [ 'png', 'jpg', 'gif' ]
 
 # Put False if you want Pendium to be read-only
-# EDITABLE = True
+#EDITABLE = True
+
+# Use different themes to change Pendium's colourscheme ( files inside static/css/themes )
+#CSS_THEME = 'monochrom'

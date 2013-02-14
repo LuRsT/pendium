@@ -1,0 +1,31 @@
+/* Default theme for Pendium */
+
+a {
+    color: #999;
+}
+
+a:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+.navbar h5 {
+    color: #999;
+}
+
+/* Monochrome colors in dropdown links */
+.navbar a:hover {
+    color: white;
+}
+
+.dropdown-menu li > a:hover, .dropdown-menu li > a:focus, .dropdown-submenu:hover > a {
+    background-color: grey;
+    background-image: none;
+}
+
+.navbar-inverse .nav .active > a,
+.navbar-inverse .nav .active > a:hover,
+.navbar-inverse .nav .active > a:focus {
+    background-color: grey;
+    background-image: none;
+}
