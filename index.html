@@ -1,62 +1,148 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-
     <title>Pendium by LuRsT</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
-
-    <header>
-      <div class="container">
+    <div class="wrapper">
+      <header>
         <h1>Pendium</h1>
-        <h2>A (com)Pendium for all your markdown files, create your own wiki by linking together ( or not ) a bunch of markdown files or just view them beautifully</h2>
+        <p>A (com)Pendium for all your markdown files, create your own wiki by linking together ( or not ) a bunch of markdown files or just view them beautifully</p>
 
-        <section id="downloads">
-          <a href="https://github.com/LuRsT/Pendium/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/LuRsT/Pendium/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/LuRsT/Pendium" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
+        <p class="view"><a href="https://github.com/LuRsT/Pendium">View the Project on GitHub <small>LuRsT/Pendium</small></a></p>
 
-    <div class="container">
-      <section id="main_content">
-        <h3>Welcome to GitHub Pages.</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+        <ul>
+          <li><a href="https://github.com/LuRsT/Pendium/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/LuRsT/Pendium/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/LuRsT/Pendium">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Pendium</h1>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<p>A (com)Pendium for all your markdown files</p>
+
+<p>This is a web app for all your markdown files, you can use it for reading them in web way, share them through the interwebs or you can even create a personal ( or not so personal ) wiki with just a bunch of files ( you can link them together nicely ).</p>
+
+<p><a href="http://i.imgur.com/gxCYN8R.png"><img src="http://i.imgur.com/gxCYN8Rl.png" alt="Screenshot"></a></p>
+
+<p>Powered by Python 2.7</p>
+
+<h3>Requirements</h3>
+
+<pre><code>Flask
+Markdown
+yapsy
+GitPython       # Optional for git support
+docutils        # Optional for rest documents
+pygments        # Optional for python documents
+mdx_smartypants # Optional for smartypants, don't forget to read the doc bellow
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<h3>Setup</h3>
 
-<h3>Designer Templates</h3>
+<p>To get yourself up and running you only need to run these commands:</p>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<pre><code>git clone git://github.com/LuRsT/Pendium.git
+cd Pendium
+pip install `cat requirements.txt`
+</code></pre>
 
-<h3>Rather Drive Stick?</h3>
+<p>Note: Pendium was hacked in python 2.7, so use the appropriate command to install de dependencies e.g. in arch linux it's 'pip2'.
+Note2: Remember to install the optional requirements in order to unleash the full power of Pendium.</p>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<h5>Config</h5>
 
-<h3>Authors and Contributors</h3>
+<p>If you want to change the config, move the config.py_example file to config.py</p>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<pre><code>mv config.py_example config.py
+</code></pre>
 
-<h3>Support or Contact</h3>
+<h5>Where is my typographic punctuation ( aka smartypants )?</h5>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>Fear not, for python's markdown module has that extension, in order to activate it, you'll need first to install the extension since it does not come with markdown:</p>
+
+<pre><code>pip install mdx_smartypants
+</code></pre>
+
+<p>Once installed, add 'smartypants' to the markdown extension dict in your config file:</p>
+
+<pre><code>WIKI_PLUGINS_CONFIG   = { "Markdown" : { 'extensions' : [ 'headerid', 'toc',
+                                                          'tables', 'footnotes',
+                                                          'fenced_code', 'codehilite',
+                                                          'smartypants'  # &lt;- here, don't forget the comma
+                                                        ]
+                                       },
+                        }
+</code></pre>
+
+<h5>Where is [whatever markdown extension you want]?</h5>
+
+<p>Python's markdown modules comes with other extensions which you can activate the same way, you did ( or did not ) with smartypants, by adding it to the WIKI_PLUGINS_CONFIG, markdown extensions array.</p>
+
+<p><a href="http://packages.python.org/Markdown/extensions/extra.html">Good link about markdown extensions</a></p>
+
+<h4>Git Support</h4>
+
+<p>Before you do anything be sure to enable git support in the config file ( config.py ):</p>
+
+<pre><code>WIKI_GIT_SUPPORT = True
+</code></pre>
+
+<p>To get the git support, run these commands afterwards ( if you don't have a remote git repo, go to the next step ):</p>
+
+<pre><code>cd wiki
+git init
+git remote add origin &lt;your_remote_git_repo&gt;
+git branch --set-upstream master origin/master
+git pull #Optional, just to check if everything is okay and to get your files immediately
+</code></pre>
+
+<h5>Hey, I don't have a remote git repo, what do I do now?</h5>
+
+<p>I'm assuming you already have a remote git repo up and running on the previous step, if you do not, do this:</p>
+
+<pre><code>cd &lt;repo_dir&gt;
+git init --bare
+</code></pre>
+
+<p>with this you made yourself a git repo, now run these:</p>
+
+<pre><code>cd wiki_dir # by default: &lt;pendium_dir&gt;/wiki
+git clone &lt;path_to_previous_repo&gt; &lt;path_to_wiki_folder&gt;
+touch home.md
+git add home.md
+git commit -m "Initial commit"
+git push -u origin master
+</code></pre>
+
+<h3>Running it</h3>
+
+<p>To use Pendium simply execute the run.py file:</p>
+
+<pre><code>python run.py
+</code></pre>
+
+<p>By default it should read the files from the wiki dir inside the pendium directory, change the directory in the config file or symlink your own dir.</p>
+
+<p>Note: Pendium was hacked in python 2.7, so use the appropriate command to run it e.g. in arch linux it's 'python2'</p>
       </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/LuRsT">LuRsT</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
     </div>
-
+    <script src="javascripts/scale.fix.js"></script>
     
   </body>
 </html>
