@@ -8,21 +8,40 @@
         <h3>No files found :(</h3>
         <p>Start by adding some files to your wiki folder.</p>
     {% else %}
-        <div class="span3">
-            <h3><i class="icon-folder-open"></i> Files</h3>
-            <ul>
-                {% for file in files %}
-                    <li style="list-style: none;">
-                        <i class="{% if file.is_node %}icon-folder-close{% else %}icon-file{% endif %}"></i>
-                        <a href="{{ url_for( 'view', path=file.path ) }}">{{ file.name}}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-
         {% if home_file %}
-            <div class="span6">
-                {{ home_file }}
+            <div class="accordion" id="accordion2">
+                <div class="accordion-group">
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                            <i class="icon-folder-close"></i> Files
+                        </a>
+                    </div>
+                    <div id="collapseOne" class="accordion-body collapse">
+                        <div class="accordion-inner">
+        {% endif %}
+                            <h3><i class="icon-folder-open"></i> Files</h3>
+                            <ul>
+                                {% for file in files %}
+                                    <li style="list-style: none;">
+                                        <i class="{% if file.is_node %}icon-folder-close{% else %}icon-file{% endif %}"></i>
+                                        <a href="{{ url_for( 'view', path=file.path ) }}">{{ file.name}}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+        {% if home_file %}
+                        </div>
+                    </div>
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                            <i class="icon-file-alt"></i> Home File
+                        </a>
+                    </div>
+                    <div id="collapseTwo" class="accordion-body collapse in">
+                        <div class="accordion-inner">
+                                {{ home_file }}
+                        </div>
+                    </div>
+                </div>
             </div>
         {% endif %}
     {% endif %}
