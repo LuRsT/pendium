@@ -24,7 +24,7 @@ To get yourself up and running you only need to run these commands:
 
     git clone git://github.com/LuRsT/Pendium.git
     cd Pendium
-    pip install `cat requirements.txt`
+    pip install -r requirements.txt
 
 Note: Pendium was hacked in python 2.7, so use the appropriate command to install de dependencies e.g. in arch linux it's 'pip2'.
 Note2: Remember to install the optional requirements in order to unleash the full power of Pendium.
