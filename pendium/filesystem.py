@@ -40,6 +40,7 @@ class Wiki(object):
         self.default_renderer = default_renderer
         self.git_support      = git_support
         self.has_vcs          = git_support
+        self._content          = ''
 
         for name, configuration in plugins_config.items():
 
@@ -245,6 +246,8 @@ class WikiFile(WikiPath):
         return False
 
     def content(self, content=None, decode=True, comment=None):
+        """ Helper method, needs refactoring
+        """
         fp = open(self.abs_path, 'r')
         ct = fp.read()
         if decode:
@@ -257,9 +260,11 @@ class WikiFile(WikiPath):
         if content == ct:
             return ct
 
-        # Save the file
+        self._content = content
+
+    def save(self):
         fp = codecs.open(self.abs_path, 'w', 'utf-8')
-        fp.write(content)
+        fp.write(self._content)
         fp.close()
 
         if self.wiki.git_support:
@@ -271,9 +276,6 @@ class WikiFile(WikiPath):
 
             if self.wiki.git_repo_branch_has_remote():
                 repo.git.push()
-
-        return content
-
 
 class WikiDir(WikiPath):
     def __init__(self, *args, **kwargs):

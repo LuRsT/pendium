@@ -123,6 +123,7 @@ def create_file(path=None):
             new_file = p.create_file(filename)
             new_file.content(filecontent,
                              comment=request.form.get('message', None))
+            new_file.save()
             flash("File created with the provided content", 'success')
 
             return redirect(url_for('view', path=p.path))
@@ -161,6 +162,7 @@ def edit(path):
         content = request.form.get('content')
         try:
             p.content(content, comment=request.form.get('message', None))
+            p.save()
             flash("File saved with the new provided content", 'success')
             return redirect(url_for('view', path=path))
         except Exception, e:
