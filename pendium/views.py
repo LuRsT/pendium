@@ -53,6 +53,7 @@ def create_folder(path=None):
     if request.form.get('save', None):
         foldername = request.form.get('foldername')
         try:
+            p.create_directory(foldername)
             flash("New folder created", 'success')
             return redirect(url_for('view', path=p.path))
         except PathExists:
