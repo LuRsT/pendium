@@ -35,9 +35,11 @@ Note2: Remember to install the optional requirements in order to unleash the ful
 
 ##### Config
 
-If you want to change the config, move the config.py\_example file to config.py
+If you want to change the config, copy the pendium/default\_config.py file to config.py
 
-    mv config.py_example config.py
+    cp pendium/default_config.py config.py
+
+Check the [Wiki](https://github.com/LuRsT/Pendium/wiki/Config) for config help.
 
 ##### Where is my typographic punctuation ( aka smartypants )?
 
@@ -57,7 +59,7 @@ Once installed, add 'smartypants' to the markdown extension dict in your config 
 
 ##### Where is [whatever markdown extension you want]?
 
-Python's markdown modules comes with other extensions which you can activate the same way, you did ( or did not ) with smartypants, by adding it to the WIKI_PLUGINS_CONFIG, markdown extensions array.
+Python's markdown modules comes with other extensions which you can activate the same way, you did ( or did not ) with smartypants, by adding it to the WIKI\_PLUGINS\_CONFIG, markdown extensions array.
 
 [Good link about markdown extensions](http://packages.python.org/Markdown/extensions/extra.html)
 
@@ -112,9 +114,9 @@ Note: Pendium was hacked in python 2.7, so use the appropriate command to run it
 * ~~Create files~~
 * ~~Create dirs~~
 * ~~Delete files/dirs~~
-* Better editor
+* ~~Keyboard shortcuts~~
 * Version Control with plugins
-* Keyboard shortcuts
+* Better editor
 
 ### Notes
 
