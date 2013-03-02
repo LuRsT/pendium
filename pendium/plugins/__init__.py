@@ -6,7 +6,6 @@ class IPendiumPlugin(IPlugin):
     def configure(self, configuration):
         pass
 
-
 class ISearchPlugin(IPendiumPlugin):
     def search(self, wiki, term):
         #TODO: Decompose term into regex
@@ -14,6 +13,8 @@ class ISearchPlugin(IPendiumPlugin):
 
         return self.dosearch(wiki, term, regex)
 
+class IVersionPlugin(IPendiumPlugin):
+    pass
 
 class IRenderPlugin(IPendiumPlugin):
     pass

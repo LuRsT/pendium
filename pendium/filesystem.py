@@ -2,7 +2,7 @@ import os
 import codecs
 
 from yapsy.PluginManager import PluginManager
-from pendium.plugins import IRenderPlugin, ISearchPlugin
+from pendium.plugins import IRenderPlugin, ISearchPlugin, IVersionPlugin
 from pendium import app
 
 import logging
@@ -12,7 +12,8 @@ logger = logging.getLogger(__name__)
 manager = PluginManager()
 manager.setPluginPlaces(["pendium/plugins"])
 manager.setCategoriesFilter({"Search": ISearchPlugin,
-                             "Render": IRenderPlugin})
+                             "Render": IRenderPlugin,
+                             "Versioning": IVersionPlugin})
 manager.collectPlugins()
 
 
@@ -32,19 +33,31 @@ class NoSearchPluginAvailable(Exception):
     pass
 
 
+class NoVCSPluginAvailable(Exception):
+    pass
+
+
 class Wiki(object):
     def __init__(self, basepath, extensions={}, default_renderer=None,
-                 plugins_config={}, git_support=False):
+                 plugins_config={}, has_vcs=False):
         self.basepath         = basepath
         self.extensions       = extensions
         self.default_renderer = default_renderer
-        self.git_support      = git_support
-        self.has_vcs          = git_support
-        self._content          = ''
+        self.has_vcs          = has_vcs
+        self.vcs              = None
+        self._content         = ''
 
+        if self.has_vcs:
+            self.vcs = manager.getPluginByName(app.config['VCS'],
+                                               category="Versioning").plugin_object
+
+            if self.vcs is None:
+                raise NoVCSPluginAvailable
+
+        # Plugin configuration
         for name, configuration in plugins_config.items():
 
-            for cat in ["Search", "Render"]:
+            for cat in ["Search", "Render", "Versioning"]:
                 plugin = manager.getPluginByName(name, category=cat)
                 if not plugin:
                     continue
@@ -79,35 +92,10 @@ class Wiki(object):
             return WikiFile(self, path)
 
     def refresh(self):
-        if not self.git_support:
+        if not self.has_vcs:
             return ''
 
-        if self.git_repo_branch_has_remote():
-            return self.git_repo().git.pull()
-
-        return ''
-
-    def git_repo_branch_has_remote(self):
-        repo = self.git_repo()
-        # Check if this is a remote name
-        try:
-            branch = repo.active_branch
-            remote = branch.remote_name
-            if remote:
-                return True
-            else:
-                return False
-        except:
-            return False
-
-    def git_repo(self):
-        try:
-            import git
-            repo = git.Repo(self.basepath)
-            return repo
-        except ImportError:
-            raise Exception("Could not import git module")
-
+        return self.vcs.refresh()
 
 class WikiPath(object):
     def __init__(self, wiki, path):
@@ -174,13 +162,8 @@ class WikiPath(object):
             logger.debug("Will remove FILE: %s", self.abs_path)
             os.remove(self.abs_path)
 
-        if self.wiki.git_support:
-            repo = self.wiki.git_repo()
-            repo.git.rm(self.path, r=True)
-            repo.git.commit(m='Path deleted')
-
-            if self.wiki.git_repo_branch_has_remote():
-                repo.git.push()
+        if self.wiki.has_vcs:
+            self.wiki.vcs.delete(path=self.path)
 
 
 class WikiFile(WikiPath):
@@ -245,7 +228,7 @@ class WikiFile(WikiPath):
 
         return False
 
-    def content(self, content=None, decode=True, comment=None):
+    def content(self, content=None, decode=True):
         """ Helper method, needs refactoring
         """
         fp = open(self.abs_path, 'r')
@@ -255,27 +238,22 @@ class WikiFile(WikiPath):
         fp.close()
 
         if not content:
-            return ct
-
-        if content == ct:
+            self._content = ct
             return ct
 
         self._content = content
 
-    def save(self):
+        if content == ct:
+            return ct
+
+    def save(self, comment=None):
         fp = codecs.open(self.abs_path, 'w', 'utf-8')
         fp.write(self._content)
         fp.close()
 
-        if self.wiki.git_support:
-            if not comment:
-                comment = "New content version"
-            repo = self.wiki.git_repo()
-            repo.git.add(self.path)
-            repo.git.commit(m=comment)
+        if self.wiki.has_vcs:
+            self.wiki.vcs.save(path=self.path, comment=comment)
 
-            if self.wiki.git_repo_branch_has_remote():
-                repo.git.push()
 
 class WikiDir(WikiPath):
     def __init__(self, *args, **kwargs):

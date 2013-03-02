@@ -16,7 +16,9 @@ WIKI_EXTENSIONS       = { 'Markdown' : [ 'md', 'mdw' ],
 
 WIKI_DEFAULT_RENDERER = None
 
-WIKI_PLUGINS_CONFIG   = { "Markdown" : { 'extensions' : [ 'headerid', 'toc',
+WIKI_PLUGINS_CONFIG   = {
+                          "Git"      : { 'basepath': WIKI_DIR },
+                          "Markdown" : { 'extensions' : [ 'headerid', 'toc',
                                                           'tables', 'footnotes',
                                                           'fenced_code', 'codehilite'
                                                         ]
@@ -34,3 +36,5 @@ BLACKLIST_EXTENSIONS  = [ 'png', 'jpg', 'gif' ]
 EDITABLE = True
 
 CSS_THEME = 'monochrom'
+
+VCS = 'Git'

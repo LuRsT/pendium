@@ -121,9 +121,8 @@ def create_file(path=None):
             if extension != '':
                 filename += '.' + extension
             new_file = p.create_file(filename)
-            new_file.content(filecontent,
-                             comment=request.form.get('message', None))
-            new_file.save()
+            new_file.content(content=filecontent)
+            new_file.save(comment=request.form.get('message', None))
             flash("File created with the provided content", 'success')
 
             return redirect(url_for('view', path=p.path))
@@ -159,10 +158,9 @@ def edit(path):
 
     content = p.content()
     if request.form.get('save', None):
-        content = request.form.get('content')
         try:
-            p.content(content, comment=request.form.get('message', None))
-            p.save()
+            p.content(content=request.form.get('content'))
+            p.save(comment=request.form.get('message', None))
             flash("File saved with the new provided content", 'success')
             return redirect(url_for('view', path=path))
         except Exception, e:
@@ -269,7 +267,7 @@ def before_request():
                   extensions       = config.get('WIKI_EXTENSIONS', {}),
                   default_renderer = config.get('WIKI_DEFAULT_RENDERER', None),
                   plugins_config   = config.get('WIKI_PLUGINS_CONFIG', {}),
-                  git_support      = config.get('WIKI_GIT_SUPPORT', False))
+                  has_vcs          = config.get('WIKI_GIT_SUPPORT', False))
 
 
 def get_extensions():
