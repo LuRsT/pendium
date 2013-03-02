@@ -7,10 +7,10 @@ class PendiumTestCase(unittest.TestCase):
     def setUp(self):
         config = app.config
         self.w = Wiki(config['WIKI_DIR'],
-                  extensions       = config.get('WIKI_EXTENSIONS', {}),
-                  default_renderer = config.get('WIKI_DEFAULT_RENDERER', None),
-                  plugins_config   = config.get('WIKI_PLUGINS_CONFIG', {}),
-                  git_support      = config.get('WIKI_GIT_SUPPORT', False))
+                      extensions       = config.get('WIKI_EXTENSIONS', {}),
+                      default_renderer = config.get('WIKI_DEFAULT_RENDERER', None),
+                      plugins_config   = config.get('WIKI_PLUGINS_CONFIG', {}),
+                      git_support      = config.get('WIKI_GIT_SUPPORT', False))
 
         return
 
@@ -37,7 +37,6 @@ class PendiumTestCase(unittest.TestCase):
             self.fail('Unexpected exception thrown')
 
     def test_3_is_file(self):
-        w = Wiki('wiki')
         try:
             p = self.w.get('test_create.md')
             assert p.is_leaf is True
@@ -47,7 +46,6 @@ class PendiumTestCase(unittest.TestCase):
             self.fail('Unexpected exception thrown')
 
     def test_4_delete_file(self):
-        w = Wiki('wiki')
         try:
             p = self.w.get('test_create.md')
             p.delete()
@@ -58,7 +56,6 @@ class PendiumTestCase(unittest.TestCase):
             self.fail('Unexpected exception thrown')
 
     def test_is_dir(self):
-        w = Wiki('wiki')
         try:
             p = self.w.get('')
             assert p.is_leaf is False
@@ -67,7 +64,6 @@ class PendiumTestCase(unittest.TestCase):
             self.fail('Unexpected exception thrown')
 
     def test_path_not_found(self):
-        w = Wiki('wiki')
         try:
             self.w.get('notafile.md')
         except PathNotFound:
