@@ -1,0 +1,8 @@
+[Core]
+Name   = Git
+Module = git
+
+[Documentation]
+Author      = Gilberto Gonçalves
+Version     = 0.1
+Description = Git plugin for vcs within Pendium
