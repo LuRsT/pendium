@@ -9,5 +9,5 @@ from pygments.formatters import HtmlFormatter
 class Python(IRenderPlugin):
     name = "Python"
 
-    def render(self, text):
-        return Markup(highlight(text, PythonLexer(), HtmlFormatter()))
+    def render(self, content):
+        return Markup(highlight(content, PythonLexer(), HtmlFormatter()))
