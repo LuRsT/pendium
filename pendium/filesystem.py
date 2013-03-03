@@ -9,8 +9,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Populate plugins
+lib_path = os.path.abspath(os.path.dirname(__file__))
 manager = PluginManager()
-manager.setPluginPlaces(["pendium/plugins"])
+manager.setPluginPlaces([os.path.join(lib_path, 'plugins')])
 manager.setCategoriesFilter({"Search": ISearchPlugin,
                              "Render": IRenderPlugin,
                              "Versioning": IVersionPlugin})
