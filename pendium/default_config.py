@@ -17,7 +17,7 @@ WIKI_EXTENSIONS       = { 'Markdown' : [ 'md', 'mdw' ],
 WIKI_DEFAULT_RENDERER = None
 
 WIKI_PLUGINS_CONFIG   = {
-                          "Git"      : { 'basepath': WIKI_DIR },
+                          "Git"      : { 'basepath': 'wiki' },
                           "Markdown" : { 'extensions' : [ 'headerid', 'toc',
                                                           'tables', 'footnotes',
                                                           'fenced_code', 'codehilite'
