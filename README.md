@@ -102,6 +102,7 @@ To use Pendium simply execute the run.py file:
 By default it should read the files from the wiki dir inside the pendium directory, change the directory in the config file or symlink your own dir.
 
 Note: Pendium was hacked in python 2.7, so use the appropriate command to run it e.g. in arch linux it's 'python2'
+Note2: You can run Pendium from anyplace besides the project dir BUT you have to provide WIKI\_DIR your wiki's absolute path. ( remember that Git plugin needs the correct basepath too)
 
 ### Roadmap
 
@@ -117,6 +118,8 @@ Note: Pendium was hacked in python 2.7, so use the appropriate command to run it
 * ~~Keyboard shortcuts~~
 * Version Control with plugins
 * Better editor
+
+Note: The fact that something is ~~striked~~ does NOT mean that it's bugless or that does all the stuff that I want it to do.
 
 ### Notes
 
