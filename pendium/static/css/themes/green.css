@@ -1,0 +1,41 @@
+/* Green theme for Pendium */
+body {
+    color: #4F423B;
+}
+
+a {
+    color: #433832;
+}
+
+a:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+.navbar h5 {
+    color: #433832;
+}
+
+/* Monochrome colors in dropdown links */
+.navbar a:hover {
+    color: #433832;
+}
+
+.navbar-inverse .navbar-inner {
+    background-color: #87C954;
+    background-image: linear-gradient(to bottom, #87C954, #72AA47);
+    background-repeat: repeat-x;
+    border-color: #87C954;
+}
+
+.dropdown-menu li > a:hover, .dropdown-menu li > a:focus, .dropdown-submenu:hover > a {
+    background-color: #87C954;
+    background-image: none;
+}
+
+.navbar-inverse .nav .active > a,
+.navbar-inverse .nav .active > a:hover,
+.navbar-inverse .nav .active > a:focus {
+    background-color: #87C954;
+    background-image: none;
+}

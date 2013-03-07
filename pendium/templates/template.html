@@ -61,8 +61,8 @@
                                     {% if g.wiki.has_vcs %}
                                         <li class="divider"></li>
                                         <li>
-                                            <a href="{{ url_for('refresh' ) }}" title="Git Refresh">
-                                                <i class="icon-refresh"></i> Git Pull
+                                            <a href="{{ url_for('refresh' ) }}" title="{{ g.wiki.vcs.name }} Refresh">
+                                                <i class="icon-refresh"></i> {{ g.wiki.vcs.name }} Refresh
                                             </a>
                                         </li>
                                     {% endif %}

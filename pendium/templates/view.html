@@ -14,7 +14,6 @@
 {% endblock %}
 
 {% block plugin_menu %}
-    <li class="divider"></li>
     <li><a href="{{ url_for('raw', path=file.path) }}"><i class="icon-file-alt"></i> Raw file</a></li>
     {% if file.editable %}
         <li><a href="{{ url_for('edit', path=file.path) }}" id="edit_button"><i class="icon-edit"></i> Edit file</a></li>

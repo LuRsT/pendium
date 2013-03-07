@@ -140,6 +140,7 @@ def create_file(path=None):
                            extensions=get_extensions(),
                            filecontent=filecontent)
 
+
 @app.route('/_edit_/<path:path>', methods=['GET', 'POST'])
 def edit(path):
     try:
@@ -212,13 +213,12 @@ def search():
             hits_dicts.append({'hit': term + ": " + hit.name,
                                'path': hit.path})
 
-        data = {
+        js = json.dumps({
             'searched': True,
             'term':     term,
             'hits':     len(hits),
             'results':  hits_dicts,
-        }
-        js = json.dumps(data)
+        })
 
     return Response(js, mimetype='application/json')
 
