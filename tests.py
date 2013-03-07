@@ -16,7 +16,7 @@ class PendiumTestCase(unittest.TestCase):
 
         return
 
-    def test_1_create_file(self):
+    def create_file(self):
         try:
             p = self.w.get('')
             new_file = p.create_file(self.test_filename)
@@ -28,7 +28,7 @@ class PendiumTestCase(unittest.TestCase):
         except Exception:
             self.fail('Unexpected exception thrown')
 
-    def test_2_edit(self):
+    def edit_file(self):
         try:
             p = self.w.get(self.test_filename)
             p.content('#header')
@@ -38,7 +38,7 @@ class PendiumTestCase(unittest.TestCase):
         except Exception:
             self.fail('Unexpected exception thrown')
 
-    def test_3_is_file(self):
+    def is_file(self):
         try:
             p = self.w.get(self.test_filename)
             assert p.is_leaf is True
@@ -47,7 +47,7 @@ class PendiumTestCase(unittest.TestCase):
         except Exception:
             self.fail('Unexpected exception thrown')
 
-    def test_4_delete_file(self):
+    def delete_file(self):
         try:
             p = self.w.get(self.test_filename)
             p.delete()
@@ -56,6 +56,12 @@ class PendiumTestCase(unittest.TestCase):
             pass
         except Exception:
             self.fail('Unexpected exception thrown')
+
+    def test_filesystem(self):
+        self.create_file()
+        self.edit_file()
+        self.is_file()
+        self.delete_file()
 
     def test_is_dir(self):
         try:
