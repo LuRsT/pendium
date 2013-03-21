@@ -7,12 +7,16 @@ class PendiumTestCase(unittest.TestCase):
 
     def setUp(self):
         self.test_filename = 'test_pendium_file.md'
+        app.config.from_object('pendium.default_config')
         config = app.config
-        self.w = Wiki(config['WIKI_DIR'],
+        self.w = Wiki(config.get('WIKI_DIR', ''),
                       extensions       = config.get('WIKI_EXTENSIONS', {}),
                       default_renderer = config.get('WIKI_DEFAULT_RENDERER', None),
                       plugins_config   = config.get('WIKI_PLUGINS_CONFIG', {}),
                       has_vcs          = False)
+
+        # Testing flask app
+        self._app = app.test_client()
 
         return
 
@@ -68,6 +72,7 @@ class PendiumTestCase(unittest.TestCase):
             p = self.w.get('')
             assert p.is_leaf is False
             assert p.is_node is True
+            assert len(p.items()) > 0
         except Exception:
             self.fail('Unexpected exception thrown')
 
@@ -80,6 +85,10 @@ class PendiumTestCase(unittest.TestCase):
             self.fail('Unexpected exception thrown')
         else:
             self.fail('ExpectedException not thrown')
+
+    def test_views(self):
+        rv = self._app.get('/')
+        assert rv.data is not None
 
     def tearDown(self):
         return
