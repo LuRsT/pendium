@@ -58,9 +58,20 @@ class Git(IVersionPlugin):
         Returns a list of the commit hashes where this file was changed
         """
         try:
-            refs = self.get_repo().git.log('--pretty=oneline', '--format=%h', filepath)
+            refs = self.get_repo().git.log('--pretty=oneline', '--format=%H', filepath)
             return refs.split("\n")
         except:
             return []
 
+    def show(self, ref, filepath=None):
+        """ Returns a git show of the ref.
+        Can also get a filepath and show that file in that commit
+        """
+        show_string = ref
+        if filepath:
+            show_string = ':'.join([ref, filepath])
 
+        try:
+            return self.get_repo().git.show(show_string)
+        except:
+            return ''
