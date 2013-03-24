@@ -19,4 +19,9 @@
         <li><a href="{{ url_for('edit', path=file.path) }}" id="edit_button"><i class="icon-edit"></i> Edit file</a></li>
         <li><a href="{{ url_for('delete', path=file.path) }}"><i class="icon-trash"></i> Delete</a></li>
     {% endif %}
+    {% if refs %}
+        {% for ref in refs %}
+            <li><a href="#">{{ ref }}</a></li>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

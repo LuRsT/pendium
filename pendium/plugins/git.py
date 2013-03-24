@@ -53,4 +53,14 @@ class Git(IVersionPlugin):
         except:
             return False
 
+    def file_refs(self, filepath):
+        """
+        Returns a list of the commit hashes where this file was changed
+        """
+        try:
+            refs = self.get_repo().git.log('--pretty=oneline', '--format=%h', filepath)
+            return refs.split("\n")
+        except:
+            return []
+
 

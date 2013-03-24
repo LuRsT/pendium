@@ -188,6 +188,7 @@ def view(path):
         return render_template('view.html',
                                file=p,
                                files=p.items(),
+                               refs=p.refs,
                                rendered=p.render())
     elif p.is_node:
         home_file = get_home(p.path)

@@ -229,6 +229,15 @@ class WikiFile(WikiPath):
 
         return False
 
+    @property
+    def refs(self):
+        """ Special property for Git refs
+        """
+        if self.wiki.has_vcs:
+            return self.wiki.vcs.file_refs(self.path)
+
+        return []
+
     def content(self, content=None, decode=True):
         """ Helper method, needs refactoring
         """
