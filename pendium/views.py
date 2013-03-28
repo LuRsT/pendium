@@ -158,7 +158,7 @@ def edit(path):
         abort(500)
 
     content = p.content()
-    if request.form.get('save', None):
+    if request.form.get('save', None) or request.form.get('quiet_save', None):
         try:
             p.content(content=request.form.get('content'))
             p.save(comment=request.form.get('message', None))
@@ -168,7 +168,11 @@ def edit(path):
             app.logger.error(traceback.format_exc())
             flash("There was a problem saving your file : %s" % e, 'error')
 
-    return render_template('edit.html',
+    template = 'edit.html'
+    if request.form.get('save', None):
+        return view(path)
+
+    return render_template(template,
                            file=p,
                            files=p.items(),
                            file_content=escape(content))
