@@ -178,8 +178,7 @@ def edit(path):
                            file_content=escape(content))
 
 
-@app.route('/<path:path>')
-@app.route('/<string:ref>/<path:path>')
+@app.route('/<path:path>', methods=['GET'])
 def view(path, ref=None):
     try:
         p = g.wiki.get(path)
@@ -190,8 +189,8 @@ def view(path, ref=None):
         if not p.can_render:
             flash("No renderer found, fallback to plain text", 'warning')
 
-        if ref and g.wiki.has_vcs:
-            print p.ref(ref)
+        if request.args.get('ref', None) and g.wiki.has_vcs:
+            p.ref(request.args.get('ref'))
 
         return render_template('view.html',
                                file=p,
