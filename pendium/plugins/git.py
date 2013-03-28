@@ -48,23 +48,26 @@ class Git(IVersionPlugin):
         try:
             if self.get_repo().git.remote():
                 return True
-            else:
-                return False
+
+            return False
         except:
             return False
 
-    def file_refs(self, filepath):
+    def file_refs(self, filepath, count=15):
         """
         Returns a list of the commit hashes where this file was changed
+        count is how many refs will we return
         """
         try:
             refs = self.get_repo().git.log('--pretty=oneline', '--format=%H', filepath)
-            return refs.split("\n")
+
+            return refs.split("\n")[:count]
         except:
             return []
 
     def show(self, ref, filepath=None):
-        """ Returns a git show of the ref.
+        """
+        Returns a git show of the ref.
         Can also get a filepath and show that file in that commit
         """
         show_string = ref
