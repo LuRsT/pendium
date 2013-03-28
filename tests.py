@@ -40,6 +40,7 @@ class PendiumTestCase(unittest.TestCase):
             assert p.can_render is True
             assert p.render() == '<h1 id="header">header</h1>'
         except Exception:
+            print Exception
             self.fail('Unexpected exception thrown')
 
     def is_file(self):
@@ -89,6 +90,15 @@ class PendiumTestCase(unittest.TestCase):
     def test_views(self):
         rv = self._app.get('/')
         assert rv.data is not None
+
+    def test_search(self):
+        try:
+            assert self.w.search('impossibru') == []
+            # Simple search, should have some results, be sure to 
+            # have some files in the wiki folder
+            assert len(self.w.search('#')) > 0
+        except Exception:
+            self.fail('Unexpected exception thrown')
 
     def tearDown(self):
         return

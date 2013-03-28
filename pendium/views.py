@@ -179,7 +179,8 @@ def edit(path):
 
 
 @app.route('/<path:path>')
-def view(path):
+@app.route('/<string:ref>/<path:path>')
+def view(path, ref=None):
     try:
         p = g.wiki.get(path)
     except PathNotFound:
@@ -189,9 +190,13 @@ def view(path):
         if not p.can_render:
             flash("No renderer found, fallback to plain text", 'warning')
 
+        if ref and g.wiki.has_vcs:
+            print p.ref(ref)
+
         return render_template('view.html',
                                file=p,
                                files=p.items(),
+                               refs=p.refs,
                                rendered=p.render())
     elif p.is_node:
         home_file = get_home(p.path)

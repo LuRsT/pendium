@@ -46,7 +46,6 @@ class Wiki(object):
         self.default_renderer = default_renderer
         self.has_vcs          = has_vcs
         self.vcs              = None
-        self._content         = ''
 
         if self.has_vcs:
             self.vcs = manager.getPluginByName(app.config['VCS'],
@@ -172,6 +171,7 @@ class WikiFile(WikiPath):
         super(WikiFile, self).__init__(*args, **kwargs)
         self.is_leaf   = True
         self.extension = os.path.splitext(self.name)[1][1:]
+        self._content  = ''
 
     def renderer(self):
         for plugin in manager.getPluginsOfCategory('Render'):
@@ -229,9 +229,33 @@ class WikiFile(WikiPath):
 
         return False
 
+    @property
+    def refs(self):
+        """ Special property for Git refs
+        """
+        if self.wiki.has_vcs:
+            return self.wiki.vcs.file_refs(self.path)
+
+        return []
+
+    def ref(self, ref):
+        """
+        Update file content with appropriate reference from git to display
+        older file versions
+        """
+        try:
+            content = self.wiki.vcs.show(filepath=self.path, ref=ref)
+            self._content = content.decode('utf8')
+            return True
+        except:
+            return False
+
     def content(self, content=None, decode=True):
         """ Helper method, needs refactoring
         """
+        if self._content:
+            return self._content
+
         fp = open(self.abs_path, 'r')
         ct = fp.read()
         if decode:
