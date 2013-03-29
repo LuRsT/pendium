@@ -27,9 +27,9 @@
              <input type="text" class="input-block-level" name="message" placeholder="Your file change comment" value="{{ message }}" />
            {% endif %}
            <div style="clear:both"></div>
+            <button class="btn btn-primary" name="save" value="1"><i class="icon-save"></i> Save</button>&nbsp;
             <div class="pull-right">
                 <a class="btn btn-danger" href="{{ url_for('view', path=file.path) }}"><i class="icon-remove"></i> Cancel</a>
-                <button class="btn btn-primary" name="save" value="1"><i class="icon-save"></i> Save</button>&nbsp;
             </div>
         </form>
     </div>

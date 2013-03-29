@@ -17,11 +17,11 @@
       When deleting an item you will also delete all sub-items. Make sure you know what you are doing.
     </div>
 
-    <form method="POST"> 
-       <div class="pull-right">
-          <a class="btn btn-danger" href="{{ url_for('view', path=file.path) }}"><i class="icon-remove"></i> Cancel</a>
-          <button class="btn btn-primary" name="delete" value="1"><i class="icon-trash"></i> Delete</button>&nbsp;
-       </div>
+    <form method="POST">
+        <button class="btn btn-primary" name="delete" value="1"><i class="icon-trash"></i> Delete</button>&nbsp;
+        <div class="pull-right">
+            <a class="btn btn-danger" href="{{ url_for('view', path=file.path) }}"><i class="icon-remove"></i> Cancel</a>
+        </div>
     </form>
 
 {% endblock %}
