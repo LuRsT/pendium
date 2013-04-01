@@ -116,11 +116,11 @@ Note2: You can run Pendium from anyplace besides the project dir BUT you have to
 * ~~Create dirs~~
 * ~~Delete files/dirs~~
 * ~~Keyboard shortcuts~~
-* Version Control with plugins
 * Better editor
 
 Note: The fact that something is ~~striked~~ does NOT mean that it's bugless or that does all the stuff that I want it to do.
 
-### Notes
+### Uses:
 
-Uses [Twitter Bootstrap](http://twitter.github.com/bootstrap/) and [Font Awesome](http://fortawesome.github.com/Font-Awesome/).
+* [Twitter Bootstrap](http://twitter.github.com/bootstrap/)
+* [Font Awesome](http://fortawesome.github.com/Font-Awesome/)
