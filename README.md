@@ -104,6 +104,27 @@ By default it should read the files from the wiki dir inside the pendium directo
 Note: Pendium was hacked in python 2.7, so use the appropriate command to run it e.g. in arch linux it's 'python2'
 Note2: You can run Pendium from anyplace besides the project dir BUT you have to provide WIKI\_DIR your wiki's absolute path. ( remember that Git plugin needs the correct basepath too)
 
+## Deploying it
+
+If you'd like to deploy your pendium to a proper webserver (I'll use apache as an example), here are some very basic instructions to do so:
+
+Create a file called <something>.wsgi at the root of Pendium with this contents:
+
+    import sys
+    from pendium import app as application
+
+    sys.path.insert(0, "/<path_to_>/Pendium")
+
+Now in your webserver config ( Apache as example) add this:
+
+    <Directory /<path_to_>/Pendium>
+        Order allow,deny
+        Allow from all
+    </Directory>
+    WSGIScriptAlias /pendium /<path_to_>/Pendium/<something>.wsgi
+
+And you should be good to go. These are only quick and dirty steps you can take in order to use Pendium as a not-started-via-console app, but if you want some serious stuff, please refer to [flask docs](http://flask.pocoo.org/docs/deploying/).
+
 ### Roadmap
 
 * ~~Discover a better style~~
@@ -118,7 +139,7 @@ Note2: You can run Pendium from anyplace besides the project dir BUT you have to
 * ~~Keyboard shortcuts~~
 * Better editor
 
-Note: The fact that something is ~~striked~~ does NOT mean that it's bugless or that does all the stuff that I want it to do.
+Note: The fact that something is striked does NOT mean that it's bugless or that does all the stuff that I want it to do.
 
 ### Uses:
 
