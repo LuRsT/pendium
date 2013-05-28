@@ -163,16 +163,14 @@ def edit(path):
             p.content(content=request.form.get('content'))
             p.save(comment=request.form.get('message', None))
             flash("File saved with the new provided content", 'success')
-            return redirect(url_for('view', path=path))
         except Exception, e:
             app.logger.error(traceback.format_exc())
             flash("There was a problem saving your file : %s" % e, 'error')
 
-    template = 'edit.html'
-    if request.form.get('save', None):
+    if request.form.get('save'):
         return view(path)
 
-    return render_template(template,
+    return render_template('edit.html',
                            file=p,
                            files=p.items(),
                            file_content=escape(content))
