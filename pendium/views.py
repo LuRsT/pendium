@@ -157,7 +157,6 @@ def edit(path):
     if not p.editable:
         abort(500)
 
-    content = p.content()
     if request.form.get('save', None) or request.form.get('quiet_save', None):
         try:
             p.content(content=request.form.get('content'))
@@ -173,7 +172,7 @@ def edit(path):
     return render_template('edit.html',
                            file=p,
                            files=p.items(),
-                           file_content=escape(content))
+                           file_content=escape(p.content()))
 
 
 @app.route('/<path:path>', methods=['GET'])

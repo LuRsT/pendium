@@ -35,10 +35,11 @@ class PendiumTestCase(unittest.TestCase):
     def edit_file(self):
         try:
             p = self.w.get(self.test_filename)
-            p.content('#header')
+            p.content(content='#header')
             p.save()
             assert p.can_render is True
             assert p.render() == '<h1 id="header">header</h1>'
+            assert p.content() == '#header'
         except Exception:
             print Exception
             self.fail('Unexpected exception thrown')

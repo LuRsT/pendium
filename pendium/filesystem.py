@@ -253,7 +253,7 @@ class WikiFile(WikiPath):
     def content(self, content=None, decode=True):
         """ Helper method, needs refactoring
         """
-        if self._content:
+        if self._content and content is None:
             return self._content
 
         fp = open(self.abs_path, 'r')
