@@ -1,12 +1,9 @@
 import git
-from pendium.plugins import IVersionPlugin
 
 
-class Git(IVersionPlugin):
-    name = "Git"
-
-    def configure(self, configuration):
-        self.basepath = configuration.get('basepath', '')
+class GitWrapper(object):
+    def __init__(self, path):
+        self.basepath = path
 
     def get_repo(self):
         try:
@@ -14,7 +11,6 @@ class Git(IVersionPlugin):
             return repo
         except ImportError:
             raise Exception("Could not import git module")
-
 
     def delete(self, path=None):
         if path is None:
@@ -41,9 +37,6 @@ class Git(IVersionPlugin):
         if self.git_repo_has_remote():
             repo.git.push()
 
-    def refresh(self):
-        return self.get_repo().git.pull()
-
     def git_repo_has_remote(self):
         try:
             if self.get_repo().git.remote():
@@ -59,7 +52,12 @@ class Git(IVersionPlugin):
         count is how many refs will we return
         """
         try:
-            refs = self.get_repo().git.log('--pretty=oneline', '--format=%H', filepath)
+            refs = self     \
+                .get_repo() \
+                .git.log(
+                    '--pretty=oneline',
+                    '--format=%H',
+                    filepath)
 
             return refs.split("\n")[:count]
         except:

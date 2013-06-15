@@ -2,8 +2,8 @@ import os
 import codecs
 
 from yapsy.PluginManager import PluginManager
-from pendium.plugins import IRenderPlugin, ISearchPlugin, IVersionPlugin
-from pendium import app
+from pendium.plugins import IRenderPlugin, ISearchPlugin
+from pendium import app, git_wrapper
 
 import logging
 log = logging.getLogger(__name__)
@@ -13,8 +13,7 @@ lib_path = os.path.abspath(os.path.dirname(__file__))
 manager = PluginManager()
 manager.setPluginPlaces([os.path.join(lib_path, 'plugins')])
 manager.setCategoriesFilter({"Search": ISearchPlugin,
-                             "Render": IRenderPlugin,
-                             "Versioning": IVersionPlugin})
+                             "Render": IRenderPlugin})
 manager.collectPlugins()
 
 
@@ -34,30 +33,26 @@ class NoSearchPluginAvailable(Exception):
     pass
 
 
-class NoVCSPluginAvailable(Exception):
-    pass
-
-
 class Wiki(object):
-    def __init__(self, basepath, extensions={}, default_renderer=None,
-                 plugins_config={}, has_vcs=False):
-        self.basepath         = basepath
-        self.extensions       = extensions
+    def __init__(self,
+                 basepath,
+                 extensions={},
+                 default_renderer=None,
+                 plugins_config={},
+                 has_vcs=False):
+        self.basepath = basepath
+        self.extensions = extensions
         self.default_renderer = default_renderer
-        self.has_vcs          = has_vcs
-        self.vcs              = None
+        self.has_vcs = has_vcs
+        self.vcs = None
 
         if self.has_vcs:
-            self.vcs = manager.getPluginByName(app.config['VCS'],
-                                               category="Versioning").plugin_object
-
-            if self.vcs is None:
-                raise NoVCSPluginAvailable
+            # Use git since it's the only supported vcs
+            self.vcs = git_wrapper.GitWrapper(basepath)
 
         # Plugin configuration
         for name, configuration in plugins_config.items():
-
-            for cat in ["Search", "Render", "Versioning"]:
+            for cat in ["Search", "Render"]:
                 plugin = manager.getPluginByName(name, category=cat)
                 if not plugin:
                     continue
@@ -68,11 +63,11 @@ class Wiki(object):
 
     def search(self, term):
         best_plugin_score = 0
-        best_plugin       = None
+        best_plugin = None
         for plugin in manager.getPluginsOfCategory('Search'):
             if plugin.plugin_object.search_speed > best_plugin_score:
                 best_plugin_score = plugin.plugin_object.search_speed
-                best_plugin       = plugin
+                best_plugin = plugin
 
         if best_plugin is None:
             raise NoSearchPluginAvailable
@@ -97,15 +92,16 @@ class Wiki(object):
 
         return self.vcs.refresh()
 
+
 class WikiPath(object):
     def __init__(self, wiki, path):
-        self.path     = path
-        self.wiki     = wiki
+        self.path = path
+        self.wiki = wiki
         self.abs_path = os.path.join(wiki.basepath, path)
         self.abs_path = os.path.normpath(self.abs_path)
-        self.name     = os.path.split(self.path)[1]
-        self.is_node  = False
-        self.is_leaf  = False
+        self.name = os.path.split(self.path)[1]
+        self.is_node = False
+        self.is_leaf = False
 
         if not os.path.exists(self.abs_path):
             raise PathNotFound(self.abs_path)
@@ -169,9 +165,9 @@ class WikiPath(object):
 class WikiFile(WikiPath):
     def __init__(self, *args, **kwargs):
         super(WikiFile, self).__init__(*args, **kwargs)
-        self.is_leaf   = True
+        self.is_leaf = True
         self.extension = os.path.splitext(self.name)[1][1:]
-        self._content  = ''
+        self._content = ''
 
     def renderer(self):
         for plugin in manager.getPluginsOfCategory('Render'):
@@ -214,7 +210,9 @@ class WikiFile(WikiPath):
 
     @property
     def is_binary(self):
-        """Return true if the file is binary."""
+        """
+        Return true if the file is binary.
+        """
         fin = open(self.abs_path, 'rb')
         try:
             CHUNKSIZE = 1024
@@ -231,7 +229,8 @@ class WikiFile(WikiPath):
 
     @property
     def refs(self):
-        """ Special property for Git refs
+        """
+        Special property for Git refs
         """
         if self.wiki.has_vcs:
             return self.wiki.vcs.file_refs(self.path)
@@ -251,7 +250,8 @@ class WikiFile(WikiPath):
             return False
 
     def content(self, content=None, decode=True):
-        """ Helper method, needs refactoring
+        """
+        Helper method, needs refactoring
         """
         if self._content and content is None:
             return self._content
