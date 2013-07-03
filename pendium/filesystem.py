@@ -3,7 +3,7 @@ import codecs
 
 from yapsy.PluginManager import PluginManager
 from pendium.plugins import IRenderPlugin, ISearchPlugin
-from pendium import app, git_wrapper
+from pendium import app
 
 import logging
 log = logging.getLogger(__name__)
@@ -47,8 +47,11 @@ class Wiki(object):
         self.vcs = None
 
         if self.has_vcs:
-            # Use git since it's the only supported vcs
-            self.vcs = git_wrapper.GitWrapper(basepath)
+            try:
+                from pendium import git_wrapper
+                self.vcs = git_wrapper.GitWrapper(basepath)
+            except:
+                raise Exception('You need to install GitPython')
 
         # Plugin configuration
         for name, configuration in plugins_config.items():
