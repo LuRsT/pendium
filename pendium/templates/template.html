@@ -121,9 +121,12 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+    {% block scripts %}
     <script src="{{ url_for('static', filename='js/jquery.js')         }}"></script>
     <script src="{{ url_for('static', filename='js/jquery.hotkeys.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js')  }}"></script>
+    <script src="{{ url_for('static', filename='js/epiceditor.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/pendium.js')        }}"></script>
-</body>
+    {% endblock %}
+  </body>
 </html>

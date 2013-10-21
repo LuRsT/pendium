@@ -36,3 +36,16 @@ ul.typeahead  {
     line-height:      none;
     background-color: none;
 }
+
+/* Pendium css */
+textarea[name=content] {
+    display: none;
+}
+
+#epiceditor {
+    margin-bottom: 20px;
+}
+
+#epiceditor iframe {
+    border-radius : 4px;
+}

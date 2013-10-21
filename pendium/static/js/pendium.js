@@ -52,5 +52,7 @@ $(document).ready(function() {
         });
         $("#edit_button").click();
     });
-
+    $('.btn-save').click(function () {
+        $("input[name='content']").val(editor.exportFile());
+    });
 });
