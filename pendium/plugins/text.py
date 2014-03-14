@@ -1,4 +1,5 @@
 from flask import Markup, escape
+
 from pendium.plugins import IRenderPlugin
 
 

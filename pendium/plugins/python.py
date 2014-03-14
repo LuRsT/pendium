@@ -1,9 +1,9 @@
 from flask import Markup
-from pendium.plugins import IRenderPlugin
-
 from pygments import highlight
-from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
+from pygments.lexers import PythonLexer
+
+from pendium.plugins import IRenderPlugin
 
 
 class Python(IRenderPlugin):

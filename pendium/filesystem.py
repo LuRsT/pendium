@@ -1,19 +1,25 @@
-import os
 import codecs
+from logging import getLogger
+import os
 
-from yapsy.PluginManager import PluginManager
-from pendium.plugins import IRenderPlugin, ISearchPlugin
 from pendium import app
+from pendium.plugins import IRenderPlugin
+from pendium.plugins import ISearchPlugin
+from yapsy.PluginManager import PluginManager
 
-import logging
-log = logging.getLogger(__name__)
+
+log = getLogger(__name__)
 
 # Populate plugins
 lib_path = os.path.abspath(os.path.dirname(__file__))
 manager = PluginManager()
 manager.setPluginPlaces([os.path.join(lib_path, 'plugins')])
-manager.setCategoriesFilter({'Search': ISearchPlugin,
-                             'Render': IRenderPlugin})
+manager.setCategoriesFilter(
+    {
+        'Search': ISearchPlugin,
+        'Render': IRenderPlugin,
+    }
+)
 manager.collectPlugins()
 
 

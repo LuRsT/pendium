@@ -1,14 +1,20 @@
+from logging import getLogger
+from logging import DEBUG
+
 from flask import Flask
-import logging
+
 
 app = Flask(__name__)
 
-loggers = [app.logger, logging.getLogger('pendium.filesystem')]
+
+loggers = [app.logger, getLogger('pendium.filesystem')]
 for logger in loggers:
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(DEBUG)
 
 from pendium.load_config import load_config
 
+
 load_config()
+
 
 import pendium.views

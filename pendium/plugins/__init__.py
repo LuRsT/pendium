@@ -1,5 +1,6 @@
-from yapsy.IPlugin import IPlugin
 import re
+
+from yapsy.IPlugin import IPlugin
 
 
 class IPendiumPlugin(IPlugin):

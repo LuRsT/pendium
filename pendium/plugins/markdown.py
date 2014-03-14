@@ -1,6 +1,7 @@
 import markdown
 
 from flask import Markup
+
 from pendium.plugins import IRenderPlugin
 
 

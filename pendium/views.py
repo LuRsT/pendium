@@ -1,7 +1,7 @@
-import os
-import json
-import traceback
-import mimetypes
+from mimetypes import guess_type
+from os.path import join as join_path
+from traceback import format_exc
+from json import dumps as json_dumps
 
 from flask import (render_template, flash, redirect, url_for,
                    abort, g, request, escape, Response)
@@ -23,7 +23,7 @@ def index():
 def get_home(path=''):
     home_file = None
     try:
-        home_path = os.path.join(path, app.config['DEFAULT_HOME_FILE'])
+        home_path = join_path(path, app.config['DEFAULT_HOME_FILE'])
         home_file = g.wiki.get(home_path)
         home_file = home_file.render()
     except:
@@ -32,7 +32,7 @@ def get_home(path=''):
     return home_file
 
 
-@app.route('/_create_folder_/',            methods=['GET', 'POST'])
+@app.route('/_create_folder_/', methods=['GET', 'POST'])
 @app.route('/_create_folder_/<path:path>', methods=['GET', 'POST'])
 def create_folder(path=None):
     p = g.wiki.root()
@@ -57,11 +57,11 @@ def create_folder(path=None):
             flash('New folder created', 'success')
             return redirect(url_for('view', path=p.path))
         except PathExists:
-            app.logger.error(traceback.format_exc())
+            app.logger.error(format_exc())
             flash('There is already a folder by that name', 'error')
 
         except Exception, e:
-            app.logger.error(traceback.format_exc())
+            app.logger.error(format_exc())
             flash('There was a problem creating your folder: %s' % e, 'error')
 
     return render_template('create_folder.html',
@@ -87,7 +87,7 @@ def delete(path):
             return redirect(url_for('view', path=parent.path))
 
         except Exception, e:
-            app.logger.error(traceback.format_exc())
+            app.logger.error(format_exc())
             msg = 'There was a problem deleting \'%s\': %s' % (p.name, e)
             flash(msg, 'error')
 
@@ -127,11 +127,11 @@ def create_file(path=None):
 
             return redirect(url_for('view', path=p.path))
         except PathExists:
-            app.logger.error(traceback.format_exc())
+            app.logger.error(format_exc())
             flash('There is already a file by that name', 'error')
 
         except Exception, e:
-            app.logger.error(traceback.format_exc())
+            app.logger.error(format_exc())
             flash('There was a problem saving your file : %s' % e, 'error')
 
     return render_template('create.html',
@@ -163,7 +163,7 @@ def edit(path):
             p.save(comment=request.form.get('message', None))
             flash('File saved with the new provided content', 'success')
         except Exception, e:
-            app.logger.error(traceback.format_exc())
+            app.logger.error(format_exc())
             flash('There was a problem saving your file : %s' % e, 'error')
 
     if request.form.get('save'):
@@ -201,13 +201,13 @@ def view(path, ref=None):
                                files=p.items(),
                                home_file=home_file)
     else:
-        (mimetype, enc) = mimetypes.guess_type(p.path)
+        (mimetype, enc) = guess_type(p.path)
         return Response(p.render(), mimetype=mimetype)
 
 
 @app.route('/search/', methods=['GET', 'POST'])
 def search():
-    js = json.dumps({})
+    js = json_dumps({})
     if request.args.get('q', None):
         term = request.args.get('q')
         app.logger.debug('Searching for \'%s\'' % term)
@@ -218,7 +218,7 @@ def search():
             hits_dicts.append({'hit': term + ': ' + hit.name,
                                'path': hit.path})
 
-        js = json.dumps({
+        js = json_dumps({
             'searched': True,
             'term':     term,
             'hits':     len(hits),
@@ -235,7 +235,7 @@ def refresh():
         flash('Your wiki has been refreshed. %s' % info, 'success')
     except Exception, e:
         app.logger.error(e)
-        app.logger.error(traceback.format_exc())
+        app.logger.error(format_exc())
         flash('Error refreshing git repository', 'error')
 
     return redirect(url_for('index'))
