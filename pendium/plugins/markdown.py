@@ -5,7 +5,7 @@ from pendium.plugins import IRenderPlugin
 
 
 class Markdown(IRenderPlugin):
-    name = "Markdown"
+    name = 'Markdown'
 
     def __init__(self):
         super(Markdown, self).__init__()

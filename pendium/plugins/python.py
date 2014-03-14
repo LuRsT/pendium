@@ -7,7 +7,7 @@ from pygments.formatters import HtmlFormatter
 
 
 class Python(IRenderPlugin):
-    name = "Python"
+    name = 'Python'
 
     def render(self, content):
         return Markup(highlight(content, PythonLexer(), HtmlFormatter()))

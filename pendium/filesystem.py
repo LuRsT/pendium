@@ -12,8 +12,8 @@ log = logging.getLogger(__name__)
 lib_path = os.path.abspath(os.path.dirname(__file__))
 manager = PluginManager()
 manager.setPluginPlaces([os.path.join(lib_path, 'plugins')])
-manager.setCategoriesFilter({"Search": ISearchPlugin,
-                             "Render": IRenderPlugin})
+manager.setCategoriesFilter({'Search': ISearchPlugin,
+                             'Render': IRenderPlugin})
 manager.collectPlugins()
 
 
@@ -55,12 +55,12 @@ class Wiki(object):
 
         # Plugin configuration
         for name, configuration in plugins_config.items():
-            for cat in ["Search", "Render"]:
+            for cat in ['Search', 'Render']:
                 plugin = manager.getPluginByName(name, category=cat)
                 if not plugin:
                     continue
 
-                msg = "Configuring plugin: %s with :%s" % (name, configuration)
+                msg = 'Configuring plugin: %s with :%s' % (name, configuration)
                 log.debug(msg)
                 plugin.plugin_object.configure(configuration)
 
@@ -75,7 +75,7 @@ class Wiki(object):
         if best_plugin is None:
             raise NoSearchPluginAvailable
 
-        log.debug("Searching with %s" % best_plugin.name)
+        log.debug('Searching with %s' % best_plugin.name)
 
         return best_plugin.plugin_object.search(self, term)
 
@@ -148,17 +148,17 @@ class WikiPath(object):
         top = self.abs_path
         for root, dirs, files in os.walk(top, topdown=False):
             for name in files:
-                log.debug("Will remove FILE: %s", os.path.join(root, name))
+                log.debug('Will remove FILE: %s', os.path.join(root, name))
                 os.remove(os.path.join(root, name))
             for name in dirs:
-                log.debug("Will remove DIR: %s", os.path.join(root, name))
+                log.debug('Will remove DIR: %s', os.path.join(root, name))
                 os.rmdir(os.path.join(root, name))
 
         if self.is_node:
-            log.debug("Will remove DIR: %s", self.abs_path)
+            log.debug('Will remove DIR: %s', self.abs_path)
             os.rmdir(self.abs_path)
         else:
-            log.debug("Will remove FILE: %s", self.abs_path)
+            log.debug('Will remove FILE: %s', self.abs_path)
             os.remove(self.abs_path)
 
         if self.wiki.has_vcs:
@@ -174,7 +174,7 @@ class WikiFile(WikiPath):
 
     def renderer(self):
         for plugin in manager.getPluginsOfCategory('Render'):
-            log.debug("Testing for plugin %s", plugin.plugin_object.name)
+            log.debug('Testing for plugin %s', plugin.plugin_object.name)
             extensions = self.wiki.extensions.get(plugin.plugin_object.name,
                                                   None)
             if extensions is None:

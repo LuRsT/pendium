@@ -54,15 +54,15 @@ def create_folder(path=None):
         foldername = request.form.get('foldername')
         try:
             p.create_directory(foldername)
-            flash("New folder created", 'success')
+            flash('New folder created', 'success')
             return redirect(url_for('view', path=p.path))
         except PathExists:
             app.logger.error(traceback.format_exc())
-            flash("There is already a folder by that name", 'error')
+            flash('There is already a folder by that name', 'error')
 
         except Exception, e:
             app.logger.error(traceback.format_exc())
-            flash("There was a problem creating your folder: %s" % e, 'error')
+            flash('There was a problem creating your folder: %s' % e, 'error')
 
     return render_template('create_folder.html',
                            file=p,
@@ -83,12 +83,12 @@ def delete(path):
         try:
             parent = p.ancestor()
             p.delete()
-            flash("'%s' successfull deleted" % p.name, 'success')
+            flash('\'%s\' successfull deleted' % p.name, 'success')
             return redirect(url_for('view', path=parent.path))
 
         except Exception, e:
             app.logger.error(traceback.format_exc())
-            msg = "There was a problem deleting '%s': %s" % (p.name, e)
+            msg = 'There was a problem deleting \'%s\': %s' % (p.name, e)
             flash(msg, 'error')
 
     return render_template('delete.html', file=p)
@@ -123,16 +123,16 @@ def create_file(path=None):
             new_file = p.create_file(filename)
             new_file.content(content=filecontent)
             new_file.save(comment=request.form.get('message', None))
-            flash("File created with the provided content", 'success')
+            flash('File created with the provided content', 'success')
 
             return redirect(url_for('view', path=p.path))
         except PathExists:
             app.logger.error(traceback.format_exc())
-            flash("There is already a file by that name", 'error')
+            flash('There is already a file by that name', 'error')
 
         except Exception, e:
             app.logger.error(traceback.format_exc())
-            flash("There was a problem saving your file : %s" % e, 'error')
+            flash('There was a problem saving your file : %s' % e, 'error')
 
     return render_template('create.html',
                            file=p,
@@ -161,10 +161,10 @@ def edit(path):
         try:
             p.content(content=request.form.get('content'))
             p.save(comment=request.form.get('message', None))
-            flash("File saved with the new provided content", 'success')
+            flash('File saved with the new provided content', 'success')
         except Exception, e:
             app.logger.error(traceback.format_exc())
-            flash("There was a problem saving your file : %s" % e, 'error')
+            flash('There was a problem saving your file : %s' % e, 'error')
 
     if request.form.get('save'):
         return view(path)
@@ -184,7 +184,7 @@ def view(path, ref=None):
 
     if p.is_leaf and not p.is_binary:
         if not p.can_render:
-            flash("No renderer found, fallback to plain text", 'warning')
+            flash('No renderer found, fallback to plain text', 'warning')
 
         if request.args.get('ref', None) and g.wiki.has_vcs:
             p.ref(request.args.get('ref'))
@@ -210,12 +210,12 @@ def search():
     js = json.dumps({})
     if request.args.get('q', None):
         term = request.args.get('q')
-        app.logger.debug("Searching for '%s'" % term)
+        app.logger.debug('Searching for \'%s\'' % term)
         hits = g.wiki.search(term)
 
         hits_dicts = []
         for hit in hits:
-            hits_dicts.append({'hit': term + ": " + hit.name,
+            hits_dicts.append({'hit': term + ': ' + hit.name,
                                'path': hit.path})
 
         js = json.dumps({
@@ -232,11 +232,11 @@ def search():
 def refresh():
     try:
         info = g.wiki.refresh()
-        flash("Your wiki has been refreshed. %s" % info, 'success')
+        flash('Your wiki has been refreshed. %s' % info, 'success')
     except Exception, e:
         app.logger.error(e)
         app.logger.error(traceback.format_exc())
-        flash("Error refreshing git repository", 'error')
+        flash('Error refreshing git repository', 'error')
 
     return redirect(url_for('index'))
 

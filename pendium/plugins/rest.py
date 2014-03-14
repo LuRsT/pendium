@@ -6,7 +6,7 @@ from pendium.plugins import IRenderPlugin
 
 
 class Rest(IRenderPlugin):
-    name = "Rest"
+    name = 'Rest'
 
     def render(self, content):
         content = docutils.core.publish_string(content,

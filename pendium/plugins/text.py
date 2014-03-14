@@ -3,7 +3,7 @@ from pendium.plugins import IRenderPlugin
 
 
 class Text(IRenderPlugin):
-    name = "Text"
+    name = 'Text'
 
     def render(self, content):
-        return Markup("<pre>%s</pre>" % escape(content))
+        return Markup('<pre>%s</pre>' % escape(content))

@@ -2,7 +2,7 @@ from pendium.plugins import IRenderPlugin
 
 
 class HTML(IRenderPlugin):
-    name = "HTML"
+    name = 'HTML'
 
     def render(self, content):
         return content

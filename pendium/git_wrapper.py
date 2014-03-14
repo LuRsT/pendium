@@ -10,7 +10,7 @@ class GitWrapper(object):
             repo = git.Repo(self.basepath)
             return repo
         except ImportError:
-            raise Exception("Could not import git module")
+            raise Exception('Could not import git module')
 
     def delete(self, path=None):
         if path is None:
@@ -28,7 +28,7 @@ class GitWrapper(object):
             return None
 
         if not comment or comment is None:
-            comment = "New content version"
+            comment = 'New content version'
 
         repo = self.get_repo()
         repo.git.add(path)
