@@ -12,7 +12,7 @@ from pendium.filesystem import (Wiki, PathNotFound, PathExists)
 
 @app.route('/')
 def index():
-    p         = g.wiki.root()
+    p = g.wiki.root()
     home_file = get_home()
     return render_template('index.html',
                            file=p,
@@ -94,7 +94,7 @@ def delete(path):
     return render_template('delete.html', file=p)
 
 
-@app.route('/_create_file_/',            methods=['GET', 'POST'])
+@app.route('/_create_file_/', methods=['GET', 'POST'])
 @app.route('/_create_file_/<path:path>', methods=['GET', 'POST'])
 def create_file(path=None):
     p = g.wiki.root()
@@ -110,12 +110,12 @@ def create_file(path=None):
     if not p.editable:
         abort(500)
 
-    filename    = None
+    filename = None
     filecontent = None
 
     if request.form.get('save', None):
-        filename    = request.form.get('filename')
-        extension   = request.form.get('extension')
+        filename = request.form.get('filename')
+        extension = request.form.get('extension')
         filecontent = request.form.get('content')
         try:
             if extension != '':
@@ -268,11 +268,13 @@ def not_found(error):
 @app.before_request
 def before_request():
     config = app.config
-    g.wiki = Wiki(config['WIKI_DIR'],
-                  extensions       = config.get('WIKI_EXTENSIONS', {}),
-                  default_renderer = config.get('WIKI_DEFAULT_RENDERER', None),
-                  plugins_config   = config.get('WIKI_PLUGINS_CONFIG', {}),
-                  has_vcs          = config.get('WIKI_GIT_SUPPORT', False))
+    g.wiki = Wiki(
+        config['WIKI_DIR'],
+        extensions=config.get('WIKI_EXTENSIONS', {}),
+        default_renderer=config.get('WIKI_DEFAULT_RENDERER', None),
+        plugins_config=config.get('WIKI_PLUGINS_CONFIG', {}),
+        has_vcs=config.get('WIKI_GIT_SUPPORT', False)
+    )
 
 
 def get_extensions():
