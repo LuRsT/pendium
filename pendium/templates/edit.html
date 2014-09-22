@@ -19,11 +19,11 @@
 
     <div class="well">
         <form method="POST">
-            <div id="epiceditor" style="width:99%" rows="20"></div>
             <textarea
                 id="content"
                 type="hidden"
                 name="content"
+                style="width:99%"
             >{{ file_content }}</textarea>
             {% if g.wiki.has_vcs %}
                 <label for="message">Comment your changes</label>
@@ -65,12 +65,12 @@
     {{ super() }}
     <script type="text/javascript">
         $(window).load(function () {
-            window.editor = new EpicEditor(
-                {
+            window.editor = new EpicEditor( {
+                    'container': 'epiceditor',
                     'textarea': 'content',
-                    'basePath': '{{ url_for('static', filename='css/epiceditor') }}'
-                }
-            ).load();
+                    'basePath': '{{ url_for('static', filename='css/epiceditor.css') }}'
+            });
+            window.editor.load();
         });
     </script>
     {% endblock %}

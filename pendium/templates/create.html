@@ -37,11 +37,7 @@
                 placeholder="Content goes here..."
                 style="width:99%"
                 rows="20"
-            >
-                {% if filecontent %}
-                    {{ filecontent }}
-                {% endif %}
-            </textarea>
+            ></textarea>
 
             {% if g.wiki.has_vcs %}
                 <label for="message">Comment your changes</label>
