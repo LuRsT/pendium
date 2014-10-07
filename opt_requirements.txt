@@ -1,4 +1,3 @@
 GitPython
 docutils
 pygments
-mdx_smartypants
