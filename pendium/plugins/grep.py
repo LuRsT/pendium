@@ -33,7 +33,7 @@ class Grep(ISearchPlugin):
         return hits
 
     def dosearch(self, wiki, term, regex):
-        hits = self._search_path(wiki.root(), regex, {})
+        hits = self._search_path(wiki.get_root(), regex, {})
         hitssorted = sorted(hits.values(), key=lambda x: x['score'])
 
         return [x['obj'] for x in hitssorted]

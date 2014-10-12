@@ -2,7 +2,7 @@
 
 {% block head_title %}{{ file.name }}{% endblock %}
 {% block title %}
-    <a href="{{ url_for('index') }}">Pendium</a>&nbsp;&gt;&nbsp;
+    <a href="{{ url_for('view') }}">Pendium</a>&nbsp;&gt;&nbsp;
     {% for a in file.ancestors()[1:] %}
         <a href="{{ url_for('view', path=a.path) }}">{{ a.name }}</a>&nbsp;&gt;&nbsp;
     {% endfor %}

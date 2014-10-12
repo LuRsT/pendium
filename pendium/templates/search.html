@@ -2,7 +2,7 @@
 
 {% block head_title %}Search{% endblock %}
 {% block title %}
-  <a href="{{ url_for('index') }}">Pendium</a>&nbsp;&gt;&nbsp;
+  <a href="{{ url_for('view') }}">Pendium</a>&nbsp;&gt;&nbsp;
   Search for: {{ term }}
 {% endblock %}
 
@@ -13,7 +13,7 @@
     </form>
     {% if searched %}
       {% if hits == 0 %}
-         <div class="alert alert-info">No results found for "{{ term }}"</div>          
+         <div class="alert alert-info">No results found for "{{ term }}"</div>
       {% else %}
          <h3>{{ hits }} results for "{{ term }}"</h3>
          <ul>

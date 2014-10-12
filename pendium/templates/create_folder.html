@@ -2,7 +2,7 @@
 
 {% block head_title %}Create Folder{% endblock %}
 {% block title %}
-    <a href="{{ url_for('index') }}">Pendium</a>&nbsp;&gt;&nbsp;
+    <a href="{{ url_for('view') }}">Pendium</a>&nbsp;&gt;&nbsp;
     {% for a in file.ancestors()[1:] %}
         <a href="{{ url_for('view', path=a.path) }}">{{ a.name }}</a>&nbsp;&gt;&nbsp;
     {% endfor %}
@@ -14,7 +14,7 @@
 
     <div class="well">
         <form method="POST">
-            <input name="foldername" type="text" class="" placeholder="Folder name" {% if foldername %}value="{{ foldername }}"{% endif %} />
+            <input name="dir_name" type="text" class="" placeholder="Folder name" {% if dir_name %}value="{{ dir_name }}"{% endif %} />
             <button class="btn btn-primary" name="save" value="1"><i class="icon-save"></i> Save</button>&nbsp;
             <div class="pull-right">
                 <a class="btn btn-danger" href="{{ url_for('view', path=file.path) }}"><i class="icon-remove"></i> Cancel</a>

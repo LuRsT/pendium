@@ -1,46 +1,88 @@
+from json import dumps as json_dumps
 from mimetypes import guess_type
 from traceback import format_exc
-from json import dumps as json_dumps
 
-from flask import (render_template, flash, redirect, url_for,
-                   abort, g, request, escape, Response)
+from flask import Response
+from flask import abort
+from flask import escape
+from flask import flash
+from flask import g
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import url_for
 
 from pendium import app
-from pendium.filesystem import (Wiki, PathNotFound, PathExists)
+from pendium.filesystem import PathExists
+from pendium.filesystem import PathNotFound
+from pendium.filesystem import Wiki
 
 
 @app.route('/')
-def index():
-    p = g.wiki.root()
-    return render_template('index.html',
-                           file=p,
-                           files=p.items())
+@app.route('/<path:path>', methods=['GET'])
+def view(path=None, ref=None):
+    if not path:
+        index = g.wiki.get_root()
+        path = index.path
+
+    try:
+        path = g.wiki.get(path)
+    except PathNotFound:
+        abort(404)
+
+    if path.is_leaf and not path.is_binary:
+        if not path.can_render:
+            flash('No renderer found, fallback to plain text', 'warning')
+
+        if request.args.get('ref', None) and g.wiki.has_vcs:
+            path.ref(request.args.get('ref'))
+
+        response = render_template(
+            'view.html',
+            file=path,
+            files=path.items(),
+            refs=path.refs,
+            rendered=path.render(),
+        )
+    elif path.is_node:
+        response = render_template(
+            'list.html',
+            file=path,
+            files=path.items(),
+        )
+    else:
+        (mimetype, enc) = guess_type(path.path)
+        response = Response(
+            path.render(),
+            mimetype=mimetype,
+        )
+    return response
 
 
 @app.route('/_create_folder_/', methods=['GET', 'POST'])
 @app.route('/_create_folder_/<path:path>', methods=['GET', 'POST'])
 def create_folder(path=None):
-    p = g.wiki.root()
+    path = g.wiki.get_root()
     if path is not None:
         try:
-            p = g.wiki.get(path)
+            path = g.wiki.get(path)
         except PathNotFound:
             abort(404)
 
-    if not p.is_node:
+    if not path.is_node:
         abort(500)
 
-    if not p.editable:
+    if not path.editable:
         abort(500)
 
-    foldername = None
+    dir_name = None
 
     if request.form.get('save', None):
-        foldername = request.form.get('foldername')
+        dir_name = request.form.get('dir_name')
         try:
-            p.create_directory(foldername)
+            path.create_directory(dir_name)
             flash('New folder created', 'success')
-            return redirect(url_for('view', path=p.path))
+            return redirect(url_for('view', path=path.path))
         except PathExists:
             app.logger.error(format_exc())
             flash('There is already a folder by that name', 'error')
@@ -50,49 +92,49 @@ def create_folder(path=None):
             flash('There was a problem creating your folder: %s' % e, 'error')
 
     return render_template('create_folder.html',
-                           file=p,
-                           foldername=foldername)
+                           file=path,
+                           dir_name=dir_name)
 
 
 @app.route('/_delete_/<path:path>', methods=['GET', 'POST'])
 def delete(path):
     try:
-        p = g.wiki.get(path)
+        path = g.wiki.get(path)
     except PathNotFound:
         abort(404)
 
-    if not p.editable:
+    if not path.editable:
         abort(500)
 
     if request.form.get('delete', None):
         try:
-            parent = p.ancestor()
-            p.delete()
-            flash('\'%s\' successfull deleted' % p.name, 'success')
+            parent = path.ancestor()
+            path.delete()
+            flash('\'%s\' successfull deleted' % path.name, 'success')
             return redirect(url_for('view', path=parent.path))
 
         except Exception, e:
             app.logger.error(format_exc())
-            msg = 'There was a problem deleting \'%s\': %s' % (p.name, e)
+            msg = 'There was a problem deleting \'%s\': %s' % (path.name, e)
             flash(msg, 'error')
 
-    return render_template('delete.html', file=p)
+    return render_template('delete.html', file=path)
 
 
 @app.route('/_create_file_/', methods=['GET', 'POST'])
 @app.route('/_create_file_/<path:path>', methods=['GET', 'POST'])
 def create_file(path=None):
-    p = g.wiki.root()
+    path = g.wiki.get_root()
     if path is not None:
         try:
-            p = g.wiki.get(path)
+            path = g.wiki.get(path)
         except PathNotFound:
             abort(404)
 
-    if not p.is_node:
+    if not path.is_node:
         abort(500)
 
-    if not p.editable:
+    if not path.editable:
         abort(500)
 
     filename = None
@@ -105,12 +147,12 @@ def create_file(path=None):
         try:
             if extension != '':
                 filename += '.' + extension
-            new_file = p.create_file(filename)
+            new_file = path.create_file(filename)
             new_file.content(content=filecontent)
             new_file.save(comment=request.form.get('message', None))
             flash('File created with the provided content', 'success')
 
-            return redirect(url_for('view', path=p.path))
+            return redirect(url_for('view', path=path.path))
         except PathExists:
             app.logger.error(format_exc())
             flash('There is already a file by that name', 'error')
@@ -120,7 +162,7 @@ def create_file(path=None):
             flash('There was a problem saving your file : %s' % e, 'error')
 
     return render_template('create.html',
-                           file=p,
+                           file=path,
                            filename=filename,
                            extensions=get_extensions(),
                            filecontent=filecontent)
@@ -129,23 +171,23 @@ def create_file(path=None):
 @app.route('/_edit_/<path:path>', methods=['GET', 'POST'])
 def edit(path):
     try:
-        p = g.wiki.get(path)
+        path = g.wiki.get(path)
     except PathNotFound:
         abort(404)
 
-    if not p.is_leaf:
+    if not path.is_leaf:
         abort(500)
 
-    if p.is_binary:
+    if path.is_binary:
         abort(500)
 
-    if not p.editable:
+    if not path.editable:
         abort(500)
 
     if request.form.get('save', None) or request.form.get('quiet_save', None):
         try:
-            p.content(content=request.form.get('content'))
-            p.save(comment=request.form.get('message', None))
+            path.content(content=request.form.get('content'))
+            path.save(comment=request.form.get('message', None))
             flash('File saved with the new provided content', 'success')
         except Exception, e:
             app.logger.error(format_exc())
@@ -155,37 +197,9 @@ def edit(path):
         return view(path)
 
     return render_template('edit.html',
-                           file=p,
-                           files=p.items(),
-                           file_content=escape(p.content()))
-
-
-@app.route('/<path:path>', methods=['GET'])
-def view(path, ref=None):
-    try:
-        p = g.wiki.get(path)
-    except PathNotFound:
-        abort(404)
-
-    if p.is_leaf and not p.is_binary:
-        if not p.can_render:
-            flash('No renderer found, fallback to plain text', 'warning')
-
-        if request.args.get('ref', None) and g.wiki.has_vcs:
-            p.ref(request.args.get('ref'))
-
-        return render_template('view.html',
-                               file=p,
-                               files=p.items(),
-                               refs=p.refs,
-                               rendered=p.render())
-    elif p.is_node:
-        return render_template('list.html',
-                               file=p,
-                               files=p.items())
-    else:
-        (mimetype, enc) = guess_type(p.path)
-        return Response(p.render(), mimetype=mimetype)
+                           file=path,
+                           files=path.items(),
+                           file_content=escape(path.content()))
 
 
 @app.route('/search/', methods=['GET', 'POST'])
@@ -221,18 +235,18 @@ def refresh():
         app.logger.error(format_exc())
         flash('Error refreshing git repository', 'error')
 
-    return redirect(url_for('index'))
+    return redirect(url_for('view'))
 
 
 @app.route('/_raw_/<path:path>')
 def raw(path):
     try:
-        p = g.wiki.get(path)
+        path = g.wiki.get(path)
     except PathNotFound:
         abort(404)
 
-    if p.is_leaf:
-        return Response(p.content(), mimetype='text/plain')
+    if path.is_leaf:
+        return Response(path.content(), mimetype='text/plain')
 
     abort(404)
 
