@@ -78,8 +78,6 @@ def create_folder(path=None):
     if not path.editable:
         abort(500)
 
-    dir_name = None
-
     if request.form.get('save', None):
         dir_name = request.form.get('dir_name')
         try:
@@ -94,11 +92,7 @@ def create_folder(path=None):
             app.logger.error(format_exc())
             flash('There was a problem creating your folder: %s' % e, 'error')
 
-    return render_template(
-        'create_folder.html',
-        file=path,
-        dir_name=dir_name,
-    )
+    return render_template('create_folder.html', file=path)
 
 
 @app.route('/_delete_/<path:path>', methods=['GET', 'POST'])
