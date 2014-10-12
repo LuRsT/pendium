@@ -2,12 +2,12 @@
 <html lang="en"><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>{% block head_title %}{% endblock %}</title>
+    <title>P {% block head_title %}{% endblock %}</title>
     <meta name="viewport"    content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author"      content="">
 
-    <!-- Le styles -->
+    <!-- Styles -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/font-awesome.css' )  }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/pendium.css' )       }}" rel="stylesheet">
@@ -32,7 +32,13 @@
                     <div class="span2"></div>
                     <div class="span10">
                         <ul class="nav pull-left">
-                            <li><h5><i class="icon-bookmark"></i> {% block title %}{% endblock %}</h5></li>
+                            <li>
+                                <h5>
+                                    <i class="icon-bookmark"></i>
+                                    <a href="{{ url_for('view') }}">Pendium</a>&nbsp;&gt;&nbsp;
+                                    {% block title %}{% endblock %}
+                                </h5>
+                            </li>
                         </ul>
                         <ul class="nav pull-right">
                             <li id="fat-menu" class="dropdown ">
@@ -118,9 +124,7 @@
         </div>
     </div>
 
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- Javascript -->
     {% block scripts %}
     <script src="{{ url_for('static', filename='js/jquery.js')         }}"></script>
     <script src="{{ url_for('static', filename='js/jquery.hotkeys.js') }}"></script>
