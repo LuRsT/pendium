@@ -110,10 +110,8 @@ class Wiki(object):
             return WikiFile(self, path)
 
     def refresh(self):
-        if not self.has_vcs:
-            return ''
-
-        return self.vcs.refresh()
+        if self.has_vcs:
+            return self.vcs.refresh()
 
 
 class WikiPath(object):
@@ -131,8 +129,9 @@ class WikiPath(object):
             raise PathNotFound(self.abs_path)
 
     def ancestor(self):
-        if self.path == '':
+        if not self.path:
             return None
+
         ancestor_dir = split_path(self.path)[0]
         return self.wiki.get(ancestor_dir)
 

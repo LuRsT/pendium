@@ -62,7 +62,10 @@ def view(path=None, ref=None):
 @app.route('/_create_folder_/', methods=['GET', 'POST'])
 @app.route('/_create_folder_/<path:path>', methods=['GET', 'POST'])
 def create_folder(path=None):
-    path = g.wiki.get_root()
+    if not path:
+        index = g.wiki.get_root()
+        path = index.path
+
     if path is not None:
         try:
             path = g.wiki.get(path)
@@ -91,9 +94,11 @@ def create_folder(path=None):
             app.logger.error(format_exc())
             flash('There was a problem creating your folder: %s' % e, 'error')
 
-    return render_template('create_folder.html',
-                           file=path,
-                           dir_name=dir_name)
+    return render_template(
+        'create_folder.html',
+        file=path,
+        dir_name=dir_name,
+    )
 
 
 @app.route('/_delete_/<path:path>', methods=['GET', 'POST'])
@@ -124,7 +129,10 @@ def delete(path):
 @app.route('/_create_file_/', methods=['GET', 'POST'])
 @app.route('/_create_file_/<path:path>', methods=['GET', 'POST'])
 def create_file(path=None):
-    path = g.wiki.get_root()
+    if not path:
+        index = g.wiki.get_root()
+        path = index.path
+
     if path is not None:
         try:
             path = g.wiki.get(path)
@@ -153,6 +161,7 @@ def create_file(path=None):
             flash('File created with the provided content', 'success')
 
             return redirect(url_for('view', path=path.path))
+
         except PathExists:
             app.logger.error(format_exc())
             flash('There is already a file by that name', 'error')
@@ -161,11 +170,13 @@ def create_file(path=None):
             app.logger.error(format_exc())
             flash('There was a problem saving your file : %s' % e, 'error')
 
-    return render_template('create.html',
-                           file=path,
-                           filename=filename,
-                           extensions=get_extensions(),
-                           filecontent=filecontent)
+    return render_template(
+        'create.html',
+        file=path,
+        filename=filename,
+        extensions=get_extensions(),
+        filecontent=filecontent,
+    )
 
 
 @app.route('/_edit_/<path:path>', methods=['GET', 'POST'])
@@ -194,12 +205,14 @@ def edit(path):
             flash('There was a problem saving your file : %s' % e, 'error')
 
     if request.form.get('save'):
-        return view(path)
+        return view(path.path)
 
-    return render_template('edit.html',
-                           file=path,
-                           files=path.items(),
-                           file_content=escape(path.content()))
+    return render_template(
+        'edit.html',
+        file=path,
+        files=path.items(),
+        file_content=escape(path.content()),
+    )
 
 
 @app.route('/search/', methods=['GET', 'POST'])
@@ -212,8 +225,11 @@ def search():
 
         hits_dicts = []
         for hit in hits:
-            hits_dicts.append({'hit': term + ': ' + hit.name,
-                               'path': hit.path})
+            hit_text = term + ': ' + hit.name
+            hits_dicts.append({
+                'hit': hit_text,
+                'path': hit.path,
+            })
 
         js = json_dumps({
             'searched': True,
@@ -245,10 +261,10 @@ def raw(path):
     except PathNotFound:
         abort(404)
 
-    if path.is_leaf:
-        return Response(path.content(), mimetype='text/plain')
+    if not path.is_leaf:
+        abort(404)
 
-    abort(404)
+    return Response(path.content(), mimetype='text/plain')
 
 
 @app.context_processor
