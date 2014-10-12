@@ -1,5 +1,4 @@
 from mimetypes import guess_type
-from os.path import join as join_path
 from traceback import format_exc
 from json import dumps as json_dumps
 
@@ -13,23 +12,9 @@ from pendium.filesystem import (Wiki, PathNotFound, PathExists)
 @app.route('/')
 def index():
     p = g.wiki.root()
-    home_file = get_home()
     return render_template('index.html',
                            file=p,
-                           files=p.items(),
-                           home_file=home_file)
-
-
-def get_home(path=''):
-    home_file = None
-    try:
-        home_path = join_path(path, app.config['DEFAULT_HOME_FILE'])
-        home_file = g.wiki.get(home_path)
-        home_file = home_file.render()
-    except:
-        pass
-
-    return home_file
+                           files=p.items())
 
 
 @app.route('/_create_folder_/', methods=['GET', 'POST'])
@@ -195,11 +180,9 @@ def view(path, ref=None):
                                refs=p.refs,
                                rendered=p.render())
     elif p.is_node:
-        home_file = get_home(p.path)
         return render_template('list.html',
                                file=p,
-                               files=p.items(),
-                               home_file=home_file)
+                               files=p.items())
     else:
         (mimetype, enc) = guess_type(p.path)
         return Response(p.render(), mimetype=mimetype)

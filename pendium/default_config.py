@@ -32,8 +32,6 @@ WIKI_PLUGINS_CONFIG = {
 
 WIKI_GIT_SUPPORT = False
 
-DEFAULT_HOME_FILE = 'home.md'
-
 CODEHILITE_STYLESHEET = 'plain.css'
 
 BLACKLIST_EXTENSIONS = ['png', 'jpg', 'gif']
