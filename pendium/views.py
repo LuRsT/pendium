@@ -19,16 +19,9 @@ from pendium.filesystem import Wiki
 
 
 @app.route('/')
-@app.route('/<path:path>', methods=['GET'])
+@app.route('/<path:path>')
 def view(path=None, ref=None):
-    if not path:
-        index = g.wiki.get_root()
-        path = index.path
-
-    try:
-        path = g.wiki.get(path)
-    except PathNotFound:
-        abort(404)
+    path = _get_wiki_obj_from_path(path)
 
     if path.is_leaf and not path.is_binary:
         if not path.can_render:
@@ -62,20 +55,9 @@ def view(path=None, ref=None):
 @app.route('/_create_folder_/', methods=['GET', 'POST'])
 @app.route('/_create_folder_/<path:path>', methods=['GET', 'POST'])
 def create_folder(path=None):
-    if not path:
-        index = g.wiki.get_root()
-        path = index.path
+    path = _get_wiki_obj_from_path(path)
 
-    if path is not None:
-        try:
-            path = g.wiki.get(path)
-        except PathNotFound:
-            abort(404)
-
-    if not path.is_node:
-        abort(500)
-
-    if not path.editable:
+    if not path.is_node or not path.editable:
         abort(500)
 
     if request.form.get('save', None):
@@ -97,10 +79,7 @@ def create_folder(path=None):
 
 @app.route('/_delete_/<path:path>', methods=['GET', 'POST'])
 def delete(path):
-    try:
-        path = g.wiki.get(path)
-    except PathNotFound:
-        abort(404)
+    path = _get_wiki_obj_from_path(path)
 
     if not path.editable:
         abort(500)
@@ -123,20 +102,9 @@ def delete(path):
 @app.route('/_create_file_/', methods=['GET', 'POST'])
 @app.route('/_create_file_/<path:path>', methods=['GET', 'POST'])
 def create_file(path=None):
-    if not path:
-        index = g.wiki.get_root()
-        path = index.path
+    path = _get_wiki_obj_from_path(path)
 
-    if path is not None:
-        try:
-            path = g.wiki.get(path)
-        except PathNotFound:
-            abort(404)
-
-    if not path.is_node:
-        abort(500)
-
-    if not path.editable:
+    if not path.is_node or not path.editable:
         abort(500)
 
     filename = None
@@ -154,7 +122,7 @@ def create_file(path=None):
             new_file.save(comment=request.form.get('message', None))
             flash('File created with the provided content', 'success')
 
-            return redirect(url_for('view', path=path.path))
+            response = redirect(url_for('view', path=path.path))
 
         except PathExists:
             app.logger.error(format_exc())
@@ -163,33 +131,25 @@ def create_file(path=None):
         except Exception, e:
             app.logger.error(format_exc())
             flash('There was a problem saving your file : %s' % e, 'error')
-
-    return render_template(
-        'create.html',
-        file=path,
-        filename=filename,
-        extensions=get_extensions(),
-        filecontent=filecontent,
-    )
+    else:
+        response = render_template(
+            'create.html',
+            file=path,
+            filename=filename,
+            extensions=_get_extensions(),
+            filecontent=filecontent,
+        )
+    return response
 
 
 @app.route('/_edit_/<path:path>', methods=['GET', 'POST'])
 def edit(path):
-    try:
-        path = g.wiki.get(path)
-    except PathNotFound:
-        abort(404)
+    path = _get_wiki_obj_from_path(path)
 
-    if not path.is_leaf:
+    if not path.is_leaf or path.is_binary or not path.editable:
         abort(500)
 
-    if path.is_binary:
-        abort(500)
-
-    if not path.editable:
-        abort(500)
-
-    if request.form.get('save', None) or request.form.get('quiet_save', None):
+    if request.form.get('save') or request.form.get('quiet_save'):
         try:
             path.content(content=request.form.get('content'))
             path.save(comment=request.form.get('message', None))
@@ -199,20 +159,21 @@ def edit(path):
             flash('There was a problem saving your file : %s' % e, 'error')
 
     if request.form.get('save'):
-        return view(path.path)
-
-    return render_template(
-        'edit.html',
-        file=path,
-        files=path.items(),
-        file_content=escape(path.content()),
-    )
+        response = redirect(url_for('view', path=path.path))
+    else:
+        response = render_template(
+            'edit.html',
+            file=path,
+            files=path.items(),
+            file_content=escape(path.content()),
+        )
+    return response
 
 
 @app.route('/search/', methods=['GET', 'POST'])
 def search():
     js = json_dumps({})
-    if request.args.get('q', None):
+    if request.args.get('q'):
         term = request.args.get('q')
         app.logger.debug('Searching for \'%s\'' % term)
         hits = g.wiki.search(term)
@@ -284,8 +245,20 @@ def before_request():
     )
 
 
-def get_extensions():
+def _get_extensions():
     extensions = []
     for wiki_ext in app.config['WIKI_EXTENSIONS'].values():
         extensions += wiki_ext
     return extensions
+
+
+def _get_wiki_obj_from_path(path):
+    if not path:
+        wiki_obj = g.wiki.get_root().path
+
+    try:
+        wiki_obj = g.wiki.get(path)
+    except PathNotFound:
+        abort(404)
+
+    return wiki_obj
