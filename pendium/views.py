@@ -21,32 +21,32 @@ from pendium.filesystem import Wiki
 @app.route('/')
 @app.route('/<path:path>')
 def view(path=None, ref=None):
-    path = _get_wiki_obj_from_path(path)
+    wiki_obj = _get_wiki_obj_from_path(path)
 
-    if path.is_leaf and not path.is_binary:
-        if not path.can_render:
+    if wiki_obj.is_leaf and not wiki_obj.is_binary:
+        if not wiki_obj.can_render:
             flash('No renderer found, fallback to plain text', 'warning')
 
         if request.args.get('ref', None) and g.wiki.has_vcs:
-            path.ref(request.args.get('ref'))
+            wiki_obj.ref(request.args.get('ref'))
 
         response = render_template(
             'view.html',
-            file=path,
-            files=path.items(),
-            refs=path.refs,
-            rendered=path.render(),
+            file=wiki_obj,
+            files=wiki_obj.items(),
+            refs=wiki_obj.refs,
+            rendered=wiki_obj.render(),
         )
-    elif path.is_node:
+    elif wiki_obj.is_node:
         response = render_template(
             'list.html',
-            file=path,
-            files=path.items(),
+            file=wiki_obj,
+            files=wiki_obj.items(),
         )
     else:
-        (mimetype, enc) = guess_type(path.path)
+        (mimetype, enc) = guess_type(wiki_obj.path)
         response = Response(
-            path.render(),
+            wiki_obj.render(),
             mimetype=mimetype,
         )
     return response
@@ -55,17 +55,17 @@ def view(path=None, ref=None):
 @app.route('/_create_folder_/', methods=['GET', 'POST'])
 @app.route('/_create_folder_/<path:path>', methods=['GET', 'POST'])
 def create_folder(path=None):
-    path = _get_wiki_obj_from_path(path)
+    wiki_obj = _get_wiki_obj_from_path(path)
 
-    if not path.is_node or not path.editable:
+    if not wiki_obj.is_node or not wiki_obj.editable:
         abort(500)
 
     if request.form.get('save', None):
         dir_name = request.form.get('dir_name')
         try:
-            path.create_directory(dir_name)
+            wiki_obj.create_directory(dir_name)
             flash('New folder created', 'success')
-            return redirect(url_for('view', path=path.path))
+            return redirect(url_for('view', wiki_obj=wiki_obj.path))
         except PathExists:
             app.logger.error(format_exc())
             flash('There is already a folder by that name', 'error')
@@ -74,37 +74,37 @@ def create_folder(path=None):
             app.logger.error(format_exc())
             flash('There was a problem creating your folder: %s' % e, 'error')
 
-    return render_template('create_folder.html', file=path)
+    return render_template('create_folder.html', file=wiki_obj)
 
 
 @app.route('/_delete_/<path:path>', methods=['GET', 'POST'])
 def delete(path):
-    path = _get_wiki_obj_from_path(path)
+    wiki_obj = _get_wiki_obj_from_path(path)
 
-    if not path.editable:
+    if not wiki_obj.editable:
         abort(500)
 
     if request.form.get('delete', None):
         try:
-            parent = path.ancestor()
-            path.delete()
-            flash('\'%s\' successfull deleted' % path.name, 'success')
-            return redirect(url_for('view', path=parent.path))
+            parent = wiki_obj.ancestor()
+            wiki_obj.delete()
+            flash('\'%s\' successfull deleted' % wiki_obj.name, 'success')
+            return redirect(url_for('view', wiki_obj=parent.path))
 
         except Exception, e:
             app.logger.error(format_exc())
-            msg = 'There was a problem deleting \'%s\': %s' % (path.name, e)
+            msg = 'There was a problem deleting \'%s\': %s' % (wiki_obj.name, e)
             flash(msg, 'error')
 
-    return render_template('delete.html', file=path)
+    return render_template('delete.html', file=wiki_obj)
 
 
 @app.route('/_create_file_/', methods=['GET', 'POST'])
 @app.route('/_create_file_/<path:path>', methods=['GET', 'POST'])
 def create_file(path=None):
-    path = _get_wiki_obj_from_path(path)
+    wiki_obj = _get_wiki_obj_from_path(path)
 
-    if not path.is_node or not path.editable:
+    if not wiki_obj.is_node or not wiki_obj.editable:
         abort(500)
 
     filename = None
@@ -117,12 +117,12 @@ def create_file(path=None):
         try:
             if extension != '':
                 filename += '.' + extension
-            new_file = path.create_file(filename)
+            new_file = wiki_obj.create_file(filename)
             new_file.content(content=filecontent)
             new_file.save(comment=request.form.get('message', None))
             flash('File created with the provided content', 'success')
 
-            response = redirect(url_for('view', path=path.path))
+            response = redirect(url_for('view', wiki_obj=wiki_obj.path))
 
         except PathExists:
             app.logger.error(format_exc())
@@ -134,7 +134,7 @@ def create_file(path=None):
     else:
         response = render_template(
             'create.html',
-            file=path,
+            file=wiki_obj,
             filename=filename,
             extensions=_get_extensions(),
             filecontent=filecontent,
@@ -144,28 +144,28 @@ def create_file(path=None):
 
 @app.route('/_edit_/<path:path>', methods=['GET', 'POST'])
 def edit(path):
-    path = _get_wiki_obj_from_path(path)
+    wiki_obj = _get_wiki_obj_from_path(path)
 
-    if not path.is_leaf or path.is_binary or not path.editable:
+    if not wiki_obj.is_leaf or wiki_obj.is_binary or not wiki_obj.editable:
         abort(500)
 
     if request.form.get('save') or request.form.get('quiet_save'):
         try:
-            path.content(content=request.form.get('content'))
-            path.save(comment=request.form.get('message', None))
+            wiki_obj.content(content=request.form.get('content'))
+            wiki_obj.save(comment=request.form.get('message', None))
             flash('File saved with the new provided content', 'success')
         except Exception, e:
             app.logger.error(format_exc())
             flash('There was a problem saving your file : %s' % e, 'error')
 
     if request.form.get('save'):
-        response = redirect(url_for('view', path=path.path))
+        response = redirect(url_for('view', wiki_obj=wiki_obj.path))
     else:
         response = render_template(
             'edit.html',
-            file=path,
-            files=path.items(),
-            file_content=escape(path.content()),
+            file=wiki_obj,
+            files=wiki_obj.items(),
+            file_content=escape(wiki_obj.content()),
         )
     return response
 
@@ -212,14 +212,14 @@ def refresh():
 @app.route('/_raw_/<path:path>')
 def raw(path):
     try:
-        path = g.wiki.get(path)
+        wiki_obj = g.wiki.get(path)
     except PathNotFound:
         abort(404)
 
-    if not path.is_leaf:
+    if not wiki_obj.is_leaf:
         abort(404)
 
-    return Response(path.content(), mimetype='text/plain')
+    return Response(wiki_obj.content(), mimetype='text/plain')
 
 
 @app.context_processor
@@ -254,7 +254,7 @@ def _get_extensions():
 
 def _get_wiki_obj_from_path(path):
     if not path:
-        wiki_obj = g.wiki.get_root().path
+        path = g.wiki.get_root().path
 
     try:
         wiki_obj = g.wiki.get(path)
