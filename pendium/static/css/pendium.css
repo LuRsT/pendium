@@ -14,8 +14,8 @@
 }
 
 input#searchbox_type {
-    margin-left:   10px;
-    margin-right:  10px;
+    margin-left: 10px;
+    margin-right: 10px;
     margin-bottom: 10px;
 }
 
@@ -25,14 +25,52 @@ ul.typeahead  {
 
 /* Reset bootstrap for codehilite */
 .codehilite pre {
-    color:            none;
-    margin:           none;
-    padding:          none;
-    display:          block;
-    word-wrap:        none;
-    font-size:        none;
-    word-break:       none;
-    white-space:      none;
-    line-height:      none;
+    color: none;
+    margin: none;
+    padding: none;
+    display: block;
+    word-wrap: none;
+    font-size: none;
+    word-break: none;
+    white-space: none;
+    line-height: none;
     background-color: none;
+}
+
+
+/* Add scroll to dropdown */
+.dropdown-menu {
+    max-height: 400px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.open > a.dropdown-toggle::before, .open > a.dropdown-toggle::after {
+    display: block;
+}
+
+a.dropdown-toggle::before {
+    content: '';
+    display: inline-block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #CCC;
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    position: absolute;
+    bottom: -2px;
+    right: 7px;
+    display: none;
+}
+
+a.dropdown-toggle::after {
+    content: '';
+    display: inline-block;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid white;
+    position: absolute;
+    bottom: -2px;
+    right: 8px;
+    z-index: 1001;
+    display: none;
 }
