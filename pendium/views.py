@@ -63,9 +63,9 @@ def create_folder(path=None):
     if request.form.get('save', None):
         dir_name = request.form.get('dir_name')
         try:
-            wiki_obj.create_directory(dir_name)
+            new_directory = wiki_obj.create_directory(dir_name)
             flash('New folder created', 'success')
-            return redirect(url_for('view', wiki_obj=wiki_obj.path))
+            return redirect(url_for('view', path=new_directory.path))
         except PathExists:
             app.logger.error(format_exc())
             flash('There is already a folder by that name', 'error')
@@ -89,7 +89,7 @@ def delete(path):
             parent = wiki_obj.ancestor()
             wiki_obj.delete()
             flash('\'%s\' successfull deleted' % wiki_obj.name, 'success')
-            return redirect(url_for('view', wiki_obj=parent.path))
+            return redirect(url_for('view', path=parent.path))
 
         except Exception, e:
             app.logger.error(format_exc())
@@ -122,7 +122,7 @@ def create_file(path=None):
             new_file.save(comment=request.form.get('message', None))
             flash('File created with the provided content', 'success')
 
-            response = redirect(url_for('view', wiki_obj=wiki_obj.path))
+            response = redirect(url_for('view', path=wiki_obj.path))
 
         except PathExists:
             app.logger.error(format_exc())
@@ -159,7 +159,7 @@ def edit(path):
             flash('There was a problem saving your file : %s' % e, 'error')
 
     if request.form.get('save'):
-        response = redirect(url_for('view', wiki_obj=wiki_obj.path))
+        response = redirect(url_for('view', path=wiki_obj.path))
     else:
         response = render_template(
             'edit.html',
