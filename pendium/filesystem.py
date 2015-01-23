@@ -29,12 +29,7 @@ _LOGGER = getLogger(__name__)
 lib_path = abspath(dirname(__file__))
 manager = PluginManager()
 manager.setPluginPlaces([join_path(lib_path, 'plugins')])
-manager.setCategoriesFilter(
-    {
-        'Search': ISearchPlugin,
-        'Render': IRenderPlugin,
-    }
-)
+manager.setCategoriesFilter({'Search': ISearchPlugin, 'Render': IRenderPlugin})
 manager.collectPlugins()
 
 

@@ -172,7 +172,7 @@ def edit(path):
 
 @app.route('/search/', methods=['GET', 'POST'])
 def search():
-    js = json_dumps({})
+    json_string = json_dumps({})
     if request.args.get('q'):
         term = request.args.get('q')
         app.logger.debug('Searching for \'%s\'' % term)
@@ -186,14 +186,14 @@ def search():
                 'path': hit.path,
             })
 
-        js = json_dumps({
+        json_string = json_dumps({
             'searched': True,
-            'term':     term,
-            'hits':     len(hits),
-            'results':  hits_dicts,
+            'term': term,
+            'hits': len(hits),
+            'results': hits_dicts,
         })
 
-    return Response(js, mimetype='application/json')
+    return Response(json_string, mimetype='application/json')
 
 
 @app.route('/refresh/')
@@ -241,7 +241,7 @@ def before_request():
         extensions=config.get('WIKI_EXTENSIONS', {}),
         default_renderer=config.get('WIKI_DEFAULT_RENDERER', None),
         plugins_config=config.get('WIKI_PLUGINS_CONFIG', {}),
-        has_vcs=config.get('WIKI_GIT_SUPPORT', False)
+        has_vcs=config.get('WIKI_GIT_SUPPORT', False),
     )
 
 

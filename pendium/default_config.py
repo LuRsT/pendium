@@ -12,7 +12,7 @@ WIKI_EXTENSIONS = {
     'Text': ['txt'],
     'HTML': ['html', 'htm'],
     'Python': ['py'],
-    'Rest': ['rst']
+    'Rest': ['rst'],
 }
 
 WIKI_DEFAULT_RENDERER = None
@@ -25,7 +25,7 @@ WIKI_PLUGINS_CONFIG = {
             'tables',
             'footnotes',
             'fenced_code',
-            'codehilite'
+            'codehilite',
         ]
     },
 }
