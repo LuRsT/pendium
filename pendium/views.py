@@ -1,5 +1,6 @@
 from json import dumps as json_dumps
 from mimetypes import guess_type
+from os import getcwd
 from traceback import format_exc
 
 from flask import Response
@@ -66,6 +67,7 @@ def create_folder(path=None):
             new_directory = wiki_obj.create_directory(dir_name)
             flash('New folder created', 'success')
             return redirect(url_for('view', path=new_directory.path))
+
         except PathExists:
             app.logger.error(format_exc())
             flash('There is already a folder by that name', 'error')
@@ -237,7 +239,7 @@ def not_found(error):
 def before_request():
     config = app.config
     g.wiki = Wiki(
-        config['WIKI_DIR'],
+        config.get('WIKI_DIR', getcwd()),
         extensions=config.get('WIKI_EXTENSIONS', {}),
         default_renderer=config.get('WIKI_DEFAULT_RENDERER', None),
         plugins_config=config.get('WIKI_PLUGINS_CONFIG', {}),

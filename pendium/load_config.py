@@ -6,7 +6,7 @@ def load_config():
     app.config.from_object('pendium.default_config')
 
     # Load config.py in server root
-    app.config.from_pyfile('../config.py', silent=True)
+    app.config.from_pyfile('config.py', silent=True)
 
     # Load any other config passed via env
     try:

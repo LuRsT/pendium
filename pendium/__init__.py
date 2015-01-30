@@ -18,3 +18,6 @@ load_config()
 
 
 import pendium.views
+
+def run():
+    app.run(host=app.config.get('WIKI_HOST_IP', '0.0.0.0'))
