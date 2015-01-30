@@ -9,16 +9,15 @@ class PendiumTestCase(unittest.TestCase):
         self.test_filename = 'test_pendium_file.md'
         app.config.from_object('pendium.default_config')
         config = app.config
-        self.w = Wiki(config.get('WIKI_DIR', ''),
-                      extensions       = config.get('WIKI_EXTENSIONS', {}),
-                      default_renderer = config.get('WIKI_DEFAULT_RENDERER', None),
-                      plugins_config   = config.get('WIKI_PLUGINS_CONFIG', {}),
-                      has_vcs          = False)
+        self.w = Wiki(
+            config.get('WIKI_DIR', 'wiki'),
+            extensions = config.get('WIKI_EXTENSIONS', {}),
+            default_renderer = config.get('WIKI_DEFAULT_RENDERER', None),
+            plugins_config = config.get('WIKI_PLUGINS_CONFIG', {}),
+            has_vcs = False)
 
         # Testing flask app
         self._app = app.test_client()
-
-        return
 
     def create_file(self):
         try:
@@ -95,14 +94,12 @@ class PendiumTestCase(unittest.TestCase):
     def test_search(self):
         try:
             assert self.w.search('impossibru') == []
-            # Simple search, should have some results, be sure to 
+            # Simple search, should have some results, be sure to
             # have some files in the wiki folder
             assert len(self.w.search('#')) > 0
         except Exception:
             self.fail('Unexpected exception thrown')
 
-    def tearDown(self):
-        return
 
 if __name__ == '__main__':
     unittest.main()
