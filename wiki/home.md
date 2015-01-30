@@ -1,3 +1,0 @@
-## Welcome to pendium
-
-You can do lots of stuff here...
