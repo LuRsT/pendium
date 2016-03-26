@@ -14,10 +14,9 @@ for logger in loggers:
 from pendium.load_config import load_config
 
 
-load_config()
-
-
 import pendium.views
 
-def run():
+
+def run(config_file=None):
+    load_config(config_file)
     app.run(host=app.config.get('WIKI_HOST_IP', '0.0.0.0'))

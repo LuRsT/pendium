@@ -1,12 +1,11 @@
 from pendium import app
 
 
-def load_config():
-    # Load default config
+def load_config(config_file=None):
     app.config.from_object('pendium.default_config')
 
-    # Load config.py in server root
-    app.config.from_pyfile('config.py', silent=True)
+    if config_file:
+        app.config.from_pyfile(config_file, silent=False)
 
     # Load any other config passed via env
     try:
