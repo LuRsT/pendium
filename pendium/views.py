@@ -25,9 +25,6 @@ def view(path=None, ref=None):
     wiki_obj = _get_wiki_obj_from_path(path)
 
     if wiki_obj.is_leaf and not wiki_obj.is_binary:
-        if not wiki_obj.can_render:
-            flash('No renderer found, fallback to plain text', 'warning')
-
         if request.args.get('ref', None) and g.wiki.has_vcs:
             wiki_obj.ref(request.args.get('ref'))
 
@@ -241,8 +238,6 @@ def before_request():
     g.wiki = Wiki(
         config.get('WIKI_DIR', getcwd()),
         extensions=config.get('WIKI_EXTENSIONS', {}),
-        default_renderer=config.get('WIKI_DEFAULT_RENDERER', None),
-        plugins_config=config.get('WIKI_PLUGINS_CONFIG', {}),
         has_vcs=config.get('WIKI_GIT_SUPPORT', False),
     )
 

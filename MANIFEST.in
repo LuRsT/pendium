@@ -1,4 +1,2 @@
-include pendium/plugins/*.yapsy-plugin
-
 recursive-include pendium/templates *
 recursive-include pendium/static *

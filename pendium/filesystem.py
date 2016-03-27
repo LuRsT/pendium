@@ -15,22 +15,15 @@ from os.path import normpath
 from os.path import split as split_path
 from os.path import splitext as split_text
 import codecs
+import markdown
+
+from flask import Markup
 
 from pendium import app
-from pendium.plugins import IRenderPlugin
 from pendium.search import get_hits_for_term_in_wiki
-from yapsy.PluginManager import PluginManager
 
 
 _LOGGER = getLogger(__name__)
-
-
-# Populate plugins
-lib_path = abspath(dirname(__file__))
-manager = PluginManager()
-manager.setPluginPlaces([join_path(lib_path, 'plugins')])
-manager.setCategoriesFilter({'Render': IRenderPlugin})
-manager.collectPlugins()
 
 
 class PathExists(Exception):
@@ -46,13 +39,10 @@ class Wiki(object):
         self,
         basepath,
         extensions={},
-        default_renderer=None,
-        plugins_config={},
         has_vcs=False,
     ):
         self.basepath = basepath
         self.extensions = extensions
-        self.default_renderer = default_renderer
         self.has_vcs = has_vcs
         self.vcs = None
 
@@ -62,17 +52,6 @@ class Wiki(object):
                 self.vcs = git_wrapper.GitWrapper(basepath)
             except:
                 raise Exception('You need to install GitPython')
-
-        # Plugin configuration
-        for name, configuration in plugins_config.items():
-            for cat in ['Render']:
-                plugin = manager.getPluginByName(name, category=cat)
-                if not plugin:
-                    continue
-
-                msg = 'Configuring plugin: %s with :%s' % (name, configuration)
-                _LOGGER.debug(msg)
-                plugin.plugin_object.configure(configuration)
 
     def search(self, term):
         return get_hits_for_term_in_wiki(self, term)
@@ -172,44 +151,13 @@ class WikiFile(WikiPath):
         self.extension = split_text(self.name)[1][1:]
         self._content = ''
 
-    def renderer(self):
-        for plugin in manager.getPluginsOfCategory('Render'):
-            _LOGGER.debug('Testing for plugin %s', plugin.plugin_object.name)
-            extensions = self.wiki.extensions.get(plugin.plugin_object.name,
-                                                  None)
-            if extensions is None:
-                continue  # Try the next plugin
-
-            if self.extension in extensions:
-                _LOGGER.debug(self.extension)
-                _LOGGER.debug(plugin.plugin_object.name)
-                return plugin.plugin_object
-
-        # If no renderer found and binary, give up
-        if self.is_binary:
-            return None
-
-        # If is not binary and we have a default renderer
-        # return it
-        if self.wiki.default_renderer:
-            return self.wiki.default_renderer
-
-        return None
-
-    @property
-    def can_render(self):
-        return bool(self.renderer())
-
     def render(self):
-        if self.can_render:
-            renderer = self.renderer()
-            return renderer.render(self.content())
-
-        # No renderer found
         if self.is_binary:
-            return self.content(decode=False)
-
-        return self.content()
+            rendered_file = self.content(decode=False)
+        else:
+            markdown_content = markdown.markdown(self.content())
+            rendered_file = Markup(markdown_content)
+        return rendered_file
 
     @property
     def is_binary(self):

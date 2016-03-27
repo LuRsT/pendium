@@ -1,8 +1,0 @@
-[Core]
-Name   = Markdown
-Module = markdown
-
-[Documentation]
-Author      = Gilberto Gonçalves
-Version     = 0.1
-Description = Render Markdown

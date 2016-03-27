@@ -1,8 +1,0 @@
-[Core]
-Name   = HTML
-Module = html
-
-[Documentation]
-Author      = Gilberto Gonçalves
-Version     = 0.1
-Description = Render html
