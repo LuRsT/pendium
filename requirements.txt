@@ -1,2 +1,2 @@
-Markdown==2.5.1
+mistune
 Flask==0.10.1

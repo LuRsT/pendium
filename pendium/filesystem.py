@@ -6,8 +6,6 @@ from os import makedirs as make_dirs
 from os import remove as remove_file
 from os import rmdir as remove_dir
 from os import walk
-from os.path import abspath
-from os.path import dirname
 from os.path import exists as path_exists
 from os.path import isdir as is_dir
 from os.path import join as join_path
@@ -15,9 +13,9 @@ from os.path import normpath
 from os.path import split as split_path
 from os.path import splitext as split_text
 import codecs
-import markdown
 
 from flask import Markup
+from mistune import markdown
 
 from pendium import app
 from pendium.search import get_hits_for_term_in_wiki
@@ -155,7 +153,7 @@ class WikiFile(WikiPath):
         if self.is_binary:
             rendered_file = self.content(decode=False)
         else:
-            markdown_content = markdown.markdown(self.content())
+            markdown_content = markdown(self.content())
             rendered_file = Markup(markdown_content)
         return rendered_file
 
