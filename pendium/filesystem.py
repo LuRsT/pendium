@@ -18,7 +18,7 @@ import codecs
 
 from pendium import app
 from pendium.plugins import IRenderPlugin
-from pendium.plugins import ISearchPlugin
+from pendium.search import get_hits_for_term_in_wiki
 from yapsy.PluginManager import PluginManager
 
 
@@ -29,7 +29,7 @@ _LOGGER = getLogger(__name__)
 lib_path = abspath(dirname(__file__))
 manager = PluginManager()
 manager.setPluginPlaces([join_path(lib_path, 'plugins')])
-manager.setCategoriesFilter({'Search': ISearchPlugin, 'Render': IRenderPlugin})
+manager.setCategoriesFilter({'Render': IRenderPlugin})
 manager.collectPlugins()
 
 
@@ -38,10 +38,6 @@ class PathExists(Exception):
 
 
 class PathNotFound(Exception):
-    pass
-
-
-class _NoSearchPluginAvailable(Exception):
     pass
 
 
@@ -69,7 +65,7 @@ class Wiki(object):
 
         # Plugin configuration
         for name, configuration in plugins_config.items():
-            for cat in ['Search', 'Render']:
+            for cat in ['Render']:
                 plugin = manager.getPluginByName(name, category=cat)
                 if not plugin:
                     continue
@@ -79,19 +75,7 @@ class Wiki(object):
                 plugin.plugin_object.configure(configuration)
 
     def search(self, term):
-        best_plugin_score = 0
-        best_plugin = None
-        for plugin in manager.getPluginsOfCategory('Search'):
-            if plugin.plugin_object.search_speed > best_plugin_score:
-                best_plugin_score = plugin.plugin_object.search_speed
-                best_plugin = plugin
-
-        if best_plugin is None:
-            raise _NoSearchPluginAvailable
-
-        _LOGGER.debug('Searching with %s' % best_plugin.name)
-
-        return best_plugin.plugin_object.search(self, term)
+        return get_hits_for_term_in_wiki(self, term)
 
     def get_root(self):
         return self.get('.')
