@@ -17,6 +17,10 @@ from pendium.load_config import load_config
 import pendium.views
 
 
-def run(config_file=None):
+def run(config_file=None, wikipath=None):
     load_config(config_file)
+
+    # This is quite dirty FIXME
+    app.config['WIKI_DIR'] = wikipath
+
     app.run(host=app.config.get('WIKI_HOST_IP', '0.0.0.0'))
