@@ -55,7 +55,7 @@ def view(path=None, ref=None):
 def create_folder(path=None):
     wiki_obj = _get_wiki_obj_from_path(path)
 
-    if not wiki_obj.is_node or not wiki_obj.editable:
+    if not wiki_obj.is_node or not wiki_obj.is_editable:
         abort(500)
 
     if request.form.get('save', None):
@@ -80,7 +80,7 @@ def create_folder(path=None):
 def delete(path):
     wiki_obj = _get_wiki_obj_from_path(path)
 
-    if not wiki_obj.editable:
+    if not wiki_obj.is_editable:
         abort(500)
 
     if request.form.get('delete', None):
@@ -103,7 +103,7 @@ def delete(path):
 def create_file(path=None):
     wiki_obj = _get_wiki_obj_from_path(path)
 
-    if not wiki_obj.is_node or not wiki_obj.editable:
+    if not wiki_obj.is_node or not wiki_obj.is_editable:
         abort(500)
 
     filename = None
@@ -135,7 +135,6 @@ def create_file(path=None):
             'create.html',
             file=wiki_obj,
             filename=filename,
-            extensions=_get_extensions(),
             filecontent=filecontent,
         )
     return response
@@ -145,7 +144,7 @@ def create_file(path=None):
 def edit(path):
     wiki_obj = _get_wiki_obj_from_path(path)
 
-    if not wiki_obj.is_leaf or wiki_obj.is_binary or not wiki_obj.editable:
+    if not wiki_obj.is_leaf or wiki_obj.is_binary or not wiki_obj.is_editable:
         abort(500)
 
     if request.form.get('save') or request.form.get('quiet_save'):
@@ -237,16 +236,8 @@ def before_request():
     config = app.config
     g.wiki = Wiki(
         config.get('WIKI_DIR', getcwd()),
-        extensions=config.get('WIKI_EXTENSIONS', {}),
         has_vcs=config.get('WIKI_GIT_SUPPORT', False),
     )
-
-
-def _get_extensions():
-    extensions = []
-    for wiki_ext in app.config['WIKI_EXTENSIONS'].values():
-        extensions += wiki_ext
-    return extensions
 
 
 def _get_wiki_obj_from_path(path):

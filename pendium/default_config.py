@@ -1,6 +1,5 @@
 # Flask config
 DEBUG = True
-TESTING = True
 SECRET_KEY = 'pendiumissopendular'
 
 # Pendium config

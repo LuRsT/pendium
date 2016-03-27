@@ -14,7 +14,7 @@
 
 {% block plugin_menu %}
     <li><a href="{{ url_for('raw', path=file.path) }}"><i class="icon-file-alt"></i> Raw file</a></li>
-    {% if file.editable %}
+    {% if file.is_editable %}
         <li><a href="{{ url_for('edit', path=file.path) }}" id="edit_button"><i class="icon-edit"></i> Edit file</a></li>
         <li><a href="{{ url_for('delete', path=file.path) }}"><i class="icon-trash"></i> Delete</a></li>
     {% endif %}

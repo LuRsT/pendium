@@ -36,11 +36,9 @@ class Wiki(object):
     def __init__(
         self,
         basepath,
-        extensions={},
         has_vcs=False,
     ):
         self.basepath = basepath
-        self.extensions = extensions
         self.has_vcs = has_vcs
         self.vcs = None
 
@@ -115,10 +113,12 @@ class WikiPath(object):
         return sorted(filenames, key=lambda Wiki: Wiki.is_leaf)
 
     @property
-    def editable(self):
+    def is_editable(self):
         if app.config['EDITABLE']:
-            return can_access(self.abs_path, CAN_WRITE)
-        return False
+            is_editable = can_access(self.abs_path, CAN_WRITE)
+        else:
+            is_editable = False
+        return is_editable
 
     def delete(self):
         top = self.abs_path
@@ -146,7 +146,6 @@ class WikiFile(WikiPath):
     def __init__(self, *args, **kwargs):
         super(WikiFile, self).__init__(*args, **kwargs)
         self.is_leaf = True
-        self.extension = split_text(self.name)[1][1:]
         self._content = ''
 
     def render(self):
