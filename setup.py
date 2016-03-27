@@ -20,7 +20,7 @@ setup(
     include_package_data=True,
     author='Gil Goncalves',
     author_email='lursty@gmail.com',
-    url='https://github.com/lurst/txt2bootstrap',
+    url='https://github.com/lurst/Pendium',
     entry_points="""
 [console_scripts]
 pendium = pendium:run
