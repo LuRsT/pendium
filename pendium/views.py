@@ -173,12 +173,11 @@ def search():
     json_string = json_dumps({})
     if request.args.get('q'):
         term = request.args.get('q')
-        app.logger.debug('Searching for \'%s\'' % term)
         hits = g.wiki.search(term)
 
         hits_dicts = []
         for hit in hits:
-            hit_text = term + ': ' + hit.name
+            hit_text = ': '.join((term, hit.name))
             hits_dicts.append({
                 'hit': hit_text,
                 'path': hit.path,
