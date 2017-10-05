@@ -1,3 +1,0 @@
-Flask==0.10.1
-click==6.4
-mistune==0.7.2
