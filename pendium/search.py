@@ -24,7 +24,7 @@ def _search_path(wikipath, regex, hits):
                     hits = _add_hit(hits, wikipath, 1)
                     break
             file.close()
-        except Exception, e:
+        except Exception as e:
             print(e)
 
     return hits

@@ -1,7 +1,8 @@
 import git
 
 
-class GitWrapper(object):
+class GitWrapper:
+
     def __init__(self, path):
         self.basepath = path
 
@@ -52,7 +53,7 @@ class GitWrapper(object):
         count is how many refs will we return
         """
         try:
-            refs = self     \
+            refs = self \
                 .get_repo() \
                 .git.log(
                     '--pretty=oneline',

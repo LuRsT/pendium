@@ -32,12 +32,9 @@ class PathNotFound(Exception):
     pass
 
 
-class Wiki(object):
-    def __init__(
-        self,
-        basepath,
-        has_vcs=False,
-    ):
+class Wiki:
+
+    def __init__(self, basepath, has_vcs=False):
         self.basepath = basepath
         self.has_vcs = has_vcs
         self.vcs = None
@@ -68,7 +65,7 @@ class Wiki(object):
             return self.vcs.refresh()
 
 
-class WikiPath(object):
+class WikiPath:
 
     def __init__(self, wiki, path):
         self.path = path
@@ -99,7 +96,7 @@ class WikiPath(object):
             self = self.ancestor()
 
         filenames = []
-        for file_path in list_dir(unicode(self.abs_path)):
+        for file_path in list_dir(self.abs_path):
             if (file_path.find('.') == 0):
                 continue
 
@@ -150,7 +147,7 @@ class WikiFile(WikiPath):
 
     def render(self):
         if self.is_binary:
-            rendered_file = self.content(decode=False)
+            rendered_file = self.content()
         else:
             markdown_content = markdown(self.content())
             rendered_file = Markup(markdown_content)
@@ -158,16 +155,12 @@ class WikiFile(WikiPath):
 
     @property
     def is_binary(self):
-        """
-        Return true if the file is binary.
-
-        """
         fin = open(self.abs_path, 'rb')
         try:
             CHUNKSIZE = 1024
             while 1:
                 chunk = fin.read(CHUNKSIZE)
-                if '\0' in chunk:  # Found null byte
+                if b'\0' in chunk:  # Found null byte
                     return True
                 if len(chunk) < CHUNKSIZE:
                     break  # Done
@@ -195,12 +188,12 @@ class WikiFile(WikiPath):
         """
         try:
             content = self.wiki.vcs.show(filepath=self.path, ref=ref)
-            self._content = content.decode('utf8')
+            self._content = content
             return True
         except:
             return False
 
-    def content(self, content=None, decode=True):
+    def content(self, content=None):
         """
         Helper method, needs refactoring
 
@@ -210,9 +203,6 @@ class WikiFile(WikiPath):
 
         with open(self.abs_path, 'r') as file_obj:
             file_content = file_obj.read()
-
-        if decode:
-            file_content = file_content.decode('utf-8')
 
         if not content:
             self._content = file_content
