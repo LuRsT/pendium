@@ -1,43 +1,43 @@
 # Flask config
 DEBUG = True
 TESTING = True
-SECRET_KEY = 'pendiumissopendular'
+SECRET_KEY = "pendiumissopendular"
 
 # Pendium config
-WIKI_DIR = 'wiki'
+WIKI_DIR = "wiki"
 HOST_IP = None
 
 WIKI_EXTENSIONS = {
-    'Markdown': ['md', 'mdw'],
-    'Text': ['txt'],
-    'HTML': ['html', 'htm'],
-    'Python': ['py'],
-    'Rest': ['rst']
+    "Markdown": ["md", "mdw"],
+    "Text": ["txt"],
+    "HTML": ["html", "htm"],
+    "Python": ["py"],
+    "Rest": ["rst"],
 }
 
 WIKI_DEFAULT_RENDERER = None
 
 WIKI_PLUGINS_CONFIG = {
-    'Markdown': {
-        'extensions': [
-            'headerid',
-            'toc',
-            'tables',
-            'footnotes',
-            'fenced_code',
-            'codehilite'
+    "Markdown": {
+        "extensions": [
+            "headerid",
+            "toc",
+            "tables",
+            "footnotes",
+            "fenced_code",
+            "codehilite",
         ]
     },
 }
 
 WIKI_GIT_SUPPORT = False
 
-DEFAULT_HOME_FILE = 'home.md'
+DEFAULT_HOME_FILE = "home.md"
 
-CODEHILITE_STYLESHEET = 'plain.css'
+CODEHILITE_STYLESHEET = "plain.css"
 
-BLACKLIST_EXTENSIONS = ['png', 'jpg', 'gif']
+BLACKLIST_EXTENSIONS = ["png", "jpg", "gif"]
 
 EDITABLE = True
 
-CSS_THEME = 'monochrom'
+CSS_THEME = "monochrom"

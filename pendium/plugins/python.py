@@ -7,7 +7,7 @@ from pendium.plugins import IRenderPlugin
 
 
 class Python(IRenderPlugin):
-    name = 'Python'
+    name = "Python"
 
     def render(self, content):
         return Markup(highlight(content, PythonLexer(), HtmlFormatter()))

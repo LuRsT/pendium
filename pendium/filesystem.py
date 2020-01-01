@@ -13,12 +13,9 @@ log = getLogger(__name__)
 # Populate plugins
 lib_path = os.path.abspath(os.path.dirname(__file__))
 manager = PluginManager()
-manager.setPluginPlaces([os.path.join(lib_path, 'plugins')])
+manager.setPluginPlaces([os.path.join(lib_path, "plugins")])
 manager.setCategoriesFilter(
-    {
-        'Search': ISearchPlugin,
-        'Render': IRenderPlugin,
-    }
+    {"Search": ISearchPlugin, "Render": IRenderPlugin,}
 )
 manager.collectPlugins()
 
@@ -40,12 +37,14 @@ class NoSearchPluginAvailable(Exception):
 
 
 class Wiki(object):
-    def __init__(self,
-                 basepath,
-                 extensions={},
-                 default_renderer=None,
-                 plugins_config={},
-                 has_vcs=False):
+    def __init__(
+        self,
+        basepath,
+        extensions={},
+        default_renderer=None,
+        plugins_config={},
+        has_vcs=False,
+    ):
         self.basepath = basepath
         self.extensions = extensions
         self.default_renderer = default_renderer
@@ -55,25 +54,26 @@ class Wiki(object):
         if self.has_vcs:
             try:
                 from pendium import git_wrapper
+
                 self.vcs = git_wrapper.GitWrapper(basepath)
             except:
-                raise Exception('You need to install GitPython')
+                raise Exception("You need to install GitPython")
 
         # Plugin configuration
         for name, configuration in plugins_config.items():
-            for cat in ['Search', 'Render']:
+            for cat in ["Search", "Render"]:
                 plugin = manager.getPluginByName(name, category=cat)
                 if not plugin:
                     continue
 
-                msg = 'Configuring plugin: %s with :%s' % (name, configuration)
+                msg = "Configuring plugin: %s with :%s" % (name, configuration)
                 log.debug(msg)
                 plugin.plugin_object.configure(configuration)
 
     def search(self, term):
         best_plugin_score = 0
         best_plugin = None
-        for plugin in manager.getPluginsOfCategory('Search'):
+        for plugin in manager.getPluginsOfCategory("Search"):
             if plugin.plugin_object.search_speed > best_plugin_score:
                 best_plugin_score = plugin.plugin_object.search_speed
                 best_plugin = plugin
@@ -81,12 +81,12 @@ class Wiki(object):
         if best_plugin is None:
             raise NoSearchPluginAvailable
 
-        log.debug('Searching with %s' % best_plugin.name)
+        log.debug("Searching with %s" % best_plugin.name)
 
         return best_plugin.plugin_object.search(self, term)
 
     def root(self):
-        return self.get('.')
+        return self.get(".")
 
     def get(self, path):
         completepath = os.path.normpath(os.path.join(self.basepath, path))
@@ -97,7 +97,7 @@ class Wiki(object):
 
     def refresh(self):
         if not self.has_vcs:
-            return ''
+            return ""
 
         return self.vcs.refresh()
 
@@ -116,7 +116,7 @@ class WikiPath(object):
             raise PathNotFound(self.abs_path)
 
     def ancestor(self):
-        if self.path == '':
+        if self.path == "":
             return None
         ancestor_dir = os.path.split(self.path)[0]
         return self.wiki.get(ancestor_dir)
@@ -132,11 +132,10 @@ class WikiPath(object):
 
         filenames = []
         for f in os.listdir(self.abs_path):
-            if (f.find('.') == 0):
+            if f.find(".") == 0:
                 continue
 
-            if (os.path.splitext(f)[1][1:]
-                    in app.config['BLACKLIST_EXTENSIONS']):
+            if os.path.splitext(f)[1][1:] in app.config["BLACKLIST_EXTENSIONS"]:
                 continue
 
             complete_path = os.path.join(self.path, f)
@@ -146,7 +145,7 @@ class WikiPath(object):
 
     @property
     def editable(self):
-        if app.config['EDITABLE']:
+        if app.config["EDITABLE"]:
             return os.access(self.abs_path, os.W_OK)
         return False
 
@@ -154,17 +153,17 @@ class WikiPath(object):
         top = self.abs_path
         for root, dirs, files in os.walk(top, topdown=False):
             for name in files:
-                log.debug('Will remove FILE: %s', os.path.join(root, name))
+                log.debug("Will remove FILE: %s", os.path.join(root, name))
                 os.remove(os.path.join(root, name))
             for name in dirs:
-                log.debug('Will remove DIR: %s', os.path.join(root, name))
+                log.debug("Will remove DIR: %s", os.path.join(root, name))
                 os.rmdir(os.path.join(root, name))
 
         if self.is_node:
-            log.debug('Will remove DIR: %s', self.abs_path)
+            log.debug("Will remove DIR: %s", self.abs_path)
             os.rmdir(self.abs_path)
         else:
-            log.debug('Will remove FILE: %s', self.abs_path)
+            log.debug("Will remove FILE: %s", self.abs_path)
             os.remove(self.abs_path)
 
         if self.wiki.has_vcs:
@@ -176,13 +175,12 @@ class WikiFile(WikiPath):
         super(WikiFile, self).__init__(*args, **kwargs)
         self.is_leaf = True
         self.extension = os.path.splitext(self.name)[1][1:]
-        self._content = ''
+        self._content = ""
 
     def renderer(self):
-        for plugin in manager.getPluginsOfCategory('Render'):
-            log.debug('Testing for plugin %s', plugin.plugin_object.name)
-            extensions = self.wiki.extensions.get(plugin.plugin_object.name,
-                                                  None)
+        for plugin in manager.getPluginsOfCategory("Render"):
+            log.debug("Testing for plugin %s", plugin.plugin_object.name)
+            extensions = self.wiki.extensions.get(plugin.plugin_object.name, None)
             if extensions is None:
                 continue  # Try the next plugin
 
@@ -222,12 +220,12 @@ class WikiFile(WikiPath):
         """
         Return true if the file is binary.
         """
-        fin = open(self.abs_path, 'rb')
+        fin = open(self.abs_path, "rb")
         try:
             CHUNKSIZE = 1024
             while 1:
                 chunk = fin.read(CHUNKSIZE).decode("utf-8")
-                if '\0' in chunk:  # Found null byte
+                if "\0" in chunk:  # Found null byte
                     return True
                 if len(chunk) < CHUNKSIZE:
                     break  # Done
@@ -253,7 +251,7 @@ class WikiFile(WikiPath):
         """
         try:
             content = self.wiki.vcs.show(filepath=self.path, ref=ref)
-            self._content = content.decode('utf8')
+            self._content = content.decode("utf8")
             return True
         except:
             return False
@@ -265,7 +263,7 @@ class WikiFile(WikiPath):
         if self._content and content is None:
             return self._content
 
-        fp = open(self.abs_path, 'r')
+        fp = open(self.abs_path, "r")
         ct = fp.read()
         if decode:
             ct = ct
@@ -281,7 +279,7 @@ class WikiFile(WikiPath):
             return ct
 
     def save(self, comment=None):
-        fp = codecs.open(self.abs_path, 'w', 'utf-8')
+        fp = codecs.open(self.abs_path, "w", "utf-8")
         fp.write(self._content)
         fp.close()
 
@@ -298,7 +296,7 @@ class WikiDir(WikiPath):
         new_abs_path = os.path.join(self.abs_path, filename)
         if os.path.exists(new_abs_path):
             raise PathExists(new_abs_path)
-        fp = file(new_abs_path, 'w')
+        fp = file(new_abs_path, "w")
         fp.close()
         return self.wiki.get(os.path.join(self.path, filename))
 

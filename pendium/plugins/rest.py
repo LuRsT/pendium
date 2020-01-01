@@ -5,8 +5,8 @@ from pendium.plugins import IRenderPlugin
 
 
 class Rest(IRenderPlugin):
-    name = 'Rest'
+    name = "Rest"
 
     def render(self, content):
-        content = publish_string(content, writer_name='html')
+        content = publish_string(content, writer_name="html")
         return Markup(content)
