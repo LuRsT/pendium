@@ -296,7 +296,7 @@ class WikiDir(WikiPath):
         new_abs_path = os.path.join(self.abs_path, filename)
         if os.path.exists(new_abs_path):
             raise PathExists(new_abs_path)
-        fp = file(new_abs_path, "w")
+        fp = open(new_abs_path, "w")
         fp.close()
         return self.wiki.get(os.path.join(self.path, filename))
 
