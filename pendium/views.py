@@ -60,7 +60,7 @@ def create_folder(path=None):
             app.logger.error(format_exc())
             flash('There is already a folder by that name', 'error')
 
-        except Exception, e:
+        except Exception as e:
             app.logger.error(format_exc())
             flash('There was a problem creating your folder: %s' % e, 'error')
 
@@ -86,7 +86,7 @@ def delete(path):
             flash('\'%s\' successfull deleted' % p.name, 'success')
             return redirect(url_for('view', path=parent.path))
 
-        except Exception, e:
+        except Exception as e:
             app.logger.error(format_exc())
             msg = 'There was a problem deleting \'%s\': %s' % (p.name, e)
             flash(msg, 'error')
@@ -130,7 +130,7 @@ def create_file(path=None):
             app.logger.error(format_exc())
             flash('There is already a file by that name', 'error')
 
-        except Exception, e:
+        except Exception as e:
             app.logger.error(format_exc())
             flash('There was a problem saving your file : %s' % e, 'error')
 
@@ -162,7 +162,7 @@ def edit(path):
             p.content(content=request.form.get('content'))
             p.save(comment=request.form.get('message', None))
             flash('File saved with the new provided content', 'success')
-        except Exception, e:
+        except Exception as e:
             app.logger.error(format_exc())
             flash('There was a problem saving your file : %s' % e, 'error')
 
@@ -233,7 +233,7 @@ def refresh():
     try:
         info = g.wiki.refresh()
         flash('Your wiki has been refreshed. %s' % info, 'success')
-    except Exception, e:
+    except Exception as e:
         app.logger.error(e)
         app.logger.error(format_exc())
         flash('Error refreshing git repository', 'error')

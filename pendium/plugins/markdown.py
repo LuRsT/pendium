@@ -16,6 +16,6 @@ class Markdown(IRenderPlugin):
         self.extensions = configuration.get('extensions', [])
 
     def render(self, content):
-        markdown_content = markdown.markdown(content, self.extensions)
+        markdown_content = markdown.markdown(content)
 
         return Markup(markdown_content)

@@ -131,7 +131,7 @@ class WikiPath(object):
             self = self.ancestor()
 
         filenames = []
-        for f in os.listdir(unicode(self.abs_path)):
+        for f in os.listdir(self.abs_path):
             if (f.find('.') == 0):
                 continue
 
@@ -226,7 +226,7 @@ class WikiFile(WikiPath):
         try:
             CHUNKSIZE = 1024
             while 1:
-                chunk = fin.read(CHUNKSIZE)
+                chunk = fin.read(CHUNKSIZE).decode("utf-8")
                 if '\0' in chunk:  # Found null byte
                     return True
                 if len(chunk) < CHUNKSIZE:
@@ -268,7 +268,7 @@ class WikiFile(WikiPath):
         fp = open(self.abs_path, 'r')
         ct = fp.read()
         if decode:
-            ct = ct.decode('utf-8')
+            ct = ct
         fp.close()
 
         if not content:
